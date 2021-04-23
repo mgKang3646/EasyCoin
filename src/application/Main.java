@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 //트랜잭션
+//화이팅
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
