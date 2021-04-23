@@ -1,5 +1,5 @@
 package application;
-// 조원메세지!!!!!!
+// 놉 조장 메세지!!!!
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
