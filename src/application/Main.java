@@ -1,6 +1,6 @@
 package application;
 // 놉 조장 메세지!!!!
-// 조원 메세지!!!!
+// 조원 메세지!!!
 // 변경사항 발쌩~!
 
 import javafx.application.Application;
