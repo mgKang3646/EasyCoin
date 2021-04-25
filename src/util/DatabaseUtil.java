@@ -12,7 +12,7 @@ public class DatabaseUtil {
 			
 			String dbURL = "jdbc:mysql://localhost:3306/BLOCKCHAIN";
 			String dbID = "root";
-			String dbPassword = "chmo5847*";
+			String dbPassword = "325264";
 			
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			System.out.println("드라이버 연결 성공!");

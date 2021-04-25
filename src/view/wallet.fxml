@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="580.0" maxWidth="580.0" minHeight="580.0" minWidth="580.0" prefHeight="580.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.WalletController">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c4e2ff" height="425.0" layoutX="100.0" layoutY="22.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="398.0" />
+      <VBox layoutX="100.0" layoutY="64.0" prefHeight="322.0" prefWidth="398.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="108.0" prefWidth="398.0">
+               <children>
+                  <Label alignment="CENTER" text="개인키 : ">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="skTextField" prefHeight="22.0" prefWidth="250.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="108.0" prefWidth="398.0">
+               <children>
+                  <Label text="공개키 : ">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="pkTextField" prefHeight="22.0" prefWidth="250.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="108.0" prefWidth="398.0">
+               <children>
+                  <Label text="잔    액 : ">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="balanceTextField" prefHeight="22.0" prefWidth="250.0" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="15.0" />
+         </padding>
+      </VBox>
+      <Button fx:id="wireButton" layoutX="206.0" layoutY="386.0" mnemonicParsing="false" onAction="#wire" prefHeight="42.0" prefWidth="214.0" text="송 금">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

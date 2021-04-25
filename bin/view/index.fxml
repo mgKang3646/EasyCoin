@@ -39,7 +39,7 @@
                 <Button fx:id="blockchainButton" layoutX="16.0" layoutY="38.0" mnemonicParsing="false" onAction="#blockchainHandler" prefHeight="45.0" prefWidth="150.0" text="블록체인" />
                   <Button fx:id="miningButton" layoutX="16.0" layoutY="112.0" mnemonicParsing="false" onAction="#miningHandler" prefHeight="45.0" prefWidth="150.0" text="채굴" />
                   <Button layoutX="16.0" layoutY="186.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="연결상태" />
-                  <Button layoutX="16.0" layoutY="259.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="지갑" />
+                  <Button fx:id = "walletButton" layoutX="16.0" layoutY="259.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="지갑" onAction ="#walletHandler" />
                </children>
             </Pane>
          </left>
