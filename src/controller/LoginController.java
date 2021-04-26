@@ -63,7 +63,7 @@ public class LoginController {
 			ReadPemFile readPemFile = new ReadPemFile();
 			
 			//지갑 생성 및 초기화하기
-			PrivateKey privateKey = readPemFile.readPrivateKeyFromPemFile(file.getName());
+			PrivateKey privateKey = readPemFile.readPrivateKeyFromPemFile(file.getPath());
 			WalletModel walletModel = dao.getPeer(readPemFile.getUsername());
 			walletModel.setPrivateKey(privateKey);
 			

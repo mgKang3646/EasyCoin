@@ -110,7 +110,8 @@ public class JoinController implements Initializable {
 						NetProgressController npc = loader.getController(); 
 						npc.setPrimaryStage((Stage)joinButton.getScene().getWindow());
 						npc.doProgress(peerModel, walletModel, blockchainModel,"join");
-					
+						npc.setPrivateKeyPath(pemFileForPrivate.getPath());
+
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

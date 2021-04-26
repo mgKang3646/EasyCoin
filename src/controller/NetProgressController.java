@@ -29,6 +29,7 @@ public class NetProgressController implements Initializable {
 	String address;
 	Stage currentStage;
 	Stage primaryStage;
+	String privatePath;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -38,6 +39,10 @@ public class NetProgressController implements Initializable {
 	
 	public void setPrimaryStage(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+	}
+	
+	public void setPrivateKeyPath(String privatePath) {
+		this.privatePath = privatePath;
 	}
 	
 	
@@ -117,7 +122,7 @@ public class NetProgressController implements Initializable {
 								WarningController wc = loader.getController();
 								wc.setPeerModel(peerModel); //peer 객체 참조주소 가져가기
 								wc.setPrimaryStage(primaryStage); // 회원가입 Stage 객체주소 WarningController에 보내기
-								wc.setPath("C:\\Users\\USER\\ProjectForGraduation\\BlockChain_v2.9");
+								wc.setPath(privatePath);
 								
 								Scene scene = new Scene(root);
 								Stage stage = new Stage();

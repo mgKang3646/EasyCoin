@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 //C:\Users\USER\ProjectForGraduation\BlockChain_v2.9
+// 주소가 겹쳤는데 오류가 뜨지 않고 Mysql에 그대로 저장됨, 해결바람.
 
 public class Main extends Application {
 	@Override
