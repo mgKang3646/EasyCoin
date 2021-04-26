@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -21,22 +22,17 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Label text="송금자 : ">
+                  <Label prefHeight="34.0" prefWidth="160.0" text="받는 사람 : ">
                      <font>
                         <Font size="28.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="senderTextField" prefHeight="20.0" prefWidth="210.0" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <Label text="수금자 : ">
-                     <font>
-                        <Font size="28.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="receiverTextField" prefHeight="20.0" prefWidth="210.0" />
+                  <TextField fx:id="recipientTextField" prefHeight="22.0" prefWidth="146.0">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="recipientButton" mnemonicParsing="false" onAction="#findRecipient" prefHeight="24.0" prefWidth="74.0" text="찾기" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
@@ -46,7 +42,15 @@
                         <Font size="28.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="balanceTextField" prefHeight="20.0" prefWidth="210.0" />
+                  <TextField fx:id="balanceTextField" prefHeight="22.0" prefWidth="162.0" />
+                  <Label text="ETC">
+                     <font>
+                        <Font name="System Bold" size="21.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">

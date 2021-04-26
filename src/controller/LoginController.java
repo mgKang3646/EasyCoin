@@ -3,6 +3,7 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.LinkedList;
 
 import database.DAO;
@@ -50,6 +51,7 @@ public class LoginController {
 		// 파일 탐색기 열기
 		FileChooser fc = new FileChooser();
 		fc.setTitle("원하는 파일을 선택하세요");
+		fc.setInitialDirectory(new File("./pem"));
 		File file = null;
 		file = fc.showOpenDialog((Stage)loginButton.getScene().getWindow());
 		
@@ -64,8 +66,10 @@ public class LoginController {
 			
 			//지갑 생성 및 초기화하기
 			PrivateKey privateKey = readPemFile.readPrivateKeyFromPemFile(file.getPath());
+			PublicKey publicKey = readPemFile.readPublicKeyFromPemFile("./pem/"+readPemFile.getUsername()+"publickey.pem");
 			WalletModel walletModel = dao.getPeer(readPemFile.getUsername());
 			walletModel.setPrivateKey(privateKey);
+			walletModel.setPublicKey(publicKey);
 			
 			//DB에서 블럭들 가지고 오기
 			LinkedList<Block> blocks = dao.getBlocks(readPemFile.getUsername());

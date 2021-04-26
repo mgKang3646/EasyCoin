@@ -92,6 +92,7 @@ public class JoinController implements Initializable {
 					try {
 						//지갑 초기화
 						walletModel.setPrivateKey(produceKey.getPrivateKey());
+						walletModel.setPublicKey(produceKey.getPublicKey());
 						walletModel.setUserLocalHost(localhost);
 						walletModel.setUsername(username);
 						

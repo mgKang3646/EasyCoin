@@ -16,16 +16,12 @@ import model.PeerModel;
 
 public class WalletController implements Initializable{
 
-	@FXML TextField skTextField;
-	@FXML TextField pkTextField;
 	@FXML TextField balanceTextField;
 	@FXML Button wireButton;
 	private PeerModel peerModel = null;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		skTextField.setEditable(false);
-		pkTextField.setEditable(false);
 		balanceTextField.setEditable(false);
 	}
 	
@@ -42,10 +38,9 @@ public class WalletController implements Initializable{
 		Scene scene = new Scene(root);
 		Stage stage = new Stage();
 		stage.setScene(scene);
-		stage.setX(skTextField.getScene().getWindow().getX()+220);
-		stage.setY(skTextField.getScene().getWindow().getY());
+		stage.setX(balanceTextField.getScene().getWindow().getX()+220);
+		stage.setY(balanceTextField.getScene().getWindow().getY());
 		stage.show();
-		
 		
 	}
 
