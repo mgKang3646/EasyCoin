@@ -117,7 +117,7 @@ public class NetProgressController implements Initializable {
 								WarningController wc = loader.getController();
 								wc.setPeerModel(peerModel); //peer 객체 참조주소 가져가기
 								wc.setPrimaryStage(primaryStage); // 회원가입 Stage 객체주소 WarningController에 보내기
-								wc.putPrivateKey(peerModel.walletModel.getPrivateKey());
+								wc.setPath("C:\\Users\\USER\\ProjectForGraduation\\BlockChain_v2.9");
 								
 								Scene scene = new Scene(root);
 								Stage stage = new Stage();

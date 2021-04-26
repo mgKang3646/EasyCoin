@@ -31,8 +31,6 @@ public class WalletController implements Initializable{
 	
 	public void setPeerModel(PeerModel peerModel) {
 		this.peerModel = peerModel;
-		skTextField.setText(peerModel.walletModel.getPrivateKey());
-		pkTextField.setText(peerModel.walletModel.getPublicKey());
 	}
 	
 	public void wire() throws IOException {

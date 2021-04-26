@@ -1,10 +1,14 @@
 package application;
 
+import java.security.Security;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+//C:\Users\USER\ProjectForGraduation\BlockChain_v2.9
 
 public class Main extends Application {
 	@Override
@@ -26,6 +30,7 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); // privateKey와 publicKey 생성을 위한 provider 추가
 		launch(args);
 	}
 }

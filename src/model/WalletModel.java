@@ -1,10 +1,13 @@
 package model;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
 public class WalletModel {
 	
 	private String userLocalHost;
-	private String privateKey;
-	private String publicKey;
+	private PrivateKey privateKey;
+	private PublicKey publicKey;
 	private String username;
 	
 	
@@ -17,19 +20,19 @@ public class WalletModel {
 		this.username = username;
 	}
 
-	public String getPrivateKey() {
+	public PrivateKey getPrivateKey() {
 		return privateKey;
 	}
 
-	public String getPublicKey() {
+	public PublicKey getPublicKey() {
 		return publicKey;
 	}
 
-	public void setPrivateKey(String privateKey) {
+	public void setPrivateKey(PrivateKey privateKey) {
 		this.privateKey = privateKey;
 	}
 
-	public void setPublicKey(String publicKey) {
+	public void setPublicKey(PublicKey publicKey) {
 		this.publicKey = publicKey;
 	}
 

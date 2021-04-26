@@ -25,7 +25,6 @@ public class WireController implements Initializable{
 	
 	public void setPeerModel(PeerModel peerModel) {
 		this.peerModel = peerModel;
-		senderTextField.setText(peerModel.walletModel.getPublicKey());
 	}
 	
 	public void wire() {
