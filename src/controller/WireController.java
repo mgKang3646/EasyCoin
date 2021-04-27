@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -21,8 +22,10 @@ public class WireController implements Initializable{
 
 	@FXML TextField recipientTextField;
 	@FXML Button recipientButton;
-	@FXML TextField balanceTextField;
+	@FXML TextField valueTextField;
 	@FXML Button wireButton;
+	@FXML Label checkvalue;
+	
 	private PeerModel peerModel = null;
 	private PublicKey recipient = null;
 	private String recipientName = null;
@@ -30,6 +33,7 @@ public class WireController implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		recipientTextField.setEditable(false);
+		checkvalue.setVisible(false);
 	}
 	
 	
@@ -38,6 +42,22 @@ public class WireController implements Initializable{
 	}
 	
 	public void wire() {
+		checkvalue.setVisible(false);
+
+		try {
+			float value = Float.parseFloat(valueTextField.getText());
+			//입금액이 0이면
+			if(value <= 0.05) {
+				checkvalue.setText("0.05ETC 이하는 송금 하실 수 없습니다.");
+				checkvalue.setVisible(true);
+
+			}
+		}catch(NumberFormatException e) {
+			checkvalue.setText("잘못된 형식의 송금액입니다.");
+			checkvalue.setVisible(true);
+		}
+		
+		
 		
 	}
 	
