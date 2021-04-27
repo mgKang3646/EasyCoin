@@ -13,20 +13,16 @@ import model.WalletModel;
 public class DAO {
 	
 	// 가입 시 DB 접근
-	public int join(String userLocalHost, String userPrivateKey, String userPublicKey, String username) {
-		String SQL = "INSERT INTO PEERTABLE VALUES(?,?,?,?)";
+	public int join(String userLocalHost, String username) {
+		String SQL = "INSERT INTO PEERTABLE VALUES(?,?)";
 		
 		try {
 			Connection conn = util.DatabaseUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(SQL);
-			pstmt.setString(1, userPrivateKey);
-			pstmt.setString(2, userPublicKey);
-			pstmt.setString(3, userLocalHost);
-			pstmt.setString(4, username);
-
+			pstmt.setString(1, userLocalHost);
+			pstmt.setString(2, username);
 
 			return pstmt.executeUpdate(); // SQL를 실행해서 성공여부를 반환 데이터 삽입이 성공한 개수를 반환
-			
 			
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -59,20 +55,17 @@ public class DAO {
 	}
 	
 	// 특정 개인키에 해당하는 데이터 갖고 오기
-	public WalletModel getPeer(String privateKey){
+	public WalletModel getPeer(String username){
 		WalletModel walletModel = new WalletModel();
-
 		try {
 			
-			String SQL = "SELECT * FROM PEERTABLE WHERE privatekey='"+privateKey+"';";
+			String SQL = "SELECT * FROM PEERTABLE WHERE username='"+username+"';";
 			Connection conn = util.DatabaseUtil.getConnection();
 			PreparedStatement pstmt;
 			pstmt = conn.prepareStatement(SQL);
 			ResultSet rs = pstmt.executeQuery();
 			
 			while(rs.next()) { // ResultSet은 일반적인 set가 조금 다르다.
-				walletModel.setPrivateKey(rs.getString("privatekey"));
-				walletModel.setPublicKey(rs.getString("publickey"));
 				walletModel.setUserLocalHost(rs.getString("localhost"));
 				walletModel.setUsername(rs.getString("username"));
 			}
@@ -113,7 +106,7 @@ public class DAO {
 		return -1; // 에러 발생
 	}
 	
-	public int storeBlock(Block block, String privateKey) {
+	public int storeBlock(Block block, String username) {
 		String SQL = "INSERT INTO BLOCKTABLE VALUES( ?, ?,?, ?, ?, ?,?)";
 		
 		try {
@@ -126,7 +119,7 @@ public class DAO {
 			pstmt.setString(4, "거래정보");
 			pstmt.setString(5, block.getPreviousBlockHash());
 			pstmt.setString(6, block.getHash());
-			pstmt.setString(7, privateKey);
+			pstmt.setString(7, username);
 			
 			int result = pstmt.executeUpdate();
 			return result; // 영향을 끼친 튜플 수를 반환
@@ -139,15 +132,15 @@ public class DAO {
 		return -1; // DB 오류 발생 시
 	}
 	
-	public int deleteAllBlock(String privateKey) {
-		String SQL = "DELETE FROM BLOCKTABLE WHERE privatekey = ?";
+	public int deleteAllBlock(String username) {
+		String SQL = "DELETE FROM BLOCKTABLE WHERE username = ?";
 		
 		
 		try {
 			Connection conn = util.DatabaseUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(SQL);
 			
-			pstmt.setString(1, privateKey);
+			pstmt.setString(1, username);
 			
 			int result = pstmt.executeUpdate();
 			System.out.println(result +"개 DB에서 삭제");
@@ -160,8 +153,8 @@ public class DAO {
 		return -1; //DB 에러 
 	}
 	
-	public LinkedList<Block> getBlocks(String privateKey) {
-		String SQL = "SELECT * FROM BLOCKTABLE WHERE privatekey = ?";
+	public LinkedList<Block> getBlocks(String username) {
+		String SQL = "SELECT * FROM BLOCKTABLE WHERE username = ?";
 		LinkedList<Block> blocks = new LinkedList<Block>(); // 중간 삽입이 자주 일어날 것이므로 링크드리스트를 써준다.
 		Block block=null;
 		
@@ -169,7 +162,7 @@ public class DAO {
 			
 			Connection conn = util.DatabaseUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(SQL);
-			pstmt.setString(1, privateKey);
+			pstmt.setString(1, username);
 			
 			ResultSet rs = pstmt.executeQuery();
 			// 리스트 정렬하기 

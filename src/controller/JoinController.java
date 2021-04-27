@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.BlockchainModel;
 import model.PeerModel;
+import model.Pem;
 import model.WalletModel;
 import model.produceKey;
 
@@ -37,7 +38,6 @@ public class JoinController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); // privateKey와 publicKey 생성을 위한 provider 추가
 		userDTO = new UserDTO();
 		dao = new DAO();
 		produceKey = new produceKey(); //privateKey와 publicKey 생성을 위한 Model
@@ -50,8 +50,10 @@ public class JoinController implements Initializable {
 	
 	public void join() throws Exception {
 		
-		// DB에 같은  등록 여부 변수
-		int registerResult = dao.registerCheck(userNameText.getText());
+		// ID 중복체크
+		
+		String username = userNameText.getText(); 
+		int registerResult = dao.registerCheck(username);
 		
 		//DB에 이미 HOST 주소가 등록되어 있는 경우
 		if(registerResult == 1) {
@@ -66,24 +68,31 @@ public class JoinController implements Initializable {
 			stage.setScene(scene);
 			stage.show();
 		}
+		
 		// DB에 주소가 등록되어 있지 않은 경우
 		else {
 		
-			// ? 정확한 PrivateKey와 PublicKey 생성원리는 추후에 분석
 			produceKey.generateKeyPair(); // privateKey, publicKey 생성
 			
-			String username = userNameText.getText(); // DTO에 로컬호스트 주소 저장
-			String privateKey = produceKey.getPrivateKey().getEncoded().toString()+(int)(Math.random()*10);  // DTO에 개인키 문자열로 바꾼 후 저장
-			String publicKey = produceKey.getPublicKey().getEncoded().toString();    // DTO에 공개키 문자열로 바꾼 후 저장
+			//PrivateKey 용, PublicKey용 Pem 파일 만들기
+			Pem pemFileForPrivate = new Pem(produceKey.getPrivateKey(),username); 
+			pemFileForPrivate.write(username+"privatekey.pem");
+			System.out.println(String.format("EC 암호키 %s파일을 내보냈습니다.",username+"privatekey.pem"));
+
+			Pem pemFileForPublic = new Pem(produceKey.getPublicKey(),username); 
+			pemFileForPublic.write(username+"publickey.pem");
+			System.out.println(String.format("EC 암호키 %s파일을 내보냈습니다.",username+"publickey.pem"));
+
+			//주소 랜덤 생성하기
 			String localhost = "localhost:"+ (5500 + (int)(Math.random()*100)); // 주소 임의 설정
+			
 			//DB 접근
-			if(dao.join(localhost, privateKey, publicKey, username)>0) { // join()의 return값이 0 이상이면 DB삽입 명령정상처리
+			if(dao.join(localhost, username)>0) { // join()의 return값이 0 이상이면 DB삽입 명령정상처리
 					
 					try {
-						
 						//지갑 초기화
-						walletModel.setPrivateKey(privateKey);
-						walletModel.setPublicKey(publicKey);
+						walletModel.setPrivateKey(produceKey.getPrivateKey());
+						walletModel.setPublicKey(produceKey.getPublicKey());
 						walletModel.setUserLocalHost(localhost);
 						walletModel.setUsername(username);
 						
@@ -102,16 +111,13 @@ public class JoinController implements Initializable {
 						NetProgressController npc = loader.getController(); 
 						npc.setPrimaryStage((Stage)joinButton.getScene().getWindow());
 						npc.doProgress(peerModel, walletModel, blockchainModel,"join");
-					
+						npc.setPrivateKeyPath(pemFileForPrivate.getPath());
+
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 				}	
 			} 
 		}
-
 	}
-
-	
-
 }

@@ -85,7 +85,7 @@ public class PeerModel {
 			if(blockchainModel.getBlocks().size()==0) {
 				block = new Block(DigestUtils.sha256Hex("Genesis Block"),"00000000000000000","1608617882515",Block.count);// 제네시스 블록 생성
 				peerModel.blockchainModel.getBlocks().add(block); // 제네시스 블록 블록체인 Model에 저장
-				dao.storeBlock(block, walletModel.getPrivateKey()); // 제네시스 블록 DB 저장
+				dao.storeBlock(block, walletModel.getUsername()); // 제네시스 블록 DB 저장
 			}
 			
 			return 1; // 서버 생성 성공
@@ -268,7 +268,7 @@ public class PeerModel {
 			System.out.println("> 블록 검증 완료\n"+block);
 		} else { System.out.println("[ 블록체인에 블록을 추가할 수 없습니다. 유효하지 않는 이전블록 해쉬입니다. ]\n");}
 		//db에 블록 저장
-		dao.storeBlock(block, walletModel.getPrivateKey());
+		dao.storeBlock(block, walletModel.getUsername());
 	}
 	
 	//리더 블록 선정하기

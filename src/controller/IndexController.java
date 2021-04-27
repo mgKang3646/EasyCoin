@@ -18,6 +18,7 @@ public class IndexController  {
 	@FXML private Button blockchainButton;
 	@FXML private Button upgradeButton;
 	@FXML private TextField idText;
+	@FXML private Button walletButton;
 	
 	private PeerModel peerModel;
 	
@@ -51,6 +52,17 @@ public class IndexController  {
 			
 		}
 
+	}
+	
+	public void walletHandler() throws IOException {
+		
+		content.getChildren().clear();
+		
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/wallet.fxml"));
+		content.getChildren().add(loader.load());// 로드가 된 후 Controller 객체를 쓸 수 있다.
+		WalletController wc = loader.getController();
+		wc.setPeerModel(peerModel);
+		
 	}
 	
 	public void doUpgrade() {

@@ -177,19 +177,19 @@ public class PeerThread extends Thread {
 						Block.count++;
 						peerModel.block = new Block(previousHash,nonce,timestamp,Block.count);
 						peerModel.blockchainModel.getBlocks().add(new Block(previousHash,nonce,timestamp,Block.count));
-						dao.storeBlock(peerModel.block,peerModel.walletModel.getPrivateKey());
+						dao.storeBlock(peerModel.block,peerModel.walletModel.getUsername());
 						
 					}else { //검증이 실패하여 처음부터 받는 경우
 						if(peerModel.isFirstResponse) {// json request의 반응(response)이 처음 들어오는 경우
 							Block.count = 0; 
-							dao.deleteAllBlock(peerModel.walletModel.getPrivateKey());
+							dao.deleteAllBlock(peerModel.walletModel.getUsername());
 							peerModel.blockchainModel.resetBlocks().add(new Block(previousHash,nonce,timestamp,Block.count)); // 새로운 블록체인에 정리
 							peerModel.isFirstResponse = false;
 						}else {
 							Block.count++;
 							peerModel.block = new Block(previousHash,nonce,timestamp,Block.count);
 							peerModel.blockchainModel.getBlocks().add(new Block(previousHash,nonce,timestamp,Block.count));
-							dao.storeBlock(peerModel.block, peerModel.walletModel.getPrivateKey());
+							dao.storeBlock(peerModel.block, peerModel.walletModel.getUsername());
 						}
 					}
 				}

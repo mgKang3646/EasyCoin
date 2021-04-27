@@ -13,15 +13,10 @@ import model.PeerModel;
 
 public class WarningController {
 
-	@FXML private TextField privateKeyTextField;
-	@FXML private Button goToIndex;
+	@FXML TextField path;
+	@FXML Button goToIndex;
 	Stage primaryStage;
 	PeerModel peerModel;
-	
-	public void putPrivateKey(String privateKey) {
-		privateKeyTextField.setText(privateKey);
-		privateKeyTextField.setEditable(false);
-	}
 	
 	public void goIndex() throws IOException {
 		
@@ -43,6 +38,10 @@ public class WarningController {
 	
 	public void setPrimaryStage(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+	}
+	
+	public void setPath(String path) {
+		this.path.setText(path);
 	}
 
 }

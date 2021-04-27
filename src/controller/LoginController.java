@@ -1,6 +1,9 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.LinkedList;
 
 import database.DAO;
@@ -10,11 +13,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Block;
 import model.BlockchainModel;
 import model.PeerModel;
-import model.PeerThread;
+import model.ReadPemFile;
 import model.WalletModel;
 
 public class LoginController {
@@ -39,21 +43,38 @@ public class LoginController {
 		
 	}
 	
+	//? 로그인 시 개인키 공개키 구분하는 것 구현해야함 지금은 공개키로도 접속가능
 	public void goIndex() throws Exception {
-		
-		String privateKey = privateKeyText.getText();
+		// DB 접근 객체 생성
 		DAO dao = new DAO();
-		WalletModel walletModel = dao.getPeer(privateKey); // 개인키 관련 데이터 DB에서 가지고 오기
-		PeerModel peerModel = new PeerModel();
-		blockchainModel = new BlockchainModel();
 		
-		// DB에 개인키가 등록되어 있는 경우
-		if(!(walletModel.getPrivateKey()==null)) {
+		// 파일 탐색기 열기
+		FileChooser fc = new FileChooser();
+		fc.setTitle("원하는 파일을 선택하세요");
+		fc.setInitialDirectory(new File("./pem"));
+		File file = null;
+		file = fc.showOpenDialog((Stage)loginButton.getScene().getWindow());
+		
+		// 개인키 파일을 갖고 있는 경우
+		if(file != null) {
+			
+			PeerModel peerModel = new PeerModel();
+			blockchainModel = new BlockchainModel();
+			
+			//파일 읽어오기
+			ReadPemFile readPemFile = new ReadPemFile();
+			
+			//지갑 생성 및 초기화하기
+			PrivateKey privateKey = readPemFile.readPrivateKeyFromPemFile(file.getPath());
+			PublicKey publicKey = readPemFile.readPublicKeyFromPemFile("./pem/"+readPemFile.getUsername()+"publickey.pem");
+			WalletModel walletModel = dao.getPeer(readPemFile.getUsername());
+			walletModel.setPrivateKey(privateKey);
+			walletModel.setPublicKey(publicKey);
 			
 			//DB에서 블럭들 가지고 오기
-			LinkedList<Block> blocks = dao.getBlocks(privateKey);
-			System.out.println("블럭 가져오기 성공");
+			LinkedList<Block> blocks = dao.getBlocks(readPemFile.getUsername());
 			
+			//블록체인 채우기
 			for(int i=0; i<blocks.size(); i++) {
 				 blockchainModel.getBlocks().add(blocks.get(i)); 
 				 if(i==blocks.size()-1) { // 리스트의 마지막 블럭인 경우
@@ -62,8 +83,7 @@ public class LoginController {
 				 }
 			}
 			
-			//다른 Peer들과 네트워크 연결하기
-			// P2P 연결 진행시키기
+			// P2P망 연결 시작
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/netprogress.fxml"));
 			Parent root = loader.load();
 			
@@ -80,22 +100,6 @@ public class LoginController {
 			npc.doProgress(peerModel, walletModel, blockchainModel,"login");
 			
 		}
-		//DB에 개인키가 등록되어 있지 않은 경우
-		else {
-			
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/logincheck.fxml"));
-			Parent root = loader.load();
-			LoginCheckController lcc = loader.getController();
-			lcc.setPrimaryStage((Stage)privateKeyText.getScene().getWindow());
-			
-			Scene scene = new Scene(root);
-			Stage stage = new Stage();
-			stage.setScene(scene);
-			stage.show();
-		}
-			
-		
-		
 	}
 
 }
