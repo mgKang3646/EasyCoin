@@ -17,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.PeerModel;
 import model.ReadPemFile;
+import model.Transaction;
 
 public class WireController implements Initializable{
 
@@ -27,6 +28,7 @@ public class WireController implements Initializable{
 	@FXML Label checkvalue;
 	
 	private PeerModel peerModel = null;
+	private PublicKey sender = null;
 	private PublicKey recipient = null;
 	private String recipientName = null;
 	
@@ -39,6 +41,7 @@ public class WireController implements Initializable{
 	
 	public void setPeerModel(PeerModel peerModel) {
 		this.peerModel = peerModel;
+		this.sender = peerModel.walletModel.getPublicKey();
 	}
 	
 	public void wire() {
@@ -46,12 +49,19 @@ public class WireController implements Initializable{
 
 		try {
 			float value = Float.parseFloat(valueTextField.getText());
-			//입금액이 0이면
-			if(value <= 0.05) {
-				checkvalue.setText("0.05ETC 이하는 송금 하실 수 없습니다.");
-				checkvalue.setVisible(true);
-
+			
+			//트랜잭션 생성
+			if(value >= 0.05) {
+				Transaction newTransaction = new Transaction(sender,recipient,value); // 트랜잭션 생성
+				newTransaction.generateSignature(peerModel.walletModel.getPrivateKey()); //전자서명 생성
 			}
+			
+			//입금액이 0.05 미만인 경우
+			else {
+				checkvalue.setText("0.05ETC 미만은 송금 하실 수 없습니다.");
+				checkvalue.setVisible(true);
+			}
+			
 		}catch(NumberFormatException e) {
 			checkvalue.setText("잘못된 형식의 송금액입니다.");
 			checkvalue.setVisible(true);

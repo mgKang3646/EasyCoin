@@ -19,7 +19,7 @@ public class Pem {
 	}
 	
 	public void write(String filename) throws IOException {
-		file = new File("C:\\Users\\USER\\ProjectForGraduation\\BlockChain_v2.9\\pem\\"+filename);
+		file = new File("./pem/"+filename);
 		PemWriter pemWriter = new PemWriter(new OutputStreamWriter(new FileOutputStream(file))); // 현재 디렉토리에 있는 pem폴더안에 있는 파일
 		try {
 			pemWriter.writeObject(this.pemObject);
