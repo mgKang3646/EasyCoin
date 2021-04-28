@@ -3,6 +3,7 @@ package model;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
+import java.util.Vector;
 
 public class WalletModel {
 	
@@ -10,10 +11,14 @@ public class WalletModel {
 	private PrivateKey privateKey;
 	private PublicKey publicKey;
 	private String username;
-	private HashMap<String,TransactionOutput> UTXO_Wallet = new HashMap<String,TransactionOutput>();
+	private Vector<TransactionOutput> UTXOWallet;
 
-	public HashMap<String, TransactionOutput> getUTXO_Wallet() {
-		return UTXO_Wallet;
+	public Vector<TransactionOutput> getUTXOWallet() {
+		return UTXOWallet;
+	}
+	
+	public void makeUTXOWallet(){
+		UTXOWallet = new Vector<TransactionOutput>();
 	}
 
 	public String getUsername() {

@@ -7,12 +7,11 @@ public class TransactionOutput {
 	public String id;
 	public PublicKey recipient;
 	public float value;
-	private String parentTransactionId;
 	
-	public TransactionOutput(PublicKey recipient, float value, String parentTransactionId) {
+	public TransactionOutput(PublicKey recipient, float value) {
 		this.recipient = recipient;
 		this.value = value;
-		this.parentTransactionId = parentTransactionId;
+		
 	}
 	
 	public boolean isMine(PublicKey publickey) {

@@ -6,9 +6,10 @@ import java.security.PublicKey;
 import java.security.Signature;
 import java.util.Base64;
 
+
+
 public class BlockUtil {
 
-	
 	public static String getStringFromKey(Key key) {
 		return Base64.getEncoder().encodeToString(key.getEncoded());
 	}

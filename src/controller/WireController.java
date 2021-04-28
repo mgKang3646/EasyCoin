@@ -63,16 +63,6 @@ public class WireController implements Initializable{
 			//트랜잭션 생성
 			if(value >= 0.05) {
 				
-				//임시 inputs 생성하기
-				float total = 0;
-				
-				ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();
-				for(Map.Entry<String, TransactionOutput> item : peerModel.walletModel.getUTXO_Wallet().entrySet()) {
-					TransactionOutput UTXO = item.getValue();
-					total += UTXO.value;
-					inputs.add(new TransactionInput(UTXO.id));
-					if(total > value) break;
-				}
 				//트랜잭션 생성
 				Transaction newTransaction = new Transaction(sender,recipient,value); // 트랜잭션 생성
 				newTransaction.generateSignature(peerModel.walletModel.getPrivateKey()); //전자서명 생성

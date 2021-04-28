@@ -101,6 +101,13 @@ public class ServerThread extends Thread {
 						peerModel.amILeader = true;
 				}
 				
+				//요청한 UTXO 받기
+				if(jsonObject.containsKey("responseUTXO")) {
+					float value = Float.parseFloat(jsonObject.getString("value"));  
+					TransactionOutput UTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),value);
+					peerModel.walletModel.getUTXOWallet().add(UTXO);
+				}
+				
 				
 			}
 			// 

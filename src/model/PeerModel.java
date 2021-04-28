@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.json.Json;
 
@@ -53,7 +54,7 @@ public class PeerModel {
 	
 	public Stage primaryStage;
 	
-	public HashMap<String,TransactionOutput> UTXOs = new HashMap<String,TransactionOutput>();
+	public Vector<TransactionOutput> UTXOs = new Vector<TransactionOutput>(); // 스레드 간의 동시접속이 가능한 리스트여서 Vector로 생성
 	
 	
 	
@@ -93,9 +94,9 @@ public class PeerModel {
 			}
 			
 			//임시 UTXO 만들기
-			TransactionOutput tempUTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),100f,"1");
+			TransactionOutput tempUTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),100f);
 			tempUTXO.id = "0";
-			peerModel.UTXOs.put(tempUTXO.id, tempUTXO);
+			peerModel.UTXOs.add(tempUTXO);
 			
 			return 1; // 서버 생성 성공
 	}

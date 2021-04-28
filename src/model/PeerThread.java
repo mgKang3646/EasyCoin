@@ -238,17 +238,42 @@ public class PeerThread extends Thread {
 					//트랜잭션생성
 					Transaction newTransaction = new Transaction(sender,recipient,value);
 					newTransaction.setSignature(signature);
-					//검증에 성공하면 트랜잭션 추가하기 
+					//전자서명 검증에 성공하면 UTXO 체크하기 
 					if(newTransaction.verifySignature()) {
-						peerModel.block.getTransactionList().add(newTransaction);
-						System.out.println("========== 전자서명 검증 완료 ============");
-						System.out.println("sender : "+ newTransaction.sender);
-						System.out.println("recipient : " + newTransaction.recipient);
-						System.out.println("value : " + newTransaction.value +"ETC");
+						StringWriter sw = new StringWriter();
+						Json.createWriter(sw).writeObject(Json.createObjectBuilder()
+																.add("RequestUTXO", "")
+																.add("sender",Base64.toBase64String(sender.getEncoded()))
+																.build());
+						//peerModel.getServerListerner().sendMessage(sw.toString());
 					}
-					
-					
 				}
+				
+				//UTXO 요청
+				if(jsonObject.containsKey("requestUTXO")) {
+					byte[] byteOwner = Base64.decode(jsonObject.getString("owner"));
+					X509EncodedKeySpec spec = new X509EncodedKeySpec(byteOwner);
+					KeyFactory factory = KeyFactory.getInstance("ECDSA","BC");
+					PublicKey owner = factory.generatePublic(spec);
+					
+					for(int i=0; i<peerModel.UTXOs.size();i++) {
+						TransactionOutput UTXO = peerModel.UTXOs.get(i);
+						if(UTXO.recipient == owner) {
+							StringWriter sw = new StringWriter();
+							Json.createWriter(sw).writeObject(Json.createObjectBuilder()
+																		.add("responseUTXO", "")
+																		.add("value", UTXO.value+"")
+																		.build());
+							printWriter.println(sw.toString());
+							Thread.sleep(100);
+						}
+					}
+				}
+				
+				
+				
+				
+				
 			} catch (Exception e) {
 				// TODO: handle exception
 				flag = false;
