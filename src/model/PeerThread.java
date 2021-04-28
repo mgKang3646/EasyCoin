@@ -5,12 +5,18 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.bouncycastle.util.encoders.Base64;
 
 import controller.MiningVerifyController;
 import database.DAO;
@@ -207,6 +213,41 @@ public class PeerThread extends Thread {
 															.build());
 						printWriter.println(sw.toString());
 					}
+				}
+				
+				//거래 트랜잭션이 들어 온 경우
+				if(jsonObject.containsKey("signature")) {
+					
+					//송금자 공개키 획득
+					byte[] byteSender = Base64.decode(jsonObject.getString("sender"));
+					X509EncodedKeySpec spec1 = new X509EncodedKeySpec(byteSender);
+					KeyFactory factory1 = KeyFactory.getInstance("ECDSA","BC");
+					PublicKey sender = factory1.generatePublic(spec1);
+					//수금자 공개키 획득
+					byte[] byteRecipient = Base64.decode(jsonObject.getString("recipient"));
+					X509EncodedKeySpec spec2 = new X509EncodedKeySpec(byteRecipient);
+					KeyFactory factory2 = KeyFactory.getInstance("ECDSA","BC");
+					PublicKey recipient = factory2.generatePublic(spec2);
+					
+					//송금액 획득
+					float value = Float.parseFloat(jsonObject.getString("value"));
+					
+					//전자서명 획득
+					byte[] signature = Base64.decode(jsonObject.getString("signature"));
+					
+					//트랜잭션생성
+					Transaction newTransaction = new Transaction(sender,recipient,value);
+					newTransaction.setSignature(signature);
+					//검증에 성공하면 트랜잭션 추가하기 
+					if(newTransaction.verifySignature()) {
+						peerModel.block.getTransactionList().add(newTransaction);
+						System.out.println("========== 전자서명 검증 완료 ============");
+						System.out.println("sender : "+ newTransaction.sender);
+						System.out.println("recipient : " + newTransaction.recipient);
+						System.out.println("value : " + newTransaction.value +"ETC");
+					}
+					
+					
 				}
 			} catch (Exception e) {
 				// TODO: handle exception

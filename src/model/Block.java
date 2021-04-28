@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 
@@ -11,6 +13,7 @@ public class Block {
 	private	String previousBlockHash = null;
 	private String hash = null;
 	public static int count=0;
+	private ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
 
 	public Block(String previousBlockHash, String nonce,String timestamp,int num) {
 		this.previousBlockHash = previousBlockHash; // 이전 블록의 해쉬
@@ -25,4 +28,7 @@ public class Block {
 	public String getPreviousBlockHash() { return previousBlockHash; }
 	public String getHash() { return hash; }
 	public int getNum() { return num; }
+	public ArrayList<Transaction> getTransactionList(){
+		return transactionList;
+	}
 }

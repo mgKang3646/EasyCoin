@@ -53,6 +53,10 @@ public class PeerModel {
 	
 	public Stage primaryStage;
 	
+	public HashMap<String,TransactionOutput> UTXOs = new HashMap<String,TransactionOutput>();
+	
+	
+	
 	
 	public ServerListener getServerListerner() {
 		return peerModel.serverListener;
@@ -87,6 +91,11 @@ public class PeerModel {
 				peerModel.blockchainModel.getBlocks().add(block); // 제네시스 블록 블록체인 Model에 저장
 				dao.storeBlock(block, walletModel.getUsername()); // 제네시스 블록 DB 저장
 			}
+			
+			//임시 UTXO 만들기
+			TransactionOutput tempUTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),100f,"1");
+			tempUTXO.id = "0";
+			peerModel.UTXOs.put(tempUTXO.id, tempUTXO);
 			
 			return 1; // 서버 생성 성공
 	}

@@ -35,7 +35,7 @@ public class ServerListener extends Thread {
 			serverThreads.forEach(t->t.stop());
 		}
 	}
-	void sendMessage(String message) {
+	public void sendMessage(String message) {
 		try {
 			serverThreads.forEach(t->t.getPrintWriter().println(message));
 		} catch (Exception e) {
