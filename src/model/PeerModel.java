@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,13 +18,13 @@ import javax.json.Json;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import database.DAO;
+import database.DTO;
 import javafx.stage.Stage;
 
 
 public class PeerModel {
 	public String hashDifficulty = "00000";
 	public int zeroNum = 5;
-	
 	public Block block = null; // 가장 최신 블럭
 	public boolean proofOfWorkCompleteFlag = true;
 	public BlockchainModel blockchainModel =null;
@@ -31,34 +32,22 @@ public class PeerModel {
 	PeerModel peerModel;
 	public WalletModel walletModel = null;
 	private ServerListener serverListener =null;
-	
-	ArrayList<PeerThread> peerThreads = new ArrayList<PeerThread>();
-	ArrayList<ServerListener> serverListeners = new ArrayList<ServerListener>();
-	ArrayList<ServerThread> serverThreads = new ArrayList<ServerThread>();
-	public ArrayList<String> peers;
-	public ArrayList<PeerThread> peerThs; //연결된 상대 Peer 서버리스너에게 해당 Peer 서버리스너 전달하여 상대 PeerThread와 소켓연결 유도
-	
-
 	public int verifiedPeerCount = 0; // 채굴된 블럭 검증 성공한 Peer의 개수
 	public double totalRespondedCount = 0; // 블럭 검증 결과를 전송한 Peer의 개수
-	
 	double verifiedCutLine = 0.51;
 	double connectedPeersSize; // 본인포함
-	
 	public HashMap<PeerThread,Integer> peerBlockNums = new HashMap<PeerThread,Integer>(); 
 	public PeerThread threadForLeaderPeer = null;
 	public boolean isFirstResponse = true;
-	
 	public boolean amILeader = false;
 	public boolean miningFlag = false;
-	
 	public Stage primaryStage;
 	
 	public Vector<TransactionOutput> UTXOs = new Vector<TransactionOutput>(); // 스레드 간의 동시접속이 가능한 리스트여서 Vector로 생성
-	
-	
-	
-	
+	public ArrayList<DTO> dtos = new ArrayList<DTO>();
+	public ArrayList<Peer> peerList = new ArrayList<Peer>();
+
+
 	public ServerListener getServerListerner() {
 		return peerModel.serverListener;
 	}
@@ -103,22 +92,16 @@ public class PeerModel {
 	
 	//DB안에 저장된 Peer들 갖고오기 
 	public int getPeersInDB(ServerListener serverListener) {
-		
-		peers =  new ArrayList<String>();
-		peerThs = new ArrayList<PeerThread>();
-		
-		peers = dao.getPeersLocalhost(); // DAO를 통해서 DB안의 서버리스너 주소 갖고오기
+		dtos = dao.getPeers(); // DAO를 통해서 DB안의 서버리스너 주소 갖고오기
 		
 		//DB에 있는 본인 서버리스너 제거
-		for(int i =0; i<peers.size(); i++) {
-				if(peers.get(i).equals("localhost:"+serverListener.getPort())) {
-					System.out.println("해당 주소 삭제 : " + peers.remove(i));
-				}
+		for(int i =0; i<dtos.size();i++) {
+			//DTO에 본인 정보 제거하기
+			if(dtos.get(i).getLocalhost().equals("localhost:"+serverListener.getPort())) {
+					System.out.println("해당 주소 삭제 : " + dtos.remove(i)); 
 			}
-		
-		System.out.println("peers 리스트 개수 : " + peers.size());
-		
-		return peers.size();
+		}
+		return dtos.size();
 	}
 
 	// DB에 저장된 서버리스너 주소들에 대응하는 Peer 스레드 생성
@@ -139,7 +122,7 @@ public class PeerModel {
 							/////////////////////////////blocking////////////////////////////////////////////////
 							
 							PeerThread peerThread= new PeerThread(socket,peerModel);//Peer 스레드 생성
-							peerThs.add(peerThread); // 연결 완료된 PeerThread들 리스트에 저장
+							peerList.add(new Peer(dtos.get(i).getUsername(),dtos.get(i).getLocalhost(),peerThread));
 							peerThread.start();//Peer스레드 실행
 								
 							peerThread.addressSend("localhost:"+serverListener.getPort());// peerThread가 생성되면 자신의 서버리스너 주소보내기			
@@ -173,7 +156,6 @@ public class PeerModel {
 		//Peer스레드와 Server스레드만 걸러서 peers라는 배열에 모두 넣은 뒤 inputValue(통신하려는 대상)와 비교하여 동일한 것이 있는지 검사
 		if(peers.contains(inputValue)) flag = true; // 동일한 것이 있다면 true를 반환
 		return flag; // 없다면 false를 반환
-	
 	}
 	
 	//블록채굴
@@ -308,63 +290,55 @@ public class PeerModel {
 			amILeader = true; // 자기 자신이 리더가 되기
 		}
 			
-		threadForLeaderPeer = leaderPeer; // 
+		threadForLeaderPeer = leaderPeer; 
 		
 		return leaderPeer;
 	}
 	
-	//현재 사용 중인 스레드들 분류
-	private void listConnections() {
-		// 현재 활동 중인 스레드들 모두 불러들이기
-		Thread[] threads = new Thread[Thread.currentThread().getThreadGroup().activeCount()];
-		Thread.currentThread().getThreadGroup().enumerate(threads);
+	public static class Peer{
+		PublicKey publickey = null;
+		PeerThread peerThread = null;
+		String userName = null;
+		String localhost = null;
 		
-		//반복문과 instanceof 키워드를 통해 분류
-		for(int i =0; i<threads.length;i++) {
-			if(threads[i] instanceof PeerThread) {
-				if(!isOverlap(threads[i])) { // 겹치지 않는 경우
-					peerThreads.add((PeerThread)threads[i]);
-				}
-			}
-			else if(threads[i] instanceof ServerThread) {
-				if(!isOverlap(threads[i])) { // 겹치지 않는 경우
-					serverThreads.add((ServerThread)threads[i]);
-				}
-			}
-			else if(threads[i] instanceof ServerListener)  {
-				if(!isOverlap(threads[i])) { // 겹치지 않는 경우
-					serverListeners.add((ServerListener)threads[i]);
-				}
-			}
+		public Peer(String userName, String localhost,PeerThread peerThread) {
+			this.userName = userName;
+			this.localhost = localhost;
+			this.peerThread = peerThread;
+		}
+		
+		public String getLocalhost() {
+			return localhost;
+		}
+		public void setLocalhost(String localhost) {
+			this.localhost = localhost;
+		}
+		public PublicKey getPublickey() {
+			return publickey;
+		}
+		public PeerThread getPeerThread() {
+			return peerThread;
+		}
+		public String getUserName() {
+			return userName;
+		}
+		public void setPublickey(PublicKey publickey) {
+			this.publickey = publickey;
+		}
+		public void setPeerThread(PeerThread peerThread) {
+			this.peerThread = peerThread;
+		}
+		public void setUserName(String userName) {
+			this.userName = userName;
+		}
+		
+		@Override
+		public String toString() {
+			String result = userName +"의 Peer \n";
+			result += "localhost : " + localhost;
+			
+			return result;
 		}
 	}
-	// 스레드의 문자열 값이 겹치는게 있는지 확인
-	private boolean isOverlap(Object obj) {
-		
-		if(obj instanceof PeerThread) {
-			obj = (PeerThread)obj;
-			for(int i=0; i < peerThreads.size(); i++) {
-				if(obj.toString().equals(peerThreads.get(i).toString())){
-					return true;
-				}
-			}
-			return false;
-		}
-		else if(obj instanceof ServerThread) {
-			obj = (ServerThread)obj;
-			for(int i=0; i < serverThreads.size(); i++) {
-				if(obj.toString().equals(serverThreads.get(i).toString())) return true;
-			}
-			return false;
-		}
-		else if(obj instanceof ServerListener) {
-			obj = (ServerListener)obj;
-			for(int i=0; i < serverListeners.size(); i++) {
-				if(obj.toString().equals(serverListeners.get(i).toString())) return true;
-			}
-			return false;
-		}
-		
-		return false;
-	}
+	
 }

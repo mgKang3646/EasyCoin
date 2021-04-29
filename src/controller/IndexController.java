@@ -19,6 +19,7 @@ public class IndexController  {
 	@FXML private Button upgradeButton;
 	@FXML private TextField idText;
 	@FXML private Button walletButton;
+	@FXML private Button stateConnectionButton;
 	
 	private PeerModel peerModel;
 	
@@ -52,6 +53,15 @@ public class IndexController  {
 			
 		}
 
+	}
+	
+	public void stateConnectionHandler() throws IOException {
+		content.getChildren().clear();
+		
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/stateConnection.fxml"));
+		content.getChildren().add(loader.load());// 로드가 된 후 Controller 객체를 쓸 수 있다.
+		StateConnectionController scc = loader.getController();
+		scc.setPeerModel(peerModel);
 	}
 	
 	public void walletHandler() throws IOException {

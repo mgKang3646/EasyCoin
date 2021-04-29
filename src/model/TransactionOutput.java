@@ -11,7 +11,6 @@ public class TransactionOutput {
 	public TransactionOutput(PublicKey recipient, float value) {
 		this.recipient = recipient;
 		this.value = value;
-		
 	}
 	
 	public boolean isMine(PublicKey publickey) {

@@ -6,7 +6,7 @@ import java.security.Security;
 import java.util.ResourceBundle;
 
 import database.DAO;
-import database.UserDTO;
+import database.DTO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -29,7 +29,7 @@ public class JoinController implements Initializable {
 	@FXML private Button goToIndexButton;
 	@FXML private Label privateKeyLabel;
 	
-	UserDTO userDTO;
+	DTO userDTO;
 	DAO dao;
 	produceKey produceKey;
 	PeerModel peerModel;
@@ -38,7 +38,7 @@ public class JoinController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
-		userDTO = new UserDTO();
+		userDTO = new DTO();
 		dao = new DAO();
 		produceKey = new produceKey(); //privateKey와 publicKey 생성을 위한 Model
 		peerModel = new PeerModel(); // P2P 통신 모델

@@ -7,7 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+//Peer 중첩클래스 끝낸 후 리더 선출 작업 손보기
+//block 넘버도 손 보기
 //C:\Users\USER\ProjectForGraduation\BlockChain_v2.9
 
 public class Main extends Application {

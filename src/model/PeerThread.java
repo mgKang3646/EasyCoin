@@ -7,9 +7,7 @@ import java.io.StringWriter;
 import java.net.Socket;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.json.Json;
@@ -25,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.PeerModel.Peer;
 
 public class PeerThread extends Thread {
 
@@ -238,19 +237,24 @@ public class PeerThread extends Thread {
 					//트랜잭션생성
 					Transaction newTransaction = new Transaction(sender,recipient,value);
 					newTransaction.setSignature(signature);
+					
 					//전자서명 검증에 성공하면 UTXO 체크하기 
 					if(newTransaction.verifySignature()) {
+						TransactionOutput UTXO = new TransactionOutput(recipient,value);
+						peerModel.UTXOs.add(UTXO);
+						/*
 						StringWriter sw = new StringWriter();
 						Json.createWriter(sw).writeObject(Json.createObjectBuilder()
 																.add("RequestUTXO", "")
 																.add("sender",Base64.toBase64String(sender.getEncoded()))
 																.build());
-						//peerModel.getServerListerner().sendMessage(sw.toString());
+						//peerModel.getServerListerner().sendMessage(sw.toString());*/
 					}
 				}
 				
 				//UTXO 요청
 				if(jsonObject.containsKey("requestUTXO")) {
+					System.out.println("UTXO요청 잘 들어옴");
 					byte[] byteOwner = Base64.decode(jsonObject.getString("owner"));
 					X509EncodedKeySpec spec = new X509EncodedKeySpec(byteOwner);
 					KeyFactory factory = KeyFactory.getInstance("ECDSA","BC");
@@ -269,15 +273,19 @@ public class PeerThread extends Thread {
 						}
 					}
 				}
-				
-				
-				
-				
-				
+				//상대방의 연결이 끊겼을시 대응
 			} catch (Exception e) {
-				// TODO: handle exception
-				flag = false;
-				interrupt();
+				try {
+					for(Peer peer : peerModel.peerList) {
+						if(peer.getPeerThread() == PeerThread.this) {
+							peerModel.peerList.remove(peer);
+							break;
+						}
+					}
+					socket.close();
+					flag=false;
+
+				} catch (IOException e1) { e1.printStackTrace();}
 			}
 		}
 	}
@@ -287,6 +295,7 @@ public class PeerThread extends Thread {
 		StringWriter sW = new StringWriter();
 		Json.createWriter(sW).writeObject(Json.createObjectBuilder()
 											.add("localhost", localhost)
+											.add("username",peerModel.walletModel.getUsername())
 											.build());
 		printWriter.println(sW);	
 	}

@@ -34,18 +34,21 @@ public class DAO {
 	}
 	
 	// P2P 네트워크 연동을 위한 DB 안 host 주소 
-	public ArrayList<String> getPeersLocalhost() {
-		ArrayList<String> peers = new ArrayList<String>(); // DB안에 있는 PEER들 주소를 담을 리스트
+	public ArrayList<DTO> getPeers() {
+		ArrayList<DTO> peers = new ArrayList<DTO>(); // DB안에 있는 PEER들 주소를 담을 리스트
 
 		try {
 			
-			String SQL = "SELECT localhost From PEERTABLE";
+			String SQL = "SELECT * From PEERTABLE";
 			Connection conn = util.DatabaseUtil.getConnection();
 			PreparedStatement pstmt;
 			pstmt = conn.prepareStatement(SQL);
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()) { // ResultSet은 일반적인 set가 조금 다르다.
-				peers.add(rs.getString("localhost"));
+				DTO dto = new DTO();
+				dto.setLocalhost(rs.getString("localhost"));
+				dto.setUsername(rs.getString("username"));
+				peers.add(dto);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

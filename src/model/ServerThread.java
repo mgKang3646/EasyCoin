@@ -1,6 +1,7 @@
 package model;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+
+import model.PeerModel.Peer;
 
 public class ServerThread extends Thread {
 
@@ -37,16 +40,21 @@ public class ServerThread extends Thread {
 				JsonObject jsonObject = Json.createReader(bufferedReader).readObject();
 				// PeerThread 연결 요청이 들어온 경우
 				if(jsonObject.containsKey("localhost")) {
-					System.out.println("연결 요청 : "	+ jsonObject.toString());
 					String hostAddress = jsonObject.getString("localhost");
+					String username = jsonObject.getString("username");
 					String[] address = hostAddress.split(":");
 					
 					Socket newSocket = new Socket(InetAddress.getByName(address[0]),Integer.valueOf(address[1]));
 					//////////////////////////////////////////blocking///////////////////////////////////////////
 					
 					PeerThread peerThread = new PeerThread(newSocket,peerModel);
+					peerModel.peerList.add(new Peer(username, hostAddress,peerThread));
 					peerThread.start();
 					
+					System.out.println("연결 완료");
+					System.out.println(peerModel.peerList.get(peerModel.peerList.size()-1).toString());
+					
+					System.out.println("리더여부 : "+ peerModel.amILeader);
 					//연결 요청이 들어온 Peer에게 자신이 리더임을 알리기
 					if(peerModel.amILeader) {
 						StringWriter sw = new StringWriter();
@@ -56,7 +64,6 @@ public class ServerThread extends Thread {
 														.build());
 						printWriter.println(sw);
 					}
-					
 				}
 				// 새로 P2P에 참여한 PEER가 자신보다 블럭개수가 많은 경우 리더지위 내려놓기
 				if(jsonObject.containsKey("biggerThanYou")) {
@@ -103,6 +110,7 @@ public class ServerThread extends Thread {
 				
 				//요청한 UTXO 받기
 				if(jsonObject.containsKey("responseUTXO")) {
+					System.out.println("결과 잘 받았음");
 					float value = Float.parseFloat(jsonObject.getString("value"));  
 					TransactionOutput UTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),value);
 					peerModel.walletModel.getUTXOWallet().add(UTXO);
@@ -110,12 +118,13 @@ public class ServerThread extends Thread {
 				
 				
 			}
-			// 
+			// 상대방 연결이 끊겼을 시 대응
 		} catch (Exception e) {
-			// TODO: handle exception
-			flag = false;
-			serverListener.getServerThreadThreads().remove(this);
-			interrupt();
+			try {
+				flag = false;
+				serverListener.getServerThreadThreads().remove(this);
+				socket.close();
+			} catch (IOException e1) {e1.printStackTrace();}	
 		}
 	}
 	

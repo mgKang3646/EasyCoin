@@ -1,8 +1,13 @@
 package controller;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javax.json.Json;
+
+import org.bouncycastle.util.encoders.Base64;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -16,6 +21,7 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import model.BlockchainModel;
 import model.PeerModel;
+import model.PeerModel.Peer;
 import model.WalletModel;
 
 public class NetProgressController implements Initializable {
@@ -79,11 +85,12 @@ public class NetProgressController implements Initializable {
 						
 						//DB에 있는 서버리스너 주소와 연결될 Peer스레드'들' 생성
 						for(int i =0; i<totalPeer;i++) {
-							int connectResult = peerModel.connectToPeerInDB(i, peerModel.peers.get(i));
+							int connectResult = peerModel.connectToPeerInDB(i, peerModel.dtos.get(i).getLocalhost());
 							// 연결 성공한 경우 
 							if(connectResult == 1) {
+								
 								progress += amountOfProgress;
-								address = peerModel.peers.get(i);
+								address =  peerModel.dtos.get(i).getLocalhost();
 								Platform.runLater(()->{
 									progressBar.setProgress(progress);
 									progressLabel.setText("P2P망 접속중("+Math.round(progress*100)+"%)");
@@ -92,7 +99,7 @@ public class NetProgressController implements Initializable {
 							//연결 실패한 경우
 							}else if(connectResult == -1) {
 								progress += amountOfProgress;
-								address = peerModel.peers.get(i);
+								address =  peerModel.dtos.get(i).getLocalhost();
 								Platform.runLater(()->{
 									progressBar.setProgress(progress);
 									progressLabel.setText("P2P망 접속중("+Math.round(progress*100)+"%)");
@@ -102,7 +109,30 @@ public class NetProgressController implements Initializable {
 						}	
 					}
 					
-					// 마지막 100% 만들기
+					Thread.sleep(500); 
+
+					//3.UTXO value 받아오기
+					
+					//지갑 안에 UTXO저장소 만들기
+					peerModel.walletModel.makeUTXOWallet();
+					
+					//UTXO 요청하기
+					StringWriter sw = new StringWriter();
+					Json.createWriter(sw).writeObject(Json.createObjectBuilder()
+															.add("requestUTXO", "")
+															.add("owner", Base64.toBase64String(peerModel.walletModel.getPublicKey().getEncoded()))
+															.build());
+					
+					peerModel.getServerListerner().sendMessage(sw.toString());
+					
+					//본인 UTXOs에 자신의 publickey를 가진 UTXO가 있는지 확인하기 
+					for(int i=0; i<peerModel.UTXOs.size();i++) {
+						if(peerModel.walletModel.getPublicKey()==peerModel.UTXOs.get(i).recipient) {
+							peerModel.walletModel.getUTXOWallet().add(peerModel.UTXOs.get(i));
+						}
+					}
+					
+					//4. 마지막 100% 만들기
 					Platform.runLater(()->{
 						progressBar.setProgress(1);
 						progressLabel.setText("P2P망 접속중(100%)");
@@ -111,7 +141,7 @@ public class NetProgressController implements Initializable {
 					
 					Thread.sleep(1000); //100% 보여주기위해 잠시 쉬어주기
 					
-					//3. 개인키 받기 페이지로 넘어가기
+					//5. 개인키 받기 페이지로 넘어가기
 					// index 화면으로 전환
 					
 					if(whosCall.equals("join")) {
