@@ -4,6 +4,7 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.animation.RotateTransition;
@@ -11,11 +12,14 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.PeerModel;
 
@@ -27,6 +31,8 @@ public class MiningController implements Initializable {
 	@FXML private Circle c1;
 	@FXML private Circle c2;
 	private PeerModel peerModel;
+	RotateTransition rt1 = new RotateTransition();
+	RotateTransition rt2 = new RotateTransition();
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -35,13 +41,19 @@ public class MiningController implements Initializable {
 		c2.setFill(new ImagePattern(image));
 	}
 	
+	public Button getMiningStartButton() {
+		return miningStartButton;
+	}
+	
 	public void miningStart() throws IOException, InterruptedException {
 		miningStartButton.setText("채굴 중...");	
-	
-		setRotate(c1,true,270,10);
-		setRotate(c2,true,180, 5);
+
+		rt1 = setRotate(c1,true,270,10);
+		rt2 = setRotate(c2,true,180, 5);
 		
-			
+		rt1.play();
+		rt2.play();
+	
 		peerModel.proofOfWorkCompleteFlag = false; // 아직 다른 상대가 채굴을 완료하지 않음.
 		peerModel.miningFlag = true; // 본인 Peer은 채굴ON! 채굴이 완료되면 false로 바뀜
 		
@@ -76,12 +88,19 @@ public class MiningController implements Initializable {
 						Platform.runLater(new Runnable() {
 							public void run() {
 								try {
-									blockContent.getChildren().clear();
 									peerModel.proofOfWorkCompleteFlag = true;
+									rt1.stop(); //회전 종료
+									rt2.stop(); //회전 종료
 									FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/miningVerify.fxml"));
-									blockContent.getChildren().add(loader.load());
-									MiningVerifyController bc = loader.getController();
-									bc.miningSuccess(peerModel.block);
+									Parent root = loader.load();
+									Scene scene = new Scene(root);
+									Stage verifyStage = new Stage();
+									verifyStage.setScene(scene);
+									verifyStage.setX(peerModel.primaryStage.getX()+320);
+									verifyStage.setY(peerModel.primaryStage.getY());
+									MiningVerifyController mvc = loader.getController();
+									mvc.miningSuccess(peerModel.block);
+									verifyStage.show();
 								
 								} catch (IOException e) {e.printStackTrace();}
 							}
@@ -90,13 +109,20 @@ public class MiningController implements Initializable {
 						Platform.runLater(new Runnable() {
 							public void run() {
 							try {
-								blockContent.getChildren().clear();
 								peerModel.proofOfWorkCompleteFlag = true;
+								rt1.stop(); //회전 종료
+								rt2.stop(); //회전 종료
 								FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/miningVerify.fxml"));
-								blockContent.getChildren().add(loader.load());
-								MiningVerifyController bc = loader.getController();
-								bc.resultOfVerify(peerModel.block);	
-							
+								Parent root = loader.load();
+								Scene scene = new Scene(root);
+								Stage verifyStage = new Stage();
+								verifyStage.setScene(scene);
+								verifyStage.setX(peerModel.primaryStage.getX()+320);
+								verifyStage.setY(peerModel.primaryStage.getY());
+								MiningVerifyController mvc = loader.getController();
+								mvc.resultOfVerify(peerModel.block);	
+								verifyStage.show();
+
 							} catch (IOException e) {e.printStackTrace();}	
 						}
 					});	
@@ -106,13 +132,20 @@ public class MiningController implements Initializable {
 				Platform.runLater(new Runnable() {
 					public void run() {
 					try {
-						blockContent.getChildren().clear();
 						peerModel.proofOfWorkCompleteFlag = true;
+						rt1.stop(); //회전 종료
+						rt2.stop(); //회전 종료
 						FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/miningVerify.fxml"));
-						blockContent.getChildren().add(loader.load());
-						MiningVerifyController bc = loader.getController();
-						bc.failedVerify(peerModel.block);	
-					
+						Parent root = loader.load();
+						Scene scene = new Scene(root);
+						Stage verifyStage = new Stage();
+						verifyStage.setScene(scene);
+						verifyStage.setX(peerModel.primaryStage.getX()+320);
+						verifyStage.setY(peerModel.primaryStage.getY());
+						MiningVerifyController mvc = loader.getController();
+						mvc.failedVerify(peerModel.block);	
+						verifyStage.show();
+
 					} catch (IOException e) {e.printStackTrace();}	
 				}
 			});	
@@ -124,14 +157,15 @@ public class MiningController implements Initializable {
 		}	
 	}
 	
-	public void setRotate(Circle c, boolean reverse, int angle,int duration) {
+	public RotateTransition setRotate(Circle c, boolean reverse, int angle,int duration) {
 		RotateTransition rt = new RotateTransition(Duration.seconds(duration),c);
 		
 		rt.setAutoReverse(reverse);
 		rt.setByAngle(angle);
 		rt.setRate(3);
 		rt.setCycleCount(18);
-		rt.play();
+		
+		return rt;
 	}
 	
 	public void setPeerModel(PeerModel peerModel) {

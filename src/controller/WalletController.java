@@ -1,8 +1,14 @@
 package controller;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
+
+import javax.json.Json;
+
+import org.bouncycastle.util.encoders.Base64;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.PeerModel;
+import model.TransactionOutput;
 
 public class WalletController implements Initializable{
 
@@ -27,9 +34,13 @@ public class WalletController implements Initializable{
 	
 	public void setPeerModel(PeerModel peerModel) {
 		this.peerModel = peerModel;
+		//잔액 계산하기
+		balanceTextField.setText(getBalance()+"");
 	}
 	
+	//송금하기
 	public void wire() throws IOException {
+		
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/wire.fxml"));
 		Parent root = loader.load();
 		WireController wc = loader.getController();
@@ -43,7 +54,14 @@ public class WalletController implements Initializable{
 		stage.show();
 		
 	}
-
-
 	
+	// 잔액 산출하기
+	public float getBalance() {
+			float total=0;
+			for(TransactionOutput UTXO : peerModel.walletModel.getUTXOWallet()) {
+				total += UTXO.value;
+			}
+			return total;	
+	}
+		
 }

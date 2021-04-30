@@ -2,11 +2,18 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
+
+import javax.json.Json;
+
+import org.bouncycastle.util.encoders.Base64;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,6 +25,8 @@ import javafx.stage.Stage;
 import model.PeerModel;
 import model.ReadPemFile;
 import model.Transaction;
+import model.TransactionInput;
+import model.TransactionOutput;
 
 public class WireController implements Initializable{
 
@@ -48,12 +57,28 @@ public class WireController implements Initializable{
 		checkvalue.setVisible(false);
 
 		try {
+			//송금액
 			float value = Float.parseFloat(valueTextField.getText());
 			
 			//트랜잭션 생성
 			if(value >= 0.05) {
+				
+				//트랜잭션 생성
 				Transaction newTransaction = new Transaction(sender,recipient,value); // 트랜잭션 생성
 				newTransaction.generateSignature(peerModel.walletModel.getPrivateKey()); //전자서명 생성
+				
+				//임시 트랜잭션 전송하기
+				StringWriter sw = new StringWriter();
+				
+				Json.createWriter(sw).writeObject(Json.createObjectBuilder()
+														.add("sender", Base64.toBase64String(sender.getEncoded()))															
+														.add("recipient",Base64.toBase64String(recipient.getEncoded()))
+														.add("value", value+"")
+														.add("signature", Base64.toBase64String(newTransaction.signature))
+														.build());
+				
+				peerModel.getServerListerner().sendMessage(sw.toString());
+			
 			}
 			
 			//입금액이 0.05 미만인 경우

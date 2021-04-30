@@ -1,6 +1,7 @@
 package model;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+
+import model.PeerModel.Peer;
 
 public class ServerThread extends Thread {
 
@@ -37,15 +40,21 @@ public class ServerThread extends Thread {
 				JsonObject jsonObject = Json.createReader(bufferedReader).readObject();
 				// PeerThread 연결 요청이 들어온 경우
 				if(jsonObject.containsKey("localhost")) {
-					System.out.println("연결 요청 : "	+ jsonObject.toString());
 					String hostAddress = jsonObject.getString("localhost");
+					String username = jsonObject.getString("username");
 					String[] address = hostAddress.split(":");
 					
 					Socket newSocket = new Socket(InetAddress.getByName(address[0]),Integer.valueOf(address[1]));
 					//////////////////////////////////////////blocking///////////////////////////////////////////
 					
 					PeerThread peerThread = new PeerThread(newSocket,peerModel);
+					peerThread.setPeer(new Peer(username, hostAddress,peerThread));
+					peerModel.peerList.add(peerThread.getPeer());
 					peerThread.start();
+					
+					System.out.println("연결 완료");
+					System.out.println(peerModel.peerList.get(peerModel.peerList.size()-1).toString());
+					System.out.println("리더여부 : "+ peerModel.amILeader);
 					
 					//연결 요청이 들어온 Peer에게 자신이 리더임을 알리기
 					if(peerModel.amILeader) {
@@ -56,13 +65,8 @@ public class ServerThread extends Thread {
 														.build());
 						printWriter.println(sw);
 					}
-					
 				}
-				// 새로 P2P에 참여한 PEER가 자신보다 블럭개수가 많은 경우 리더지위 내려놓기
-				if(jsonObject.containsKey("biggerThanYou")) {
-					System.out.println("너가 나보다 더 크구나!");
-					peerModel.amILeader = false;
-				}
+				
 				// 블럭 제공 요청이 들어온 경우
 				if(jsonObject.containsKey("blockNum")) {
 					ArrayList<Block> blocks = peerModel.blockchainModel.getBlocks();
@@ -96,19 +100,42 @@ public class ServerThread extends Thread {
 							Thread.sleep(500);
 					}
 				}
-				//자신이 리더임을 인정하는 flag
-				if(jsonObject.containsKey("leader")) {
+				
+				//채굴 후 합의 결과 리더임을 알리는 json 메세지
+				if(jsonObject.containsKey("miningLeader")) {
 						peerModel.amILeader = true;
+						peerModel.initializeLeader();
+				}
+				
+				// 새로 P2P에 참여한 PEER가 자신보다 블럭개수가 많은 경우 리더지위 내려놓기
+				if(jsonObject.containsKey("biggerThanYou")) {					
+					for(Peer peer : peerModel.peerList) {
+						if(jsonObject.getString("username").equals(peer.getUserName())){
+							peer.setLeader(true);
+							peerModel.amILeader = false;
+							System.out.println(peer.getUserName()+"이 리더로 선출(biggerThanYou)");
+						}
+						peer.setLeader(false); // 리더가 아닌 친구들은 fasle로 설정
+					}	
+				}
+				
+				//요청한 UTXO 받기
+				if(jsonObject.containsKey("responseUTXO")) {
+					System.out.println("결과 잘 받았음");
+					float value = Float.parseFloat(jsonObject.getString("value"));  
+					TransactionOutput UTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),value);
+					peerModel.walletModel.getUTXOWallet().add(UTXO);
 				}
 				
 				
 			}
-			// 
+			// 상대방 연결이 끊겼을 시 대응
 		} catch (Exception e) {
-			// TODO: handle exception
-			flag = false;
-			serverListener.getServerThreadThreads().remove(this);
-			interrupt();
+			try {
+				flag = false;
+				serverListener.getServerThreadThreads().remove(this);
+				socket.close();
+			} catch (IOException e1) {e1.printStackTrace();}	
 		}
 	}
 	

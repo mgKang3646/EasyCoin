@@ -5,12 +5,16 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.bouncycastle.util.encoders.Base64;
 
 import controller.MiningVerifyController;
 import database.DAO;
@@ -19,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.PeerModel.Peer;
 
 public class PeerThread extends Thread {
 
@@ -29,9 +34,11 @@ public class PeerThread extends Thread {
 	private String hostAddress = null;
 	private Socket socket = null;
 	private PeerModel peerModel;
+	private Peer peer;
 	PrintWriter printWriter;
 	private DAO dao = null;
-	private int requestCount = 0;
+	
+	
 	
 
 	public PeerThread(Socket socket, PeerModel peerModel) throws IOException{
@@ -88,6 +95,7 @@ public class PeerThread extends Thread {
 					// 임시 블럭 미리 생성해놓기
 					Block.count++; //블럭넘버 1 증가시키기
 					peerModel.block = new Block(previousHash,nonce,timestamp,Block.count);
+					System.out.println("검증 완료 Block 카운트 : "+Block.count);
 					
 					if(!peerModel.proofOfWorkCompleteFlag) peerModel.proofOfWorkCompleteFlag = true;	// 현재 채굴 중이라면
 					else { // 현재 채굴중이 아니라면
@@ -101,22 +109,16 @@ public class PeerThread extends Thread {
 												try {
 													peerModel.proofOfWorkCompleteFlag = true;
 													FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/miningVerify.fxml"));
-													
 													Parent root = loader.load();
-													root.minWidth(350);
-													root.maxWidth(350);
-													root.prefWidth(350);
-													
 													Scene scene = new Scene(root);
 													Stage stage = new Stage();
 													stage.setScene(scene);
-											
 													stage.setX(peerModel.primaryStage.getX()+320);
 													stage.setY(peerModel.primaryStage.getY());
 													stage.show();
 													
-													MiningVerifyController bc = loader.getController();
-													bc.resultOfVerify(peerModel.block);	
+													MiningVerifyController mvc = loader.getController();
+													mvc.resultOfVerify(peerModel.block);	
 													
 												} catch (IOException e) {e.printStackTrace();}
 											});
@@ -126,9 +128,6 @@ public class PeerThread extends Thread {
 													peerModel.proofOfWorkCompleteFlag = true;
 													FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/miningVerify.fxml"));
 													Parent root = loader.load();
-													root.minWidth(350);
-													root.maxWidth(350);
-													root.prefWidth(350);
 													Scene scene = new Scene(root);
 													Stage stage = new Stage();
 													stage.setScene(scene);
@@ -136,8 +135,8 @@ public class PeerThread extends Thread {
 													stage.setY(peerModel.primaryStage.getY());
 													stage.show();
 													
-													MiningVerifyController bc = loader.getController();
-													bc.failedVerify(peerModel.block);	
+													MiningVerifyController mvc = loader.getController();
+													mvc.failedVerify(peerModel.block);	
 													
 												} catch (IOException e) {e.printStackTrace();}
 											});
@@ -158,11 +157,11 @@ public class PeerThread extends Thread {
 						peerModel.totalRespondedCount++; // 다른 Peer 추가 
 						if(jsonObject.getString("verified").equals("true")){ // 검증 성공이면 true
 							System.out.println(hostAddress +":"+this.getPort()+ "의 검증여부 : true");
-							peerModel.peerBlockNums.put(this, jsonObject.getInt("blockNum")); // HashMap에 해당Peer와 연결된 PeerThread와 블럭 넘버를 저장
+							peer.setBlockNum(jsonObject.getInt("blockNum")); 
 							peerModel.verifiedPeerCount++;
 						}else { 
 							System.out.println(hostAddress +":"+this.getPort() + "의 검증여부 : false"); 
-							peerModel.peerBlockNums.put(this, jsonObject.getInt("blockNum")); // HashMap에 해당Peer와 연결된 PeerThread와 블럭 넘버를 저장
+							peer.setBlockNum(jsonObject.getInt("blockNum")); 
 							}		
 				}
 				//블록 요청 후 리더 Peer로부터 블럭 받기
@@ -180,23 +179,23 @@ public class PeerThread extends Thread {
 						dao.storeBlock(peerModel.block,peerModel.walletModel.getUsername());
 						
 					}else { //검증이 실패하여 처음부터 받는 경우
-						if(peerModel.isFirstResponse) {// json request의 반응(response)이 처음 들어오는 경우
+						if(peerModel.isFirst) {
 							Block.count = 0; 
 							dao.deleteAllBlock(peerModel.walletModel.getUsername());
 							peerModel.blockchainModel.resetBlocks().add(new Block(previousHash,nonce,timestamp,Block.count)); // 새로운 블록체인에 정리
-							peerModel.isFirstResponse = false;
+							peerModel.isFirst = false; // 다음부터는 0이 아닌 연달아 받기
 						}else {
 							Block.count++;
 							peerModel.block = new Block(previousHash,nonce,timestamp,Block.count);
 							peerModel.blockchainModel.getBlocks().add(new Block(previousHash,nonce,timestamp,Block.count));
-							dao.storeBlock(peerModel.block, peerModel.walletModel.getUsername());
+							dao.storeBlock(peerModel.block,peerModel.walletModel.getUsername());
 						}
 					}
 				}
 				//본인이 리더라고 알리는 Peer와 연결된 PeerThread를 PeerModel 변수에 저장
 				if(jsonObject.containsKey("leader")) {
 					if(jsonObject.getInt("leaderBlockNum") > Block.count) {
-						peerModel.threadForLeaderPeer = this; 
+						peer.setLeader(true); 
 						peerModel.amILeader = false;
 					}else { // 만약 자신이 더 블럭 개수가 많은 경우
 						peerModel.amILeader = true;
@@ -204,14 +203,84 @@ public class PeerThread extends Thread {
 						//자신이 블럭이 더 많다고 알려주기 
 						Json.createWriter(sw).writeObject(Json.createObjectBuilder()
 															.add("biggerThanYou", Block.count)
+															.add("username", peer.getUserName())
 															.build());
 						printWriter.println(sw.toString());
 					}
 				}
+				
+				//거래 트랜잭션이 들어 온 경우
+				if(jsonObject.containsKey("signature")) {
+					
+					//송금자 공개키 획득
+					byte[] byteSender = Base64.decode(jsonObject.getString("sender"));
+					X509EncodedKeySpec spec1 = new X509EncodedKeySpec(byteSender);
+					KeyFactory factory1 = KeyFactory.getInstance("ECDSA","BC");
+					PublicKey sender = factory1.generatePublic(spec1);
+					//수금자 공개키 획득
+					byte[] byteRecipient = Base64.decode(jsonObject.getString("recipient"));
+					X509EncodedKeySpec spec2 = new X509EncodedKeySpec(byteRecipient);
+					KeyFactory factory2 = KeyFactory.getInstance("ECDSA","BC");
+					PublicKey recipient = factory2.generatePublic(spec2);
+					
+					//송금액 획득
+					float value = Float.parseFloat(jsonObject.getString("value"));
+					
+					//전자서명 획득
+					byte[] signature = Base64.decode(jsonObject.getString("signature"));
+					
+					//트랜잭션생성
+					Transaction newTransaction = new Transaction(sender,recipient,value);
+					newTransaction.setSignature(signature);
+					
+					//전자서명 검증에 성공하면 UTXO 체크하기 
+					if(newTransaction.verifySignature()) {
+						TransactionOutput UTXO = new TransactionOutput(recipient,value);
+						peerModel.UTXOs.add(UTXO);
+						/*
+						StringWriter sw = new StringWriter();
+						Json.createWriter(sw).writeObject(Json.createObjectBuilder()
+																.add("RequestUTXO", "")
+																.add("sender",Base64.toBase64String(sender.getEncoded()))
+																.build());
+						//peerModel.getServerListerner().sendMessage(sw.toString());*/
+					}
+				}
+				
+				//UTXO 요청
+				if(jsonObject.containsKey("requestUTXO")) {
+					System.out.println("UTXO요청 잘 들어옴");
+					byte[] byteOwner = Base64.decode(jsonObject.getString("owner"));
+					X509EncodedKeySpec spec = new X509EncodedKeySpec(byteOwner);
+					KeyFactory factory = KeyFactory.getInstance("ECDSA","BC");
+					PublicKey owner = factory.generatePublic(spec);
+					
+					for(int i=0; i<peerModel.UTXOs.size();i++) {
+						TransactionOutput UTXO = peerModel.UTXOs.get(i);
+						if(UTXO.recipient == owner) {
+							StringWriter sw = new StringWriter();
+							Json.createWriter(sw).writeObject(Json.createObjectBuilder()
+																		.add("responseUTXO", "")
+																		.add("value", UTXO.value+"")
+																		.build());
+							printWriter.println(sw.toString());
+							Thread.sleep(100);
+						}
+					}
+				}
+				//상대방의 연결이 끊겼을 경우 peerList에서 제거
 			} catch (Exception e) {
-				// TODO: handle exception
-				flag = false;
-				interrupt();
+				try {
+					for(Peer peer : peerModel.peerList) {
+						if(peer.getPeerThread() == PeerThread.this) {
+							peerModel.peerList.remove(peer);
+							break;
+						}
+					}
+					socket.close();
+					flag=false;
+
+				} catch (IOException e1) { e1.printStackTrace();}
 			}
 		}
 	}
@@ -221,6 +290,7 @@ public class PeerThread extends Thread {
 		StringWriter sW = new StringWriter();
 		Json.createWriter(sW).writeObject(Json.createObjectBuilder()
 											.add("localhost", localhost)
+											.add("username",peerModel.walletModel.getUsername())
 											.build());
 		printWriter.println(sW);	
 	}
@@ -248,11 +318,17 @@ public class PeerThread extends Thread {
 	public void sendLeader() {
 		StringWriter sw = new StringWriter();
 		Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-										.add("leader", true)
+										.add("miningLeader", true)
 										.build());
 		printWriter.println(sw.toString());
 	}
 	
+	public Peer getPeer() {
+		return peer;
+	}
+	public void setPeer(Peer peer) {
+		this.peer = peer;
+	}
 	
 	public int getPort() { return this.port;} // 연결된 서버 스레드 스레드의 포트 반환
 	public String getHostAddress() { return this.hostAddress;} // 연결된 서버 스레드 스레드의 주소 반환
