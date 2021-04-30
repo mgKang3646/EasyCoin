@@ -5,46 +5,105 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="910.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.IndexController">
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.IndexController">
    <content>
-      <BorderPane prefHeight="514.0" prefWidth="909.0">
+      <BorderPane prefHeight="520.0" prefWidth="900.0">
          <top>
-            <Pane prefHeight="81.0" prefWidth="910.0" BorderPane.alignment="CENTER">
+            <Pane prefHeight="100.0" prefWidth="900.0" BorderPane.alignment="CENTER">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#5692fa" height="87.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="910.0" />
-                  <Label layoutX="30.0" layoutY="20.0" text="Easy Coin" textFill="WHITE">
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="LIGHTSKYBLUE" height="100.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="900.0" />
+                  <Label layoutX="14.0" layoutY="28.0" text="Easy Coin" textFill="WHITE">
                      <font>
                         <Font size="36.0" />
                      </font>
                   </Label>
-                  <Label layoutX="659.0" layoutY="27.0" text="ID :  " textFill="WHITE">
+                  <Label layoutX="648.0" layoutY="29.0" prefHeight="36.0" text="ID :  " textFill="WHITE">
                      <font>
                         <Font size="23.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="idText" layoutX="707.0" layoutY="31.0" prefHeight="22.0" prefWidth="174.0" />
-                  <Button fx:id="upgradeButton" layoutX="199.0" layoutY="21.0" mnemonicParsing="false" onAction="#doUpgrade" prefHeight="46.0" prefWidth="56.0" text="최신화" />
+                  <TextField fx:id="idText" layoutX="697.0" layoutY="29.0" prefHeight="36.0" prefWidth="174.0" />
+                  
+                  <Button fx:id="upgradeButton" layoutX="178.0" layoutY="33.0" onAction="#doUpgrade" style="-fx-background-color: lightskyblue;">
+                     <graphic>
+                        <ImageView fitHeight="26.0" fitWidth="77.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="/image/refresh.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               
                </children>
             </Pane>
          </top>
          <left>
-            <Pane prefHeight="520.0" prefWidth="181.0" BorderPane.alignment="CENTER">
+            <Pane prefHeight="420.0" prefWidth="180.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
                <children>
-                <Button fx:id="blockchainButton" layoutX="16.0" layoutY="38.0" mnemonicParsing="false" onAction="#blockchainHandler" prefHeight="45.0" prefWidth="150.0" text="블록체인" />
-                  <Button fx:id="miningButton" layoutX="16.0" layoutY="112.0" mnemonicParsing="false" onAction="#miningHandler" prefHeight="45.0" prefWidth="150.0" text="채굴" />
-                  <Button layoutX="16.0" layoutY="186.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="연결상태" />
-                  <Button fx:id = "walletButton" layoutX="16.0" layoutY="259.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="지갑" onAction ="#walletHandler" />
+                  <BorderPane prefHeight="420.0" prefWidth="180.0">
+                     <center>
+                        <VBox prefHeight="350.0" prefWidth="180.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Button fx:id="blockchainButton" mnemonicParsing="false" onAction="#blockchainHandler" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;" VBox.vgrow="NEVER">
+                                 <graphic>
+                                    <ImageView fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="/image/blockchain.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Pane prefHeight="30.0" prefWidth="180.0" />
+                              <Button fx:id="miningButton" mnemonicParsing="false" onAction="#miningHandler" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;">
+                                 <graphic>
+                                    <ImageView fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="/image/minning.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+                              <Pane prefHeight="30.0" prefWidth="180.0" />
+                              <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;">
+                                 <graphic>
+                                    <ImageView fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="/image/link.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+                              <Pane prefHeight="30.0" prefWidth="180.0" />
+                              <Button fx:id="walletButton" mnemonicParsing="false" onAction="#walletHandler" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;">
+                                 <graphic>
+                                    <ImageView fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="/image/wallet.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+                           </children>
+                        </VBox>
+                     </center>
+                     <top>
+                        <Pane prefHeight="40.0" prefWidth="180.0" BorderPane.alignment="CENTER" />
+                     </top>
+                     <bottom>
+                        <Pane prefHeight="35.0" prefWidth="180.0" BorderPane.alignment="CENTER" />
+                     </bottom>
+                  </BorderPane>
                </children>
             </Pane>
          </left>
          <center>
-            <HBox fx:id="content" maxHeight="580.0" minHeight="580.0" prefHeight="580.0" prefWidth="781.0" BorderPane.alignment="CENTER">
+            <HBox fx:id="content" maxHeight="520.0" minHeight="520.0" prefHeight="520.0" prefWidth="800.0" BorderPane.alignment="CENTER">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding></HBox>

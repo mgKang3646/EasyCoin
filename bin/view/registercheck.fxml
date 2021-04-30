@@ -14,10 +14,10 @@
          <children>
             <StackPane layoutY="3.0" prefHeight="170.0" prefWidth="478.0">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a6bacd" height="132.0" stroke="BLACK" strokeType="INSIDE" width="428.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b4d4e2" height="132.0" stroke="BLACK" strokeType="INSIDE" width="428.0" />
                   <Label prefHeight="42.0" prefWidth="378.0" text="해당 주소는 이미 등록되어 있습니다." textFill="#c51010">
                      <font>
-                        <Font size="23.0" />
+                        <Font name="System Bold" size="23.0" />
                      </font>
                   </Label>
                </children>

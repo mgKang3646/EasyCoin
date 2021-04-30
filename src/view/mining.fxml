@@ -9,16 +9,16 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="420.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MiningController">
+<AnchorPane prefHeight="420.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MiningController">
    <children>
-      <Pane fx:id="blockContent" layoutX="-1.0" prefHeight="420.0" prefWidth="662.0">
+      <Pane fx:id="blockContent" layoutX="-1.0" prefHeight="420.0" prefWidth="600.0">
          <children>
-            <Button fx:id="miningStartButton" layoutX="220.0" layoutY="343.0" mnemonicParsing="false" onAction="#miningStart" prefHeight="50.0" prefWidth="303.0" text="채굴시작">
+            <Button fx:id="miningStartButton" layoutX="149.0" layoutY="346.0" mnemonicParsing="false" onAction="#miningStart" prefHeight="50.0" prefWidth="303.0" text="채굴시작">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
-            <Circle fx:id="c1" fill="#1f93ff00" layoutX="371.0" layoutY="170.0" radius="138.0" strokeType="INSIDE" strokeWidth="12.0" style="-fx-stroke-dash-array: 55;">
+            <Circle fx:id="c1" fill="#1f93ff00" layoutX="300.0" layoutY="180.0" radius="138.0" strokeType="INSIDE" strokeWidth="12.0" style="-fx-stroke-dash-array: 55;">
                <stroke>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -41,7 +41,7 @@
                   </LinearGradient>
                </stroke>
             </Circle>
-            <Circle fx:id="c2" fill="#1f93ff00" layoutX="372.0" layoutY="170.0" radius="99.0" strokeType="INSIDE" strokeWidth="10.0" style="-fx-stroke-dash-array: 62;">
+            <Circle fx:id="c2" fill="#1f93ff00" layoutX="300.0" layoutY="180.0" radius="99.0" strokeType="INSIDE" strokeWidth="10.0" style="-fx-stroke-dash-array: 62;">
                <stroke>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
