@@ -48,13 +48,14 @@ public class ServerThread extends Thread {
 					//////////////////////////////////////////blocking///////////////////////////////////////////
 					
 					PeerThread peerThread = new PeerThread(newSocket,peerModel);
-					peerModel.peerList.add(new Peer(username, hostAddress,peerThread));
+					peerThread.setPeer(new Peer(username, hostAddress,peerThread));
+					peerModel.peerList.add(peerThread.getPeer());
 					peerThread.start();
 					
 					System.out.println("연결 완료");
 					System.out.println(peerModel.peerList.get(peerModel.peerList.size()-1).toString());
-					
 					System.out.println("리더여부 : "+ peerModel.amILeader);
+					
 					//연결 요청이 들어온 Peer에게 자신이 리더임을 알리기
 					if(peerModel.amILeader) {
 						StringWriter sw = new StringWriter();
@@ -65,11 +66,7 @@ public class ServerThread extends Thread {
 						printWriter.println(sw);
 					}
 				}
-				// 새로 P2P에 참여한 PEER가 자신보다 블럭개수가 많은 경우 리더지위 내려놓기
-				if(jsonObject.containsKey("biggerThanYou")) {
-					System.out.println("너가 나보다 더 크구나!");
-					peerModel.amILeader = false;
-				}
+				
 				// 블럭 제공 요청이 들어온 경우
 				if(jsonObject.containsKey("blockNum")) {
 					ArrayList<Block> blocks = peerModel.blockchainModel.getBlocks();
@@ -103,9 +100,23 @@ public class ServerThread extends Thread {
 							Thread.sleep(500);
 					}
 				}
-				//자신이 리더임을 인정하는 flag
-				if(jsonObject.containsKey("leader")) {
+				
+				//채굴 후 합의 결과 리더임을 알리는 json 메세지
+				if(jsonObject.containsKey("miningLeader")) {
 						peerModel.amILeader = true;
+						peerModel.initializeLeader();
+				}
+				
+				// 새로 P2P에 참여한 PEER가 자신보다 블럭개수가 많은 경우 리더지위 내려놓기
+				if(jsonObject.containsKey("biggerThanYou")) {					
+					for(Peer peer : peerModel.peerList) {
+						if(jsonObject.getString("username").equals(peer.getUserName())){
+							peer.setLeader(true);
+							peerModel.amILeader = false;
+							System.out.println(peer.getUserName()+"이 리더로 선출(biggerThanYou)");
+						}
+						peer.setLeader(false); // 리더가 아닌 친구들은 fasle로 설정
+					}	
 				}
 				
 				//요청한 UTXO 받기

@@ -8,9 +8,6 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.json.Json;
@@ -19,6 +16,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import database.DAO;
 import database.DTO;
+import javafx.application.Platform;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 
@@ -36,12 +35,11 @@ public class PeerModel {
 	public double totalRespondedCount = 0; // 블럭 검증 결과를 전송한 Peer의 개수
 	double verifiedCutLine = 0.51;
 	double connectedPeersSize; // 본인포함
-	public HashMap<PeerThread,Integer> peerBlockNums = new HashMap<PeerThread,Integer>(); 
-	public PeerThread threadForLeaderPeer = null;
-	public boolean isFirstResponse = true;
 	public boolean amILeader = false;
 	public boolean miningFlag = false;
 	public Stage primaryStage;
+	public boolean isFirst = true;
+	public Button miningStartButton;
 	
 	public Vector<TransactionOutput> UTXOs = new Vector<TransactionOutput>(); // 스레드 간의 동시접속이 가능한 리스트여서 Vector로 생성
 	public ArrayList<DTO> dtos = new ArrayList<DTO>();
@@ -121,8 +119,10 @@ public class PeerModel {
 							socket.connect(socketAddress);
 							/////////////////////////////blocking////////////////////////////////////////////////
 							
-							PeerThread peerThread= new PeerThread(socket,peerModel);//Peer 스레드 생성
-							peerList.add(new Peer(dtos.get(i).getUsername(),dtos.get(i).getLocalhost(),peerThread));
+							//Peer 스레드 생성
+							PeerThread peerThread= new PeerThread(socket,peerModel);
+							peerThread.setPeer(new Peer(dtos.get(i).getUsername(),dtos.get(i).getLocalhost(),peerThread));
+							peerList.add(peerThread.getPeer());
 							peerThread.start();//Peer스레드 실행
 								
 							peerThread.addressSend("localhost:"+serverListener.getPort());// peerThread가 생성되면 자신의 서버리스너 주소보내기			
@@ -199,6 +199,7 @@ public class PeerModel {
 							// 임시 블럭 미리 생성해놓기
 							Block.count++; //블럭넘버 1 증가시키기
 							peerModel.block = new Block(previousHash,nonce,currentTime,Block.count);
+							System.out.println("채굴 성공 임시 블럭 넘버 : " + Block.count);
 							
 							
 							miningFlag = false;
@@ -207,10 +208,26 @@ public class PeerModel {
 			return hashString;
 	}
 	
+	//MiningStartButton 최신화
+	public void setMiningStartButton(Button miningStartButton) {
+			this.miningStartButton = miningStartButton;
+	}
+	
 	public int verifyBlock() throws InterruptedException {
+		//버튼 변화
+		
+		Platform.runLater(()->{
+			miningStartButton.setDisable(true);
+			miningStartButton.setText("합의 중....");
+		});
+		
 		
 		long start = System.currentTimeMillis();
-		amILeader = false;  // 검증하는 과정에서 모든 Peer는 리더의 지위를 내려놓는다. 
+		
+		// 모든 Peer는 리더의 지위를 내려놓는다. 
+		amILeader = false;  
+		initializeLeader();
+		
 		// 검증시간 5초 기다리기 
 		while(true) {
 			long end = System.currentTimeMillis();
@@ -222,21 +239,27 @@ public class PeerModel {
 		}
 		
 		//리더 Peer 선출하기 
-		if(whoIsLeader() !=null ) {
-			System.out.println("리더 선출 완료 : "+ threadForLeaderPeer.getHostAddress()+":"+threadForLeaderPeer.getPort());
-			threadForLeaderPeer.sendLeader();
-		
+		Peer leaderPeer = whoIsLeader();
+		if( leaderPeer != null ) {
+			System.out.println("리더 선출 완료 : "+ leaderPeer.getUserName());
+			leaderPeer.getPeerThread().sendLeader();
 		}else {
 			System.out.println("내가 리더!");
 		}
 		
+		//합의율 계산하기
 		if(((double)verifiedPeerCount/totalRespondedCount) >= verifiedCutLine) {
 				System.out.println("검증 성공한 Peer 개수 : " + verifiedPeerCount);
 				System.out.println("응답한 Peer 개수 : " + totalRespondedCount);
 				System.out.println("합 의 율 : " + (double)verifiedPeerCount/totalRespondedCount );
+				System.out.println("합읜 성공 Block count : "+ Block.count);
 				applyBlock(); // 임시블럭을 블럭체인에 적용하기
 				verifiedPeerCount=0; //초기화
 				totalRespondedCount = 0; //초기화
+				Platform.runLater(()->{
+					miningStartButton.setDisable(false);
+					miningStartButton.setText("채굴시작");
+				});
 				return 1;
 		}
 		else {
@@ -244,6 +267,11 @@ public class PeerModel {
 				Block.count--; //블럭 생성에 실패한 경우, 블럭 넘버 되돌리기
 				verifiedPeerCount=0; //초기화
 				totalRespondedCount = 0; //초기화
+				System.out.println("합읜 실패 Block count : "+ Block.count);
+				Platform.runLater(()->{
+					miningStartButton.setDisable(false);
+					miningStartButton.setText("채굴시작");
+				});
 				return 2; 
 		}
 	} 
@@ -263,48 +291,72 @@ public class PeerModel {
 		dao.storeBlock(block, walletModel.getUsername());
 	}
 	
-	//리더 블록 선정하기
-	private PeerThread whoIsLeader() {
+	//리더 Peer 선정하기
+	private Peer whoIsLeader() {
 		
-		Set<PeerThread> keySet = peerBlockNums.keySet();
-		Iterator<PeerThread> iterator = keySet.iterator();
+		Peer leaderPeer = null;
 		
-		int biggestNum =0;
-		PeerThread leaderPeer = null;
-		int count =0;
-		
-		while(iterator.hasNext()) {
-			PeerThread pt = iterator.next();
-			if(count ==0) {
-				leaderPeer = pt;
-				biggestNum = peerBlockNums.get(pt);
-			}else {
-				if(peerBlockNums.get(pt) > biggestNum) {
-					biggestNum = peerBlockNums.get(pt);
-					leaderPeer = pt;
+		for(int i =0; i<peerList.size();i++) {
+			if(i==0) leaderPeer = peerList.get(i);
+			else {
+				if(peerList.get(i).getBlockNum() > leaderPeer.getBlockNum()) {
+					leaderPeer = peerList.get(i);
 				}
-			}
+			}	
 		}
 		// 자신의 블럭개수가 더 많거나 혼자 채굴한 경우
-		if(Block.count >= biggestNum || leaderPeer == null) {
+		if(leaderPeer == null || Block.count >= leaderPeer.getBlockNum()) {
 			amILeader = true; // 자기 자신이 리더가 되기
-		}
-			
-		threadForLeaderPeer = leaderPeer; 
-		
-		return leaderPeer;
+			return null;
+		}else {
+			leaderPeer.setLeader(true);
+			return leaderPeer;
+		}				
 	}
+	//리더 설정 초기화하기
+	public void initializeLeader() {
+		for(Peer peer : peerList) {
+			peer.setLeader(false);
+		}
+	}
+	//리더 추출하기
+	public Peer getLeader() {
+		for(Peer peer : peerList) {
+			if(peer.isLeader()) {
+				return peer;
+			}
+		}
+		return null;
+	}
+	
 	
 	public static class Peer{
 		PublicKey publickey = null;
 		PeerThread peerThread = null;
 		String userName = null;
 		String localhost = null;
+		boolean leader = false;	
+		int blockNum = 0;
 		
 		public Peer(String userName, String localhost,PeerThread peerThread) {
 			this.userName = userName;
 			this.localhost = localhost;
 			this.peerThread = peerThread;
+		}
+		
+		public int getBlockNum() {
+			return blockNum;
+		}
+
+		public void setBlockNum(int blockNum) {
+			this.blockNum = blockNum;
+		}
+
+		public boolean isLeader() {
+			return leader;
+		}
+		public void setLeader(boolean leader) {
+			this.leader = leader;
 		}
 		
 		public String getLocalhost() {

@@ -4,13 +4,13 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane maxHeight="580.0" maxWidth="580.0" minHeight="580.0" minWidth="580.0" prefHeight="580.0" prefWidth="580.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/15.0.1" fx:controller="controller.StateConnectionController">
+<AnchorPane maxHeight="580.0" maxWidth="580.0" minHeight="580.0" minWidth="580.0" prefHeight="580.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.StateConnectionController">
    <children>
       <TableView fx:id="connectTable" layoutX="81.0" layoutY="67.0" prefHeight="420.0" prefWidth="400.0">
         <columns>
-          <TableColumn fx:id="connectUsername" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="접속자" />
-          <TableColumn fx:id="connectLocalhost" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="주소" />
+          <TableColumn fx:id="usernameColumn" maxWidth="200.0" minWidth="138.40003204345703" prefWidth="154.39997100830078" text="접속자" />
+          <TableColumn fx:id="localhostColumn" maxWidth="261.5999755859375" minWidth="138.39996337890625" prefWidth="159.20001220703125" text="주소" />
+            <TableColumn fx:id="leaderColumn" prefWidth="86.40008544921875" text="리더" />
         </columns>
       </TableView>
    </children>

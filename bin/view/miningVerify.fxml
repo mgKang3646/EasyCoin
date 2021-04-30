@@ -7,7 +7,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="571.0" maxWidth="780.0" minHeight="571.0" minWidth="780.0" prefHeight="571.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MiningVerifyController">
+<BorderPane maxHeight="571.0" maxWidth="380.0" minHeight="571.0" minWidth="380.0" prefHeight="571.0" prefWidth="380.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MiningVerifyController">
    <top>
       <StackPane prefHeight="74.0" prefWidth="718.0" BorderPane.alignment="CENTER">
          <children>
@@ -21,6 +21,6 @@
       </StackPane>
    </top>
    <center>
-      <HBox fx:id="center" alignment="CENTER" maxHeight="500.0" minHeight="486.0" prefHeight="497.0" prefWidth="355.0" BorderPane.alignment="CENTER" />
+      <HBox fx:id="center" alignment="CENTER" maxHeight="571.0" maxWidth="380.0" minHeight="470.0" minWidth="380.0" prefHeight="470.0" prefWidth="380.0" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

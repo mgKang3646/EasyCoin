@@ -5,11 +5,15 @@ import java.util.ArrayList;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import model.Block;
 import model.PeerModel;
+import model.PeerModel.Peer;
 
 public class IndexController  {
 	
@@ -22,20 +26,24 @@ public class IndexController  {
 	@FXML private Button stateConnectionButton;
 	
 	private PeerModel peerModel;
+	private Parent miningPane;
 	
-	public void setPeerModel(PeerModel peerModel){
+	public void setPeerModel(PeerModel peerModel) throws IOException{
 		this.peerModel = peerModel;
 		idText.setText(this.peerModel.walletModel.getUsername()); // ID 세팅하기
 		idText.setEditable(false); // 수정 못하도록
-	}
-	public void miningHandler() throws IOException {
 		
-		content.getChildren().clear();
-		
+		//채굴 버튼 미리 PeerModel에 저장하기
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/mining.fxml"));
-		content.getChildren().add(loader.load());// 로드가 된 후 Controller 객체를 쓸 수 있다.
+		miningPane = loader.load();
 		MiningController mc= loader.getController();
 		mc.setPeerModel(peerModel);
+		peerModel.setMiningStartButton(mc.getMiningStartButton());
+		
+	}
+	public void miningHandler() throws IOException {
+		content.getChildren().clear();
+		content.getChildren().add(miningPane);
 	}
 	
 	public void blockchainHandler() throws IOException {
@@ -75,16 +83,23 @@ public class IndexController  {
 		
 	}
 	
-	public void doUpgrade() {
+	public void doUpgrade() throws IOException {
+		Peer peer = peerModel.getLeader();
+		peerModel.isFirst = true; // 블록 총 삭제시 필요
 		
-		if(peerModel.threadForLeaderPeer != null) {
-			peerModel.isFirstResponse = true; 
-			peerModel.threadForLeaderPeer.requestBlock(); //리더 Peer에게 블럭 요청하기
+		if(peer != null) {
+			peer.getPeerThread().requestBlock(); //리더 Peer에게 블럭 요청하기
+		}else { //리더가 없는 경우
+			if(!peerModel.amILeader) {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/popup.fxml"));
+				Parent root = loader.load();
+				Scene scene = new Scene(root);
+				Stage stage = new Stage();
+				stage.setScene(scene);
+				stage.setX(idText.getScene().getWindow().getX()+250);
+				stage.setY(idText.getScene().getWindow().getY()+150);
+				stage.show();
+			}
 		}
-		
-		
 	}
-	
-	
-
 }

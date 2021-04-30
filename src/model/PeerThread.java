@@ -34,9 +34,11 @@ public class PeerThread extends Thread {
 	private String hostAddress = null;
 	private Socket socket = null;
 	private PeerModel peerModel;
+	private Peer peer;
 	PrintWriter printWriter;
 	private DAO dao = null;
-	private int requestCount = 0;
+	
+	
 	
 
 	public PeerThread(Socket socket, PeerModel peerModel) throws IOException{
@@ -93,6 +95,7 @@ public class PeerThread extends Thread {
 					// 임시 블럭 미리 생성해놓기
 					Block.count++; //블럭넘버 1 증가시키기
 					peerModel.block = new Block(previousHash,nonce,timestamp,Block.count);
+					System.out.println("검증 완료 Block 카운트 : "+Block.count);
 					
 					if(!peerModel.proofOfWorkCompleteFlag) peerModel.proofOfWorkCompleteFlag = true;	// 현재 채굴 중이라면
 					else { // 현재 채굴중이 아니라면
@@ -106,22 +109,16 @@ public class PeerThread extends Thread {
 												try {
 													peerModel.proofOfWorkCompleteFlag = true;
 													FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/miningVerify.fxml"));
-													
 													Parent root = loader.load();
-													root.minWidth(350);
-													root.maxWidth(350);
-													root.prefWidth(350);
-													
 													Scene scene = new Scene(root);
 													Stage stage = new Stage();
 													stage.setScene(scene);
-											
 													stage.setX(peerModel.primaryStage.getX()+320);
 													stage.setY(peerModel.primaryStage.getY());
 													stage.show();
 													
-													MiningVerifyController bc = loader.getController();
-													bc.resultOfVerify(peerModel.block);	
+													MiningVerifyController mvc = loader.getController();
+													mvc.resultOfVerify(peerModel.block);	
 													
 												} catch (IOException e) {e.printStackTrace();}
 											});
@@ -131,9 +128,6 @@ public class PeerThread extends Thread {
 													peerModel.proofOfWorkCompleteFlag = true;
 													FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/miningVerify.fxml"));
 													Parent root = loader.load();
-													root.minWidth(350);
-													root.maxWidth(350);
-													root.prefWidth(350);
 													Scene scene = new Scene(root);
 													Stage stage = new Stage();
 													stage.setScene(scene);
@@ -141,8 +135,8 @@ public class PeerThread extends Thread {
 													stage.setY(peerModel.primaryStage.getY());
 													stage.show();
 													
-													MiningVerifyController bc = loader.getController();
-													bc.failedVerify(peerModel.block);	
+													MiningVerifyController mvc = loader.getController();
+													mvc.failedVerify(peerModel.block);	
 													
 												} catch (IOException e) {e.printStackTrace();}
 											});
@@ -163,11 +157,11 @@ public class PeerThread extends Thread {
 						peerModel.totalRespondedCount++; // 다른 Peer 추가 
 						if(jsonObject.getString("verified").equals("true")){ // 검증 성공이면 true
 							System.out.println(hostAddress +":"+this.getPort()+ "의 검증여부 : true");
-							peerModel.peerBlockNums.put(this, jsonObject.getInt("blockNum")); // HashMap에 해당Peer와 연결된 PeerThread와 블럭 넘버를 저장
+							peer.setBlockNum(jsonObject.getInt("blockNum")); 
 							peerModel.verifiedPeerCount++;
 						}else { 
 							System.out.println(hostAddress +":"+this.getPort() + "의 검증여부 : false"); 
-							peerModel.peerBlockNums.put(this, jsonObject.getInt("blockNum")); // HashMap에 해당Peer와 연결된 PeerThread와 블럭 넘버를 저장
+							peer.setBlockNum(jsonObject.getInt("blockNum")); 
 							}		
 				}
 				//블록 요청 후 리더 Peer로부터 블럭 받기
@@ -185,23 +179,23 @@ public class PeerThread extends Thread {
 						dao.storeBlock(peerModel.block,peerModel.walletModel.getUsername());
 						
 					}else { //검증이 실패하여 처음부터 받는 경우
-						if(peerModel.isFirstResponse) {// json request의 반응(response)이 처음 들어오는 경우
+						if(peerModel.isFirst) {
 							Block.count = 0; 
 							dao.deleteAllBlock(peerModel.walletModel.getUsername());
 							peerModel.blockchainModel.resetBlocks().add(new Block(previousHash,nonce,timestamp,Block.count)); // 새로운 블록체인에 정리
-							peerModel.isFirstResponse = false;
+							peerModel.isFirst = false; // 다음부터는 0이 아닌 연달아 받기
 						}else {
 							Block.count++;
 							peerModel.block = new Block(previousHash,nonce,timestamp,Block.count);
 							peerModel.blockchainModel.getBlocks().add(new Block(previousHash,nonce,timestamp,Block.count));
-							dao.storeBlock(peerModel.block, peerModel.walletModel.getUsername());
+							dao.storeBlock(peerModel.block,peerModel.walletModel.getUsername());
 						}
 					}
 				}
 				//본인이 리더라고 알리는 Peer와 연결된 PeerThread를 PeerModel 변수에 저장
 				if(jsonObject.containsKey("leader")) {
 					if(jsonObject.getInt("leaderBlockNum") > Block.count) {
-						peerModel.threadForLeaderPeer = this; 
+						peer.setLeader(true); 
 						peerModel.amILeader = false;
 					}else { // 만약 자신이 더 블럭 개수가 많은 경우
 						peerModel.amILeader = true;
@@ -209,6 +203,7 @@ public class PeerThread extends Thread {
 						//자신이 블럭이 더 많다고 알려주기 
 						Json.createWriter(sw).writeObject(Json.createObjectBuilder()
 															.add("biggerThanYou", Block.count)
+															.add("username", peer.getUserName())
 															.build());
 						printWriter.println(sw.toString());
 					}
@@ -273,7 +268,7 @@ public class PeerThread extends Thread {
 						}
 					}
 				}
-				//상대방의 연결이 끊겼을시 대응
+				//상대방의 연결이 끊겼을 경우 peerList에서 제거
 			} catch (Exception e) {
 				try {
 					for(Peer peer : peerModel.peerList) {
@@ -323,11 +318,17 @@ public class PeerThread extends Thread {
 	public void sendLeader() {
 		StringWriter sw = new StringWriter();
 		Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-										.add("leader", true)
+										.add("miningLeader", true)
 										.build());
 		printWriter.println(sw.toString());
 	}
 	
+	public Peer getPeer() {
+		return peer;
+	}
+	public void setPeer(Peer peer) {
+		this.peer = peer;
+	}
 	
 	public int getPort() { return this.port;} // 연결된 서버 스레드 스레드의 포트 반환
 	public String getHostAddress() { return this.hostAddress;} // 연결된 서버 스레드 스레드의 주소 반환
