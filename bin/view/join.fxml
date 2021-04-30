@@ -22,7 +22,7 @@
                      <children>
                         <ImageView fitHeight="111.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../image/가입.png" />
+                              <Image url="/image/T_join.png" />
                            </image>
                            <HBox.margin>
                               <Insets top="10.0" />
@@ -48,14 +48,14 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="156.0" prefWidth="546.0" style="-fx-background-color: white;">
                      <children>
-                        <Button fx:id="joinButton" mnemonicParsing="false" onAction="#join" prefHeight="78.0" prefWidth="189.0" style="-fx-background-color: 353535;">
+                        <Button fx:id="joinButton" mnemonicParsing="false" onAction="#join" prefHeight="78.0" prefWidth="189.0" style="-fx-background-color: white;">
                            <font>
                               <Font size="22.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="83.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../image/가입%20및%20연결.png" />
+                                    <Image url="/image/join_and_link.png" />
                                  </image>
                               </ImageView>
                            </graphic>

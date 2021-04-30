@@ -49,14 +49,13 @@
          <left>
             <Pane prefHeight="420.0" prefWidth="180.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
                <children>
-<<<<<<< HEAD
                   <BorderPane prefHeight="420.0" prefWidth="180.0">
                      <center>
                         <VBox prefHeight="350.0" prefWidth="180.0" BorderPane.alignment="CENTER">
                            <children>
                               <Button fx:id="blockchainButton" mnemonicParsing="false" onAction="#blockchainHandler" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;" VBox.vgrow="NEVER">
                                  <graphic>
-                                    <ImageView fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="blockchainImageView" fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="/image/blockchain.png" />
                                        </image>
@@ -73,7 +72,7 @@
                                     </ImageView>
                                  </graphic></Button>
                               <Pane prefHeight="30.0" prefWidth="180.0" />
-                              <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;">
+                              <Button fx:id="stateConnectionButton" mnemonicParsing="false" onAction="#stateConnectionHandler" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;">
                                  <graphic>
                                     <ImageView fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -100,12 +99,6 @@
                         <Pane prefHeight="35.0" prefWidth="180.0" BorderPane.alignment="CENTER" />
                      </bottom>
                   </BorderPane>
-=======
-                <Button fx:id="blockchainButton" layoutX="16.0" layoutY="38.0" mnemonicParsing="false" onAction="#blockchainHandler" prefHeight="45.0" prefWidth="150.0" text="블록체인" />
-                  <Button fx:id="miningButton" layoutX="16.0" layoutY="112.0" mnemonicParsing="false" onAction="#miningHandler" prefHeight="45.0" prefWidth="150.0" text="채굴" />
-                  <Button fx:id="stateConnectionButton" layoutX="16.0" layoutY="186.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="연결상태" onAction="#stateConnectionHandler" />
-                  <Button fx:id = "walletButton" layoutX="16.0" layoutY="259.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="지갑" onAction ="#walletHandler" />
->>>>>>> 0b9a7cf4fc5dffba169568f3c96b0452a3ed736d
                </children>
             </Pane>
          </left>

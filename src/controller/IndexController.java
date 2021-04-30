@@ -1,21 +1,28 @@
 package controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.Block;
 import model.PeerModel;
 import model.PeerModel.Peer;
 
-public class IndexController  {
+public class IndexController implements Initializable  {
 	
 	@FXML private Button miningButton;
 	@FXML private HBox content;
@@ -24,9 +31,31 @@ public class IndexController  {
 	@FXML private TextField idText;
 	@FXML private Button walletButton;
 	@FXML private Button stateConnectionButton;
+	@FXML private ImageView blockchainImageView; 
+	Image blockchainButtonImage;
 	
 	private PeerModel peerModel;
 	private Parent miningPane;
+	
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		// TODO Auto-generated method stub
+
+		
+		blockchainButton.setOnMouseEntered(e->{
+			blockchainButtonImage = new Image("/image/blockchainEntered.png");
+			blockchainImageView.setImage(blockchainButtonImage);
+		});
+			
+		blockchainButton.setOnMouseExited(e->{
+			blockchainButtonImage = new Image("/image/blockchain.png");
+			blockchainImageView.setImage(blockchainButtonImage);
+		});
+		
+			
+		
+		
+	}
 	
 	public void setPeerModel(PeerModel peerModel) throws IOException{
 		this.peerModel = peerModel;
@@ -102,4 +131,5 @@ public class IndexController  {
 			}
 		}
 	}
+	
 }

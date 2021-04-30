@@ -2,17 +2,22 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 import database.DAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Block;
@@ -21,13 +26,43 @@ import model.PeerModel;
 import model.ReadPemFile;
 import model.WalletModel;
 
-public class LoginController {
+public class LoginController implements Initializable  {
 	
 	@FXML private Button joinButton;
 	@FXML private Button loginButton;
 	@FXML private TextField privateKeyText;
+	@FXML private ImageView loginButtonImageView;
 	BlockchainModel blockchainModel = null;
-
+	Image joinButtonImage;
+	Image loginButtonImage;
+	
+	
+	
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		// TODO Auto-generated method stub
+		loginButton.setOnMouseEntered(e->{
+			loginButtonImage = new Image("/image/loginButtonEntered.png");
+			loginButtonImageView.setImage(loginButtonImage);
+		});
+			
+		loginButton.setOnMouseExited(e->{
+			loginButtonImage = new Image("/image/login.png");
+			loginButtonImageView.setImage(loginButtonImage);
+		});
+		loginButton.setOnMouseEntered(e->{
+			loginButtonImage = new Image("/image/loginButtonEntered.png");
+			loginButtonImageView.setImage(loginButtonImage);
+		});
+			
+		loginButton.setOnMouseExited(e->{
+			loginButtonImage = new Image("/image/login.png");
+			loginButtonImageView.setImage(loginButtonImage);
+		});
+	}
+	
+	
+	
 	public void goJoinPage() {
 		
 		try {
@@ -101,5 +136,7 @@ public class LoginController {
 			
 		}
 	}
+
+
 
 }
