@@ -44,6 +44,7 @@ public class PeerModel {
 	public Vector<TransactionOutput> UTXOs = new Vector<TransactionOutput>(); // 스레드 간의 동시접속이 가능한 리스트여서 Vector로 생성
 	public ArrayList<DTO> dtos = new ArrayList<DTO>();
 	public ArrayList<Peer> peerList = new ArrayList<Peer>();
+	public ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
 
 
 	public ServerListener getServerListerner() {
@@ -189,7 +190,7 @@ public class PeerModel {
 							StringWriter sW = new StringWriter();
 							Json.createWriter(sW).writeObject(Json.createObjectBuilder()
 														.add("verified", "true")
-														.add("blockNum",Block.count) // 검증 과정에서 리더 Peer를 파악하기 위한 정보제공
+														.add("blockNum",Block.count+"") // 검증 과정에서 리더 Peer를 파악하기 위한 정보제공
 																	.build());		
 							serverListener.sendMessage(sW.toString());
 					

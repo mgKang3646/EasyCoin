@@ -1,4 +1,4 @@
-package model;
+package util;
 
 import java.security.Key;
 import java.security.PrivateKey;

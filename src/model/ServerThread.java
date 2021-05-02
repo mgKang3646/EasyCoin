@@ -70,7 +70,7 @@ public class ServerThread extends Thread {
 				// 블럭 제공 요청이 들어온 경우
 				if(jsonObject.containsKey("blockNum")) {
 					ArrayList<Block> blocks = peerModel.blockchainModel.getBlocks();
-					int blockNum = jsonObject.getInt("blockNum");
+					int blockNum = Integer.parseInt(jsonObject.getString("blockNum"));
 					String blockHash = jsonObject.getString("blockHash");
 					int startIndex =0;
 					boolean requestVerified = false;
@@ -124,6 +124,7 @@ public class ServerThread extends Thread {
 					System.out.println("결과 잘 받았음");
 					float value = Float.parseFloat(jsonObject.getString("value"));  
 					TransactionOutput UTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),value);
+					UTXO.setMiner(jsonObject.getString("responseUTXO")); 
 					peerModel.walletModel.getUTXOWallet().add(UTXO);
 				}
 			

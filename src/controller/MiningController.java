@@ -4,7 +4,6 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.animation.RotateTransition;
@@ -22,6 +21,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.PeerModel;
+import model.Transaction;
 
 public class MiningController implements Initializable {
 	
@@ -84,7 +84,12 @@ public class MiningController implements Initializable {
 			//검증 성공한 경우
 			if(verifyResult==1) {
 					//UI 변경
-					if(peerModel.miningFlag==false) { //채굴 성공한 경우
+					if(peerModel.miningFlag==false) { //채굴 성공 및 합의 성공
+						
+						//UTXO 처리 시작
+						for(Transaction tx : peerModel.transactionList) {
+							
+						}
 						Platform.runLater(new Runnable() {
 							public void run() {
 								try {
@@ -105,7 +110,9 @@ public class MiningController implements Initializable {
 								} catch (IOException e) {e.printStackTrace();}
 							}
 						});
-					}else { // 채굴을 실패한 경우
+						
+						
+					}else { // 채굴 실패 및 합의 성공
 						Platform.runLater(new Runnable() {
 							public void run() {
 							try {
@@ -128,7 +135,7 @@ public class MiningController implements Initializable {
 					});	
 				}
 			
-			}else {// 검증에 실패한 경우, 나중에 구현하기 
+			}else {//합의에 실패한 경우
 				Platform.runLater(new Runnable() {
 					public void run() {
 					try {

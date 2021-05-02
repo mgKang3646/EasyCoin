@@ -63,6 +63,12 @@ public class WireController implements Initializable{
 			//트랜잭션 생성
 			if(value >= 0.05) {
 				
+				// 송금액만큼의 잔액이 있는지 확인
+				float total =0;
+				for(TransactionOutput inputs : peerModel.walletModel.getUTXOWallet()) {
+					total += inputs.getValue();
+				}
+				
 				//트랜잭션 생성
 				Transaction newTransaction = new Transaction(sender,recipient,value); // 트랜잭션 생성
 				newTransaction.generateSignature(peerModel.walletModel.getPrivateKey()); //전자서명 생성
