@@ -237,13 +237,8 @@ public class PeerThread extends Thread {
 					if(newTransaction.verifySignature()) {
 						TransactionOutput UTXO = new TransactionOutput(recipient,value);
 						peerModel.UTXOs.add(UTXO);
-						/*
-						StringWriter sw = new StringWriter();
-						Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-																.add("RequestUTXO", "")
-																.add("sender",Base64.toBase64String(sender.getEncoded()))
-																.build());
-						//peerModel.getServerListerner().sendMessage(sw.toString());*/
+						System.out.println("UTXO 검증 완료");
+
 					}
 				}
 				
@@ -257,14 +252,13 @@ public class PeerThread extends Thread {
 					
 					for(int i=0; i<peerModel.UTXOs.size();i++) {
 						TransactionOutput UTXO = peerModel.UTXOs.get(i);
-						if(UTXO.recipient == owner) {
+						if(UTXO.recipient.toString().equals(owner.toString())) {
 							StringWriter sw = new StringWriter();
 							Json.createWriter(sw).writeObject(Json.createObjectBuilder()
 																		.add("responseUTXO", "")
 																		.add("value", UTXO.value+"")
 																		.build());
 							printWriter.println(sw.toString());
-							Thread.sleep(100);
 						}
 					}
 				}

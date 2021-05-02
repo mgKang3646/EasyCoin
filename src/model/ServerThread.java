@@ -126,8 +126,7 @@ public class ServerThread extends Thread {
 					TransactionOutput UTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),value);
 					peerModel.walletModel.getUTXOWallet().add(UTXO);
 				}
-				
-				
+			
 			}
 			// 상대방 연결이 끊겼을 시 대응
 		} catch (Exception e) {
