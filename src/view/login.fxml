@@ -21,7 +21,7 @@
          </graphic></Button>
       <Button fx:id="joinButton" layoutX="330.0" layoutY="296.0" mnemonicParsing="false" onAction="#goJoinPage" prefHeight="64.0" prefWidth="200.0" style="-fx-background-color: white;">
          <graphic>
-            <ImageView fitHeight="64.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="joinButtonImageView" fitHeight="64.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/image/join.png" />
                </image>

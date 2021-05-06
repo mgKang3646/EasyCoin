@@ -48,14 +48,14 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="156.0" prefWidth="546.0" style="-fx-background-color: white;">
                      <children>
-                        <Button fx:id="joinButton" mnemonicParsing="false" onAction="#join" prefHeight="78.0" prefWidth="189.0" style="-fx-background-color: white;">
+                        <Button fx:id="join_linkButton" mnemonicParsing="false" onAction="#join" prefHeight="78.0" prefWidth="189.0" style="-fx-background-color: white;">
                            <font>
                               <Font size="22.0" />
                            </font>
                            <graphic>
-                              <ImageView fitHeight="83.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="join_linkButtonImageView" fitHeight="83.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="/image/join_and_link.png" />
+                                    <Image url="/image/join_link.png" />
                                  </image>
                               </ImageView>
                            </graphic>

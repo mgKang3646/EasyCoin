@@ -35,9 +35,9 @@
                   
                   <Button fx:id="upgradeButton" layoutX="178.0" layoutY="33.0" onAction="#doUpgrade" style="-fx-background-color: lightskyblue;">
                      <graphic>
-                        <ImageView fitHeight="26.0" fitWidth="77.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="upgradeImageView" fitHeight="26.0" fitWidth="77.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="/image/refresh.png" />
+                              <Image url="/image/upgrade.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -65,25 +65,25 @@
                               <Pane prefHeight="30.0" prefWidth="180.0" />
                               <Button fx:id="miningButton" mnemonicParsing="false" onAction="#miningHandler" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;">
                                  <graphic>
-                                    <ImageView fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="miningImageView" fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="/image/minning.png" />
+                                          <Image url="/image/mining.png" />
                                        </image>
                                     </ImageView>
                                  </graphic></Button>
                               <Pane prefHeight="30.0" prefWidth="180.0" />
                               <Button fx:id="stateConnectionButton" mnemonicParsing="false" onAction="#stateConnectionHandler" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;">
                                  <graphic>
-                                    <ImageView fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="stateConnectionImageView" fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="/image/link.png" />
+                                          <Image url="/image/stateConnection.png" />
                                        </image>
                                     </ImageView>
                                  </graphic></Button>
                               <Pane prefHeight="30.0" prefWidth="180.0" />
                               <Button fx:id="walletButton" mnemonicParsing="false" onAction="#walletHandler" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: white;">
                                  <graphic>
-                                    <ImageView fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="walletImageView" fitHeight="50.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="/image/wallet.png" />
                                        </image>

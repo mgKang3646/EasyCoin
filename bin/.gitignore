@@ -1,6 +1,7 @@
-/model/
-/util/
+/application/
 /controller/
 /database/
+/model/
+/util/
 /view/
 /image/
