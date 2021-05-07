@@ -32,17 +32,36 @@ public class LoginController implements Initializable  {
 	@FXML private Button loginButton;
 	@FXML private TextField privateKeyText;
 	@FXML private ImageView loginButtonImageView;
+	@FXML private ImageView joinButtonImageView;
+	@FXML private ImageView mainImageView;
+	@FXML private ImageView titleImageView;
 	BlockchainModel blockchainModel = null;
 	Image joinButtonImage;
 	Image loginButtonImage;
-	
+	Image mainImage;
+	Image titleImage;
 	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
+		
+		mainImageView.setOnMousePressed(e->{
+			mainImage = new Image("/image/main.gif");
+			mainImageView.setImage(mainImage);
+		});
+		mainImageView.setOnMouseReleased(e->{
+			mainImage = new Image("/image/main.png");
+			mainImageView.setImage(mainImage);
+		});
+		
+		titleImageView.setOnMouseClicked(e->{
+			titleImage = new Image("/image/EasyCoinClicked.png");
+			titleImageView.setImage(titleImage);
+		});
+	
 		loginButton.setOnMouseEntered(e->{
-			loginButtonImage = new Image("/image/loginButtonEntered.png");
+			loginButtonImage = new Image("/image/loginEntered.png");
 			loginButtonImageView.setImage(loginButtonImage);
 		});
 			
@@ -50,14 +69,16 @@ public class LoginController implements Initializable  {
 			loginButtonImage = new Image("/image/login.png");
 			loginButtonImageView.setImage(loginButtonImage);
 		});
-		loginButton.setOnMouseEntered(e->{
-			loginButtonImage = new Image("/image/loginButtonEntered.png");
-			loginButtonImageView.setImage(loginButtonImage);
+		
+		
+		joinButton.setOnMouseEntered(e->{
+			joinButtonImage = new Image("/image/joinEntered.png");
+			joinButtonImageView.setImage(joinButtonImage);
 		});
 			
-		loginButton.setOnMouseExited(e->{
-			loginButtonImage = new Image("/image/login.png");
-			loginButtonImageView.setImage(loginButtonImage);
+		joinButton.setOnMouseExited(e->{
+			joinButtonImage = new Image("/image/join.png");
+			joinButtonImageView.setImage(joinButtonImage);
 		});
 	}
 	

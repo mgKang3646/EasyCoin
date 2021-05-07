@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import org.apache.commons.codec.digest.DigestUtils;
 
 
-public class Transaction {
+public class Transaction {// => UTXO Unspent 소비되지 않은 
 	
 	public PublicKey sender;
 	public PublicKey recipient;
-	public float value;
-	public byte[] signature;
+	public float value; // 5000
+	public byte[] signature;// 100 privatkey publickey 
 	public String transactionHash;
 	
 	public ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();

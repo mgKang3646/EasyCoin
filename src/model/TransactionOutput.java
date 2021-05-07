@@ -3,7 +3,8 @@ package model;
 import java.security.PublicKey;
 
 import org.apache.commons.codec.digest.DigestUtils;
-
+//UTXO 70 Ã¤±¼ÀÚ Ã¶¼ö ,UTXO 30 Ã¤±¼ÀÚ ¹Î¼ö, UTXO 50 Ã¤±¼ÀÚ Àº¿µ
+//UTXO 50 ¹Î±¸ => UTXO Ã¶¼ö 30, UTXO ¹Î±¸ 20
 public class TransactionOutput {
 	
 	String miner;

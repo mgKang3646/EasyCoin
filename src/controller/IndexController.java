@@ -31,8 +31,19 @@ public class IndexController implements Initializable  {
 	@FXML private TextField idText;
 	@FXML private Button walletButton;
 	@FXML private Button stateConnectionButton;
+	@FXML private ImageView upgradeImageView; 
+	@FXML private ImageView stateConnectionImageView; 
 	@FXML private ImageView blockchainImageView; 
+	@FXML private ImageView miningImageView; 
+	@FXML private ImageView walletImageView; 
+	
 	Image blockchainButtonImage;
+	Image upgradeButtonImage;
+	Image stateConnectionButtonImage;
+	Image miningButtonImage;
+	Image walletButtonImage;
+
+	
 	
 	private PeerModel peerModel;
 	private Parent miningPane;
@@ -52,8 +63,53 @@ public class IndexController implements Initializable  {
 			blockchainImageView.setImage(blockchainButtonImage);
 		});
 		
-			
 		
+		upgradeButton.setOnMouseEntered(e->{
+			upgradeButtonImage = new Image("/image/upgradeEntered.png");
+			upgradeImageView.setImage(upgradeButtonImage);
+		});
+			
+		upgradeButton.setOnMouseExited(e->{
+			upgradeButtonImage = new Image("/image/upgrade.png");
+			upgradeImageView.setImage(upgradeButtonImage);
+		});
+		upgradeButton.setOnMouseClicked(e->{
+			upgradeButtonImage = new Image("/image/upgradeClicked.png");
+			upgradeImageView.setImage(upgradeButtonImage);
+		});
+		
+		
+		miningButton.setOnMouseEntered(e->{
+			miningButtonImage = new Image("/image/miningEntered.png");
+			miningImageView.setImage(miningButtonImage);
+		});
+			
+		miningButton.setOnMouseExited(e->{
+			miningButtonImage = new Image("/image/mining.png");
+			miningImageView.setImage(miningButtonImage);
+		});
+		
+		
+		stateConnectionButton.setOnMouseEntered(e->{
+			stateConnectionButtonImage = new Image("/image/stateConnectionEntered.png");
+			stateConnectionImageView.setImage(stateConnectionButtonImage);
+		});
+			
+		stateConnectionButton.setOnMouseExited(e->{
+			stateConnectionButtonImage = new Image("/image/stateConnection.png");
+			stateConnectionImageView.setImage(stateConnectionButtonImage);
+		});
+				
+		
+		walletButton.setOnMouseEntered(e->{
+			walletButtonImage = new Image("/image/walletEntered.png");
+			walletImageView.setImage(walletButtonImage);
+		});
+			
+		walletButton.setOnMouseExited(e->{
+			walletButtonImage = new Image("/image/wallet.png");
+			walletImageView.setImage(walletButtonImage);
+		});
 		
 	}
 	

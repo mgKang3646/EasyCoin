@@ -2,7 +2,6 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.Security;
 import java.util.ResourceBundle;
 
 import database.DAO;
@@ -15,6 +14,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.BlockchainModel;
 import model.PeerModel;
@@ -24,11 +25,14 @@ import model.produceKey;
 
 public class JoinController implements Initializable {
 
-	@FXML private Button joinButton;
+	@FXML private Button join_linkButton;
 	@FXML private TextField userNameText;
 	@FXML private Button goToIndexButton;
 	@FXML private Label privateKeyLabel;
+	@FXML private ImageView join_linkButtonImageView; 
 	
+	
+	Image join_linkButtonImage;
 	DTO userDTO;
 	DAO dao;
 	produceKey produceKey;
@@ -45,6 +49,18 @@ public class JoinController implements Initializable {
 		walletModel = new WalletModel(); // 지갑 생성
 		blockchainModel = new BlockchainModel(); // 블록체인 생성
 
+		
+		join_linkButton.setOnMouseEntered(e->{
+			join_linkButtonImage = new Image("/image/join_linkEntered.png");
+			join_linkButtonImageView.setImage(join_linkButtonImage);
+		});
+			
+		join_linkButton.setOnMouseExited(e->{
+			join_linkButtonImage = new Image("/image/join_link.png");
+			join_linkButtonImageView.setImage(join_linkButtonImage);
+		});
+		
+		
 	}
 
 	
@@ -61,7 +77,7 @@ public class JoinController implements Initializable {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/registercheck.fxml"));
 			Parent root = loader.load();
 			RegisterCheckController rcc = loader.getController();
-			rcc.setPrimaryStage((Stage)joinButton.getScene().getWindow());
+			rcc.setPrimaryStage((Stage)join_linkButton.getScene().getWindow());
 			
 			Scene scene = new Scene(root);
 			Stage stage = new Stage();
@@ -103,13 +119,13 @@ public class JoinController implements Initializable {
 						Scene scene = new Scene(root);
 						Stage stage = new Stage();
 						stage.setScene(scene);
-						stage.setX(joinButton.getScene().getWindow().getX()+65);
-						stage.setY(joinButton.getScene().getWindow().getY()+50);
+						stage.setX(join_linkButton.getScene().getWindow().getX()+65);
+						stage.setY(join_linkButton.getScene().getWindow().getY()+50);
 						stage.setResizable(false);
 						stage.show();
 						
 						NetProgressController npc = loader.getController(); 
-						npc.setPrimaryStage((Stage)joinButton.getScene().getWindow());
+						npc.setPrimaryStage((Stage)join_linkButton.getScene().getWindow());
 						npc.doProgress(peerModel, walletModel, blockchainModel,"join");
 						npc.setPrivateKeyPath(pemFileForPrivate.getPath());
 
