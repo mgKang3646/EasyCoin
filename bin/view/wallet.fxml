@@ -8,10 +8,10 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="220.0" maxWidth="440.0" minHeight="220.0" minWidth="440.0" prefHeight="220.0" prefWidth="440.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.WalletController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.WalletController">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b4d4e2" height="220.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="440.0" />
-      <HBox alignment="CENTER_LEFT" layoutX="21.0" layoutY="28.0" prefHeight="108.0" prefWidth="398.0">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b4d4e2" height="220.0" layoutX="70.0" layoutY="70.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="440.0" />
+      <HBox alignment="CENTER_LEFT" layoutX="91.0" layoutY="105.0" prefHeight="108.0" prefWidth="398.0">
          <children>
             <Label text="잔    액 : ">
                <font>
@@ -21,7 +21,7 @@
             <TextField fx:id="balanceTextField" prefHeight="22.0" prefWidth="250.0" />
          </children>
       </HBox>
-      <Button fx:id="wireButton" layoutX="113.0" layoutY="144.0" mnemonicParsing="false" onAction="#wire" prefHeight="42.0" prefWidth="214.0" text="송 금 하 기">
+      <Button fx:id="wireButton" layoutX="183.0" layoutY="213.0" mnemonicParsing="false" onAction="#wire" prefHeight="42.0" prefWidth="214.0" text="송 금 하 기">
          <font>
             <Font size="22.0" />
          </font>

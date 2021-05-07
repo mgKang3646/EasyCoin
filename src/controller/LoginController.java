@@ -33,15 +33,29 @@ public class LoginController implements Initializable  {
 	@FXML private TextField privateKeyText;
 	@FXML private ImageView loginButtonImageView;
 	@FXML private ImageView joinButtonImageView;
+	@FXML private ImageView mainImageView;
+	@FXML private ImageView titleImageView;
 	BlockchainModel blockchainModel = null;
 	Image joinButtonImage;
 	Image loginButtonImage;
-	
+	Image mainImage;
+	Image titleImage;
 	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
+		
+		mainImageView.setOnMousePressed(e->{
+			mainImage = new Image("/image/main.gif");
+			mainImageView.setImage(mainImage);
+		});
+		titleImageView.setOnMouseClicked(e->{
+			titleImage = new Image("/image/EasyCoinClicked.png");
+			titleImageView.setImage(titleImage);
+		});
+			
+	
 		loginButton.setOnMouseEntered(e->{
 			loginButtonImage = new Image("/image/loginEntered.png");
 			loginButtonImageView.setImage(loginButtonImage);
@@ -51,6 +65,7 @@ public class LoginController implements Initializable  {
 			loginButtonImage = new Image("/image/login.png");
 			loginButtonImageView.setImage(loginButtonImage);
 		});
+		
 		
 		joinButton.setOnMouseEntered(e->{
 			joinButtonImage = new Image("/image/joinEntered.png");

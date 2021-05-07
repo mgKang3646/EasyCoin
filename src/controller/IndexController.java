@@ -42,7 +42,7 @@ public class IndexController implements Initializable  {
 	Image stateConnectionButtonImage;
 	Image miningButtonImage;
 	Image walletButtonImage;
-	
+
 	
 	
 	private PeerModel peerModel;
@@ -71,6 +71,10 @@ public class IndexController implements Initializable  {
 			
 		upgradeButton.setOnMouseExited(e->{
 			upgradeButtonImage = new Image("/image/upgrade.png");
+			upgradeImageView.setImage(upgradeButtonImage);
+		});
+		upgradeButton.setOnMouseClicked(e->{
+			upgradeButtonImage = new Image("/image/upgradeClicked.png");
 			upgradeImageView.setImage(upgradeButtonImage);
 		});
 		
@@ -106,7 +110,6 @@ public class IndexController implements Initializable  {
 			walletButtonImage = new Image("/image/wallet.png");
 			walletImageView.setImage(walletButtonImage);
 		});
-		
 		
 	}
 	
