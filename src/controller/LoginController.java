@@ -50,11 +50,15 @@ public class LoginController implements Initializable  {
 			mainImage = new Image("/image/main.gif");
 			mainImageView.setImage(mainImage);
 		});
+		mainImageView.setOnMouseReleased(e->{
+			mainImage = new Image("/image/main.png");
+			mainImageView.setImage(mainImage);
+		});
+		
 		titleImageView.setOnMouseClicked(e->{
 			titleImage = new Image("/image/EasyCoinClicked.png");
 			titleImageView.setImage(titleImage);
 		});
-			
 	
 		loginButton.setOnMouseEntered(e->{
 			loginButtonImage = new Image("/image/loginEntered.png");
