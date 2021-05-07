@@ -8,10 +8,15 @@ import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.bouncycastle.util.encoders.Base64;
 
 import model.PeerModel.Peer;
 
@@ -122,12 +127,47 @@ public class ServerThread extends Thread {
 				//요청한 UTXO 받기
 				if(jsonObject.containsKey("responseUTXO")) {
 					System.out.println("결과 잘 받았음");
-					float value = Float.parseFloat(jsonObject.getString("value"));  
-					TransactionOutput UTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),value);
-					UTXO.setMiner(jsonObject.getString("responseUTXO")); 
-					peerModel.walletModel.getUTXOWallet().add(UTXO);
+					float value = Float.parseFloat(jsonObject.getString("value"));
+					double nonce = Double.parseDouble(jsonObject.getString("nonce"));
+					String miner = jsonObject.getString("miner");
+					String utxoHash = jsonObject.getString("utxoHash");
+					PublicKey recipient = peerModel.walletModel.getPublicKey();
+					
+					//UTXO 검증
+					if(utxoHash.equals(DigestUtils.sha256(value+nonce+miner+recipient))) {
+						TransactionOutput UTXO = new TransactionOutput(recipient,value,miner);
+						UTXO.setHash(utxoHash);
+						UTXO.setNonce(nonce);
+						peerModel.walletModel.getUTXOWallet().add(UTXO);
+					}	
 				}
-			
+				
+				if(jsonObject.containsKey("getUTXO")) {
+					for(TransactionOutput UTXO : peerModel.UTXOs) {
+						if(UTXO.getTxoHash().equals(jsonObject.getString("utxoHash"))) {
+							System.out.println("UTXO 소지 측 : UTXO 송신 요청 잘 받음");
+							HashMap<String,String> additems = new HashMap<String,String>();
+							additems.put("sendUTXO", UTXO.getTxoHash());
+							additems.put("nonce",UTXO.getNonce()+"");
+							additems.put("miner", UTXO.getMiner());
+							additems.put("recipient",Base64.toBase64String(UTXO.getRecipient().getEncoded()));
+							additems.put("value", UTXO.value+"");
+							additems.put("txHash", jsonObject.getString("txHash"));
+							getPrintWriter().println(peerModel.makeJsonObject(additems)); // 송신지로 다시 결과 보내기
+							System.out.println("UTXO 소지 측 : UTXO 송신 완료");
+						}
+					}
+				}
+				
+				if(jsonObject.containsKey("deleteUTXO")) {
+					String utxoHash = jsonObject.getString("deleteUTXO");
+					for(TransactionOutput UTXO : peerModel.UTXOs) {
+						if(utxoHash.equals(UTXO.getTxoHash())) {
+							peerModel.UTXOs.remove(UTXO);
+							System.out.println("UTXO 소지 측 : UTXO 삭제 완료");
+						}
+					}
+				}
 			}
 			// 상대방 연결이 끊겼을 시 대응
 		} catch (Exception e) {
@@ -138,6 +178,7 @@ public class ServerThread extends Thread {
 			} catch (IOException e1) {e1.printStackTrace();}	
 		}
 	}
+	
 	
 	public PrintWriter getPrintWriter() { return printWriter;}
 	public String toString() { return socket.getInetAddress().getHostAddress()+":"+socket.getPort();}

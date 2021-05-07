@@ -52,7 +52,7 @@ public class WalletController implements Initializable{
 		
 		//본인 UTXOs에 자신의 publickey를 가진 UTXO가 있는지 확인하기 
 		for(int i=0; i<peerModel.UTXOs.size();i++) {
-			if(peerModel.walletModel.getPublicKey().toString().equals(peerModel.UTXOs.get(i).recipient.toString())) {
+			if(peerModel.UTXOs.get(i).isMine(peerModel.walletModel.getPublicKey())) {
 				peerModel.walletModel.getUTXOWallet().add(peerModel.UTXOs.get(i));
 			}
 		}
@@ -89,7 +89,7 @@ public class WalletController implements Initializable{
 						try {
 							total = 0; // 초기화 후 덧셈 재시작
 							for(TransactionOutput UTXO : peerModel.walletModel.getUTXOWallet()) {
-								total += UTXO.value;
+								total += UTXO.getValue();
 							}
 							Platform.runLater(()->{
 								balanceTextField.setText(total+"");

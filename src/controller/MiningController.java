@@ -4,6 +4,7 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javafx.animation.RotateTransition;
@@ -21,7 +22,9 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.PeerModel;
+import model.PeerModel.Peer;
 import model.Transaction;
+import model.TransactionInput;
 
 public class MiningController implements Initializable {
 	
@@ -84,11 +87,22 @@ public class MiningController implements Initializable {
 			//검증 성공한 경우
 			if(verifyResult==1) {
 					//UI 변경
-					if(peerModel.miningFlag==false) { //채굴 성공 및 합의 성공
-						
+					if(peerModel.miningFlag==false) { //채굴 성공 및 합의 성공						
 						//UTXO 처리 시작
 						for(Transaction tx : peerModel.transactionList) {
-							
+							for(TransactionInput input : tx.inputs) {
+								for(Peer peer : peerModel.peerList) {
+									if(peer.getUserName().equals(input.getMiners())) {
+										System.out.println("input.getMiners() : "+input.getMiners());
+										HashMap<String,String> additems = new HashMap<String,String>();
+										additems.put("getUTXO", "");
+										additems.put("txHash", tx.getHash());
+										additems.put("utxoHash", input.getUtxoHash());
+										System.out.println("채굴 성공 측 : UTXO 보내주라!");
+										peer.getPeerThread().send(peerModel.makeJsonObject(additems));
+									}
+								}
+							}
 						}
 						Platform.runLater(new Runnable() {
 							public void run() {

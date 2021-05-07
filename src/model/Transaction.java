@@ -4,6 +4,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 
 public class Transaction {
 	
@@ -11,6 +13,7 @@ public class Transaction {
 	public PublicKey recipient;
 	public float value;
 	public byte[] signature;
+	public String transactionHash;
 	
 	public ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();
 	public ArrayList<TransactionOutput> outputs = new ArrayList<TransactionOutput>();
@@ -27,6 +30,19 @@ public class Transaction {
 			return false;
 	}
 	
+	public void generateHash() {
+		double nonce = Math.random();
+		this.transactionHash = DigestUtils.sha256Hex(sender.toString()+recipient.toString()+value+nonce);
+	}
+	
+	public void setHash(String hash) {
+		this.transactionHash = hash;
+	}
+	
+	public String getHash() {
+		return this.transactionHash;
+	}
+	
 	public void generateSignature(PrivateKey privateKey) {
 		String data = util.BlockUtil.getStringFromKey(sender)+util.BlockUtil.getStringFromKey(recipient)+Float.toString(value);
 		signature = util.BlockUtil.applyECDSASig(privateKey, data);// 거래 data를 통해 시그니처가 생성되기 떄문에 data가 바뀌면 시그니쳐가 달라진다. 
@@ -40,5 +56,7 @@ public class Transaction {
 		String data = util.BlockUtil.getStringFromKey(sender)+util.BlockUtil.getStringFromKey(recipient)+Float.toString(value);
 		return util.BlockUtil.verifyECDSASig(sender, data, signature);
 	}
+	
+	
 
 }

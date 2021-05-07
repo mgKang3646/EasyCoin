@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 //block 카운터를 blockchain 사이즈로 바꾸어보기
-
+//MiningControl 하다가 말았음
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {

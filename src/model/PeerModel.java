@@ -8,9 +8,13 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -82,8 +86,8 @@ public class PeerModel {
 			}
 			
 			//임시 UTXO 만들기
-			TransactionOutput tempUTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),100f);
-			tempUTXO.id = "0";
+			TransactionOutput tempUTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),100f,peerModel.walletModel.getUsername());
+			tempUTXO.generateHash();
 			peerModel.UTXOs.add(tempUTXO);
 			
 			return 1; // 서버 생성 성공
@@ -174,25 +178,21 @@ public class PeerModel {
 							
 							//상대 Peer에게 블록채굴완료 정보 전송하기
 							System.out.println("채굴 성공!");
-							StringWriter sw = new StringWriter();
-							Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-																.add("previousHash", previousHash)
-																.add("nonce", nonce)
-																.add("timestamp", currentTime)
-																.build());
-														
-							serverListener.sendMessage(sw.toString());
+							HashMap<String,String> additems = new HashMap<String,String>();
+							additems.put("previousHash", previousHash);
+							additems.put("nonce", nonce);
+							additems.put("timestamp", currentTime);																	
+							serverListener.sendMessage(makeJsonObject(additems));
 							
 							// 검증 결과 전송하기 
 							verifiedPeerCount++; // 본인 추가
 							totalRespondedCount++; // 본인 추가
 							
+							additems = new HashMap<String,String>();
 							StringWriter sW = new StringWriter();
-							Json.createWriter(sW).writeObject(Json.createObjectBuilder()
-														.add("verified", "true")
-														.add("blockNum",Block.count+"") // 검증 과정에서 리더 Peer를 파악하기 위한 정보제공
-																	.build());		
-							serverListener.sendMessage(sW.toString());
+							additems.put("verified", "true");
+							additems.put("blockNum",Block.count+"");													
+							serverListener.sendMessage(makeJsonObject(additems));
 					
 							// 검증결과 기다리기 
 							System.out.println("채굴 성공 후 검증 대기 중");
@@ -329,6 +329,26 @@ public class PeerModel {
 		}
 		return null;
 	}
+	
+	//JsonObject 만들기
+		public synchronized String makeJsonObject(HashMap<String,String> additems) {
+			StringWriter sw = new StringWriter();
+			JsonObjectBuilder job = Json.createObjectBuilder();
+			
+			Set<String> keyset = additems.keySet();
+			Iterator<String> iterator = keyset.iterator();
+			
+			while(iterator.hasNext()) {
+				String key = iterator.next();
+				String value = additems.get(key);
+				
+				job.add(key, value);
+			}
+			
+			Json.createWriter(sw).writeObject(job.build());
+			
+			return sw.toString();
+		}
 	
 	
 	public static class Peer{
