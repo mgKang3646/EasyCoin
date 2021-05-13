@@ -3,6 +3,7 @@ package model;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -26,8 +27,12 @@ public class Transaction {// => UTXO Unspent 소비되지 않은
 	}
 	
 	// 서명검증
-	public boolean processTransaction() {
-			return false;
+	public boolean processTransaction(Transaction tx) {
+		
+		
+		
+		
+		return false;
 	}
 	
 	public void generateHash() {

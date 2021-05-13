@@ -3,6 +3,8 @@ package model;
 import java.security.PublicKey;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.bouncycastle.util.encoders.Base64;
+
 //UTXO 70 Ã¤±¼ÀÚ Ã¶¼ö ,UTXO 30 Ã¤±¼ÀÚ ¹Î¼ö, UTXO 50 Ã¤±¼ÀÚ Àº¿µ
 //UTXO 50 ¹Î±¸ => UTXO Ã¶¼ö 30, UTXO ¹Î±¸ 20
 public class TransactionOutput {
@@ -11,9 +13,8 @@ public class TransactionOutput {
 	PublicKey recipient;
 	float value;
 	String txoHash;
-	double nonce;
+	int nonce;
 	String transactionHash;
-	
 	
 	public String getTransactionHash() {
 		return transactionHash;
@@ -30,17 +31,18 @@ public class TransactionOutput {
 	}
 	
 	public void generateHash() {
-		this.nonce = Math.random();	
-		this.txoHash = DigestUtils.sha256Hex(miner+recipient+value+nonce);
+		this.nonce = (int)(Math.random()*1000000);
+		String recipientEncoding = Base64.toBase64String(recipient.getEncoded());
+		this.txoHash = DigestUtils.sha256Hex(miner+recipientEncoding+value+nonce);
 	}
 	public void setHash(String hash) {
 		this.txoHash = hash;
 	}
 	
-	public double getNonce() {
+	public int getNonce() {
 		return nonce;
 	}
-	public void setNonce(double nonce) {
+	public void setNonce(int nonce) {
 		this.nonce = nonce;
 	}
 
@@ -74,6 +76,13 @@ public class TransactionOutput {
 
 	public void setValue(float value) {
 		this.value = value;
+	}
+	
+	@Override
+	public String toString() {
+
+		String print = "[ value : " + getValue() + " ]";
+		return print;
 	}
 
 

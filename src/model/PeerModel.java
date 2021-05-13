@@ -17,6 +17,7 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.bouncycastle.util.encoders.Base64;
 
 import database.DAO;
 import database.DTO;
@@ -26,6 +27,7 @@ import javafx.stage.Stage;
 
 
 public class PeerModel {
+	public static final float REWARD = 50f;
 	public String hashDifficulty = "00000";
 	public int zeroNum = 5;
 	public Block block = null; // 가장 최신 블럭
@@ -84,11 +86,6 @@ public class PeerModel {
 				peerModel.blockchainModel.getBlocks().add(block); // 제네시스 블록 블록체인 Model에 저장
 				dao.storeBlock(block, walletModel.getUsername()); // 제네시스 블록 DB 저장
 			}
-			
-			//임시 UTXO 만들기
-			TransactionOutput tempUTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),100f,peerModel.walletModel.getUsername());
-			tempUTXO.generateHash();
-			peerModel.UTXOs.add(tempUTXO);
 			
 			return 1; // 서버 생성 성공
 	}
@@ -189,7 +186,6 @@ public class PeerModel {
 							totalRespondedCount++; // 본인 추가
 							
 							additems = new HashMap<String,String>();
-							StringWriter sW = new StringWriter();
 							additems.put("verified", "true");
 							additems.put("blockNum",Block.count+"");													
 							serverListener.sendMessage(makeJsonObject(additems));
@@ -216,7 +212,6 @@ public class PeerModel {
 	
 	public int verifyBlock() throws InterruptedException {
 		//버튼 변화
-		
 		Platform.runLater(()->{
 			miningStartButton.setDisable(true);
 			miningStartButton.setText("합의 중....");
@@ -258,8 +253,7 @@ public class PeerModel {
 				verifiedPeerCount=0; //초기화
 				totalRespondedCount = 0; //초기화
 				Platform.runLater(()->{
-					miningStartButton.setDisable(false);
-					miningStartButton.setText("채굴시작");
+					miningStartButton.setText("트랜잭션 처리 중...");
 				});
 				return 1;
 		}
@@ -331,7 +325,7 @@ public class PeerModel {
 	}
 	
 	//JsonObject 만들기
-		public synchronized String makeJsonObject(HashMap<String,String> additems) {
+	public String makeJsonObject(HashMap<String,String> additems) {
 			StringWriter sw = new StringWriter();
 			JsonObjectBuilder job = Json.createObjectBuilder();
 			
@@ -348,7 +342,37 @@ public class PeerModel {
 			Json.createWriter(sw).writeObject(job.build());
 			
 			return sw.toString();
+	}
+	// 트랜잭션 처리하기
+	public boolean processTransaction(Transaction tx) {
+		
+		float total = 0;
+		float balance = 0;
+		float value = tx.value;
+		
+		for(int i = 0; i < tx.inputs.size(); i++) {
+			total += tx.inputs.get(i).getInputValue();
 		}
+		// 총 금액이 송금액보다 작으면 false이다. 
+		if(value > total) {
+			return false;
+			
+		}else { // 총 금액이 송금액보다 크면 true이다. 
+			balance = total - value;
+			
+			//트랜잭션의 UTXO 생성
+			UTXOs.add(new TransactionOutput(tx.recipient, value, walletModel.getUsername()));
+			UTXOs.get(UTXOs.size()-1).generateHash();
+			tx.outputs.add(UTXOs.get(UTXOs.size()-1));
+			
+			//잔액 UTXO 생성
+			UTXOs.add(new TransactionOutput(tx.sender, balance, walletModel.getUsername()));
+			UTXOs.get(UTXOs.size()-1).generateHash();
+			tx.outputs.add(UTXOs.get(UTXOs.size()-1));
+						
+			return true;
+		}	
+	}
 	
 	
 	public static class Peer{

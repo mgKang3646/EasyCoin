@@ -8,6 +8,7 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.json.Json;
@@ -23,6 +24,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import model.PeerModel.Peer;
 
@@ -52,11 +54,13 @@ public class PeerThread extends Thread {
 		this.printWriter = new PrintWriter(socket.getOutputStream(),true); // 상대 서버스레드로 보내는 PrintWriter
 		this.dao = new DAO();
 	}
+	
 	public void run() {
 		boolean flag = true;
 		while(flag) {
 			try {
 				HashMap<String,String> additems = new HashMap<String,String>();
+				
 				// 블록정보와 트랜잭션 정보를 이쪽에서 처리
 				JsonObject jsonObject = Json.createReader(bufferedReader).readObject();
 				///////////////////////////////blocking///////////////////////////////////
@@ -227,11 +231,18 @@ public class PeerThread extends Thread {
 					newTransaction.setHash(transactionHash);
 					
 					for(int i=0; i< jsonObject.getJsonArray("miners").size();i++) {
-						JsonValue miner = jsonObject.getJsonArray("miners").get(i);
-						JsonValue utxoHash = jsonObject.getJsonArray("utxoHashs").get(i);
-						System.out.println("트랜잭션 input miner : " + miner.toString());
-						System.out.println("트랜잭션 input hash : " + utxoHash.toString());
-						TransactionInput input = new TransactionInput(miner.toString(),utxoHash.toString());
+						JsonValue minerJson = jsonObject.getJsonArray("miners").get(i);
+						JsonValue utxoHashJson = jsonObject.getJsonArray("utxoHashs").get(i);
+						JsonValue inputValueJson = jsonObject.getJsonArray("inputValueArr").get(i);
+						String miner = minerJson.toString().replaceAll("\"", "");
+						String utxoHash = utxoHashJson.toString().replaceAll("\"", "");
+						float inputValue = Float.parseFloat(inputValueJson.toString().replaceAll("\"", ""));
+	
+						System.out.println("트랜잭션 input miner : " + miner);
+						System.out.println("트랜잭션 input hash : " + utxoHash);
+						System.out.println("트랜잭션 input value : " + inputValue);
+
+						TransactionInput input = new TransactionInput(miner,utxoHash,inputValue);
 						input.setTransactionHash(newTransaction.getHash());
 						newTransaction.inputs.add(input);
 					}
@@ -246,12 +257,12 @@ public class PeerThread extends Thread {
 				
 				//UTXO 요청
 				if(jsonObject.containsKey("requestUTXO")) {
-					System.out.println("UTXO요청 잘 들어옴");
+					System.out.println("[잔액] UTXO요청 잘 들어옴");
 					byte[] byteOwner = Base64.decode(jsonObject.getString("owner"));
 					X509EncodedKeySpec spec = new X509EncodedKeySpec(byteOwner);
 					KeyFactory factory = KeyFactory.getInstance("ECDSA","BC");
 					PublicKey owner = factory.generatePublic(spec);
-					
+					System.out.println("[잔액] UTXO 개수 :" + peerModel.UTXOs.size());
 					for(int i=0; i<peerModel.UTXOs.size();i++) {
 						TransactionOutput UTXO = peerModel.UTXOs.get(i);
 						if(UTXO.isMine(owner)) {
@@ -261,42 +272,19 @@ public class PeerThread extends Thread {
 							additems.put("utxoHash", UTXO.getTxoHash());
 							additems.put("value", UTXO.value+"");
 							send(peerModel.makeJsonObject(additems));
+							System.out.println("[잔액] UTXO정보 전송완료");
 						}
 					}
 				}
 				
-				if(jsonObject.containsKey("sendUTXO")) {					
-					//UTXO 검증
-					String utxoHash = jsonObject.getString("sendUTXO");
-					double nonce = Double.parseDouble(jsonObject.getString("nonce"));
-					String miner = jsonObject.getString("miner");
-					float value = Float.parseFloat(jsonObject.getString("value"));
-					String txHash = jsonObject.getString("txHash");
-					
-					byte[] byteRecipient = Base64.decode(jsonObject.getString("recipient"));
-					X509EncodedKeySpec spec = new X509EncodedKeySpec(byteRecipient);
-					KeyFactory factory = KeyFactory.getInstance("ECDSA","BC");
-					PublicKey recipient = factory.generatePublic(spec);
-					
-					//검증 성공
-					if(utxoHash.equals(DigestUtils.sha256(miner+nonce+value+recipient))) {
-						System.out.println("채굴 성공 측 : UTXO 검증 성공 및 수신 완료");
-						TransactionOutput UTXO = new TransactionOutput(recipient,value,miner);
-						UTXO.setHash(utxoHash);
-						UTXO.setNonce(nonce);
-						UTXO.setTransactionHash(txHash);
-						
-						for(Transaction tx : peerModel.transactionList) {
-							if(tx.getHash().equals(UTXO.getTransactionHash())) {
-								tx.outputs.add(UTXO);
-							}
-						}
-						
-						//UTXO 삭제 요청 보내기
-						additems = new HashMap<String,String>();
-						additems.put("deleteUTXO",utxoHash);
-						send(peerModel.makeJsonObject(additems));
-					}
+				if(jsonObject.containsKey("completeProcessingTX")) {
+					//또 다른 트랜잭션 받기
+					peerModel.transactionList = new ArrayList<Transaction>();
+					Platform.runLater(()->{
+						Button miningStartButton = peerModel.miningStartButton;
+						miningStartButton.setDisable(false);
+						miningStartButton.setText("채굴시작");
+					});
 				}
 				//상대방의 연결이 끊겼을 경우 peerList에서 제거
 			} catch (Exception e) {

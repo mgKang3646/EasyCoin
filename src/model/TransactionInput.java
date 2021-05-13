@@ -2,16 +2,26 @@ package model;
 
 public class TransactionInput {
 
-	String miners;
+	String miner;
 	String utxoHash;
+	float inputValue;
 	String transactionHash;
-	public TransactionInput(String miners,String utxoHash) {
-		this.miners = miners;
+	public TransactionInput(String miner,String utxoHash,float inputValue) {
+		this.miner = miner;
 		this.utxoHash = utxoHash;
+		this.inputValue = inputValue;
 	}
 
-	public String getMiners() {
-		return miners;
+	public float getInputValue() {
+		return inputValue;
+	}
+
+	public void setInputValue(float inputValue) {
+		this.inputValue = inputValue;
+	}
+
+	public String getMiner() {
+		return miner;
 	}
 
 	public String getUtxoHash() {

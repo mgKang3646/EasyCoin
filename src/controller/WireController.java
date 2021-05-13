@@ -65,11 +65,14 @@ public class WireController implements Initializable{
 				float total =0;
 				JsonArrayBuilder minerArr = Json.createArrayBuilder();
 				JsonArrayBuilder utxoHashArr = Json.createArrayBuilder();
+				JsonArrayBuilder inputValueArr = Json.createArrayBuilder();
 
 				for(TransactionOutput input : peerModel.walletModel.getUTXOWallet()) {
 					total += input.getValue();
+					inputValueArr.add(input.getValue());
 					minerArr.add(input.getMiner());
 					utxoHashArr.add(input.getTxoHash());
+					System.out.println("JsonArray 전 데이터 : "+ input.getMiner());
 					if(total >= value) break;
 				}
 				
@@ -88,6 +91,7 @@ public class WireController implements Initializable{
 														.add("signature", Base64.toBase64String(newTransaction.signature))
 														.add("miners", minerArr)
 														.add("utxoHashs", utxoHashArr)
+														.add("inputValueArr", inputValueArr)
 														.add("transactionHash", newTransaction.getHash())
 														.build());
 				

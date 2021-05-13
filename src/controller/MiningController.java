@@ -4,6 +4,8 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -25,6 +27,7 @@ import model.PeerModel;
 import model.PeerModel.Peer;
 import model.Transaction;
 import model.TransactionInput;
+import model.TransactionOutput;
 
 public class MiningController implements Initializable {
 	
@@ -87,23 +90,46 @@ public class MiningController implements Initializable {
 			//검증 성공한 경우
 			if(verifyResult==1) {
 					//UI 변경
-					if(peerModel.miningFlag==false) { //채굴 성공 및 합의 성공						
-						//UTXO 처리 시작
+					if(peerModel.miningFlag==false) { //채굴 성공 및 합의 성공		
+						
+						// 채굴자 보상 UTXO 생성
+						peerModel.UTXOs.add(new TransactionOutput(peerModel.walletModel.getPublicKey(),PeerModel.REWARD, peerModel.walletModel.getUsername()));
+						peerModel.UTXOs.get(peerModel.UTXOs.size()-1).generateHash();
+						
+						//UTXO 삭제 요청 <? 본인이 갖고 있는 경우 구현 안됨 >
 						for(Transaction tx : peerModel.transactionList) {
 							for(TransactionInput input : tx.inputs) {
 								for(Peer peer : peerModel.peerList) {
-									if(peer.getUserName().equals(input.getMiners())) {
-										System.out.println("input.getMiners() : "+input.getMiners());
+									if(peer.getUserName().equals(input.getMiner())) {
 										HashMap<String,String> additems = new HashMap<String,String>();
-										additems.put("getUTXO", "");
-										additems.put("txHash", tx.getHash());
-										additems.put("utxoHash", input.getUtxoHash());
-										System.out.println("채굴 성공 측 : UTXO 보내주라!");
+										additems.put("deleteUTXO", input.getUtxoHash());
 										peer.getPeerThread().send(peerModel.makeJsonObject(additems));
+										System.out.println("UTXO 삭제 요청 전송 완료");
 									}
 								}
 							}
 						}
+						
+						Thread.sleep(1000); // 트랜잭션 데이터 주고 받는 시간동안 잠시 쉬기
+						
+						
+						for(Transaction tx : peerModel.transactionList) {
+							peerModel.processTransaction(tx);
+						}
+						
+						//처리 완료 후, 트랜잭션리스트 초기화하기
+						peerModel.transactionList = new ArrayList<Transaction>();
+						
+						//처리 완료 메세지 보내기 (동기화 맞추기)
+						HashMap<String,String> additems = new HashMap<String,String>();
+						additems.put("completeProcessingTX", "");
+						peerModel.getServerListerner().sendMessage(peerModel.makeJsonObject(additems));
+						
+						Platform.runLater(()->{
+							miningStartButton.setDisable(false);
+							miningStartButton.setText("채굴시작");
+						});
+						
 						Platform.runLater(new Runnable() {
 							public void run() {
 								try {
