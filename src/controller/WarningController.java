@@ -14,19 +14,19 @@ import model.PeerModel;
 public class WarningController {
 
 	@FXML TextField path;
-	@FXML Button goToIndex;
+	@FXML Button goMyPage;
 	Stage primaryStage;
 	PeerModel peerModel;
 	
-	public void goIndex() throws IOException {
+	public void goMyPage() throws IOException {
 		
-		Stage stage = (Stage)goToIndex.getScene().getWindow();
+		Stage stage = (Stage)goMyPage.getScene().getWindow();
 		stage.close();
 		
-		FXMLLoader loader  = new FXMLLoader(getClass().getResource("/view/index.fxml"));
+		FXMLLoader loader  = new FXMLLoader(getClass().getResource("/view/mypage.fxml"));
 		Parent root = loader.load();
-		IndexController indexController = loader.getController(); // fxml이 로드되는 동시에 연결된 컨트롤러 객체가 자동생성.
-		indexController.setPeerModel(peerModel);
+		MyPageController mypageController = loader.getController(); // fxml이 로드되는 동시에 연결된 컨트롤러 객체가 자동생성.
+		mypageController.setPeerModel(peerModel);
 		
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);

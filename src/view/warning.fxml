@@ -35,7 +35,7 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Button fx:id="goToIndex" layoutX="116.0" layoutY="269.0" mnemonicParsing="false" onAction="#goIndex" prefHeight="32.0" prefWidth="187.0" text="확인">
+      <Button fx:id="goMyPage" layoutX="116.0" layoutY="269.0" mnemonicParsing="false" onAction="#goMyPage" prefHeight="32.0" prefWidth="187.0" text="확인">
          <font>
             <Font size="22.0" />
          </font>

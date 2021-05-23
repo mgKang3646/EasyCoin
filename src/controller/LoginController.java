@@ -46,11 +46,7 @@ public class LoginController implements Initializable  {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
 		
-		mainImageView.setOnMousePressed(e->{
-			mainImage = new Image("/image/main.gif");
-			mainImageView.setImage(mainImage);
-		});
-		mainImageView.setOnMouseReleased(e->{
+		mainImageView.setOnMouseClicked(e->{
 			mainImage = new Image("/image/main.png");
 			mainImageView.setImage(mainImage);
 		});
@@ -100,7 +96,7 @@ public class LoginController implements Initializable  {
 	}
 	
 	//? 로그인 시 개인키 공개키 구분하는 것 구현해야함 지금은 공개키로도 접속가능
-	public void goIndex() throws Exception {
+	public void goMyPage() throws Exception {
 		// DB 접근 객체 생성
 		DAO dao = new DAO();
 		

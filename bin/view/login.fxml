@@ -9,10 +9,10 @@
    <children>
       <ImageView fx:id="mainImageView" fitHeight="200.0" fitWidth="200.0" layoutX="45.0" layoutY="168.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="/image/main.png" />
+            <Image url="/image/main.gif" />
          </image></ImageView>
         
-      <Button fx:id="loginButton" layoutX="330.0" layoutY="215.0" mnemonicParsing="false" onAction="#goIndex" prefHeight="64.0" prefWidth="200.0" style="-fx-background-color: white;">
+      <Button fx:id="loginButton" layoutX="330.0" layoutY="215.0" mnemonicParsing="false" onAction="#goMyPage" prefHeight="64.0" prefWidth="200.0" style="-fx-background-color: white;">
          <graphic>
             <ImageView fx:id="loginButtonImageView" fitHeight="64.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>

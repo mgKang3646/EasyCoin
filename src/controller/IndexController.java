@@ -27,23 +27,11 @@ public class IndexController implements Initializable  {
 	@FXML private Button miningButton;
 	@FXML private HBox content;
 	@FXML private Button blockchainButton;
-	@FXML private Button upgradeButton;
 	@FXML private TextField idText;
-	@FXML private Button walletButton;
+	@FXML private Button wireButton;
+	@FXML private Button upgradeButton;
+	@FXML private Button goMyPageButton;
 	@FXML private Button stateConnectionButton;
-	@FXML private ImageView upgradeImageView; 
-	@FXML private ImageView stateConnectionImageView; 
-	@FXML private ImageView blockchainImageView; 
-	@FXML private ImageView miningImageView; 
-	@FXML private ImageView walletImageView; 
-	
-	Image blockchainButtonImage;
-	Image upgradeButtonImage;
-	Image stateConnectionButtonImage;
-	Image miningButtonImage;
-	Image walletButtonImage;
-
-	
 	
 	private PeerModel peerModel;
 	private Parent miningPane;
@@ -51,65 +39,27 @@ public class IndexController implements Initializable  {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
-
+	
 		
-		blockchainButton.setOnMouseEntered(e->{
-			blockchainButtonImage = new Image("/image/blockchainEntered.png");
-			blockchainImageView.setImage(blockchainButtonImage);
-		});
+	}
+	
+	public void goMyPage() {
+		
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/mypage.fxml"));
+			Parent root = loader.load();
+			Scene scene = new Scene(root);
+			Stage primaryStage = (Stage)goMyPageButton.getScene().getWindow();
+			primaryStage.setScene(scene);
 			
-		blockchainButton.setOnMouseExited(e->{
-			blockchainButtonImage = new Image("/image/blockchain.png");
-			blockchainImageView.setImage(blockchainButtonImage);
-		});
-		
-		
-		upgradeButton.setOnMouseEntered(e->{
-			upgradeButtonImage = new Image("/image/upgradeEntered.png");
-			upgradeImageView.setImage(upgradeButtonImage);
-		});
+			MyPageController mpc = loader.getController();
+			mpc.setPeerModel(peerModel);
 			
-		upgradeButton.setOnMouseExited(e->{
-			upgradeButtonImage = new Image("/image/upgrade.png");
-			upgradeImageView.setImage(upgradeButtonImage);
-		});
-		upgradeButton.setOnMouseClicked(e->{
-			upgradeButtonImage = new Image("/image/upgradeClicked.png");
-			upgradeImageView.setImage(upgradeButtonImage);
-		});
-		
-		
-		miningButton.setOnMouseEntered(e->{
-			miningButtonImage = new Image("/image/miningEntered.png");
-			miningImageView.setImage(miningButtonImage);
-		});
 			
-		miningButton.setOnMouseExited(e->{
-			miningButtonImage = new Image("/image/mining.png");
-			miningImageView.setImage(miningButtonImage);
-		});
-		
-		
-		stateConnectionButton.setOnMouseEntered(e->{
-			stateConnectionButtonImage = new Image("/image/stateConnectionEntered.png");
-			stateConnectionImageView.setImage(stateConnectionButtonImage);
-		});
-			
-		stateConnectionButton.setOnMouseExited(e->{
-			stateConnectionButtonImage = new Image("/image/stateConnection.png");
-			stateConnectionImageView.setImage(stateConnectionButtonImage);
-		});
-				
-		
-		walletButton.setOnMouseEntered(e->{
-			walletButtonImage = new Image("/image/walletEntered.png");
-			walletImageView.setImage(walletButtonImage);
-		});
-			
-		walletButton.setOnMouseExited(e->{
-			walletButtonImage = new Image("/image/wallet.png");
-			walletImageView.setImage(walletButtonImage);
-		});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	

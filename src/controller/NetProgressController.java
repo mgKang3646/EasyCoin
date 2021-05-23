@@ -173,10 +173,10 @@ public class NetProgressController implements Initializable {
 					else if(whosCall.equals("login")) {
 						Platform.runLater(()->{
 							try {
-								FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/index.fxml"));
+								FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/mypage.fxml"));
 								Parent root = loader.load();
-								IndexController indexController = loader.getController(); // fxml이 로드되는 동시에 연결된 컨트롤러 객체가 자동생성.
-								indexController.setPeerModel(peerModel);
+								MyPageController mypageController = loader.getController(); // fxml이 로드되는 동시에 연결된 컨트롤러 객체가 자동생성.
+								mypageController.setPeerModel(peerModel);
 								Scene scene = new Scene(root);
 								//현재 스테이지 닫아주기 
 								Stage currentStage = (Stage)progressBar.getScene().getWindow();
