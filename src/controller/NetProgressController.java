@@ -158,7 +158,7 @@ public class NetProgressController implements Initializable {
 								Parent root = loader.load();
 								IndexController indexController = loader.getController(); // fxml이 로드되는 동시에 연결된 컨트롤러 객체가 자동생성.
 								indexController.setPeerModel(peerModel);
-								Scene scene = new Scene(root);
+ 								Scene scene = new Scene(root);
 								//현재 스테이지 닫아주기 
 								Stage currentStage = (Stage)progressBar.getScene().getWindow();
 								currentStage.close();
