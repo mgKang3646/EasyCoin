@@ -7,11 +7,10 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 
 import org.bouncycastle.util.encoders.Base64;
 
@@ -25,7 +24,6 @@ import javafx.stage.Stage;
 import model.PeerModel;
 import model.ReadPemFile;
 import model.Transaction;
-import model.TransactionInput;
 import model.TransactionOutput;
 
 public class WireController implements Initializable{
@@ -63,9 +61,25 @@ public class WireController implements Initializable{
 			//트랜잭션 생성
 			if(value >= 0.05) {
 				
+				// 송금액만큼의 잔액이 있는지 확인
+				float total =0;
+				JsonArrayBuilder minerArr = Json.createArrayBuilder();
+				JsonArrayBuilder utxoHashArr = Json.createArrayBuilder();
+				JsonArrayBuilder inputValueArr = Json.createArrayBuilder();
+
+				for(TransactionOutput input : peerModel.walletModel.getUTXOWallet()) {
+					total += input.getValue();
+					inputValueArr.add(input.getValue());
+					minerArr.add(input.getMiner());
+					utxoHashArr.add(input.getTxoHash());
+					System.out.println("JsonArray 전 데이터 : "+ input.getMiner());
+					if(total >= value) break;
+				}
+				
 				//트랜잭션 생성
 				Transaction newTransaction = new Transaction(sender,recipient,value); // 트랜잭션 생성
 				newTransaction.generateSignature(peerModel.walletModel.getPrivateKey()); //전자서명 생성
+				newTransaction.generateHash();
 				
 				//임시 트랜잭션 전송하기
 				StringWriter sw = new StringWriter();
@@ -75,6 +89,10 @@ public class WireController implements Initializable{
 														.add("recipient",Base64.toBase64String(recipient.getEncoded()))
 														.add("value", value+"")
 														.add("signature", Base64.toBase64String(newTransaction.signature))
+														.add("miners", minerArr)
+														.add("utxoHashs", utxoHashArr)
+														.add("inputValueArr", inputValueArr)
+														.add("transactionHash", newTransaction.getHash())
 														.build());
 				
 				peerModel.getServerListerner().sendMessage(sw.toString());

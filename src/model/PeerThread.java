@@ -3,15 +3,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.Socket;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bouncycastle.util.encoders.Base64;
@@ -22,6 +24,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import model.PeerModel.Peer;
 
@@ -39,7 +42,6 @@ public class PeerThread extends Thread {
 	private DAO dao = null;
 	
 	
-	
 
 	public PeerThread(Socket socket, PeerModel peerModel) throws IOException{
 		this.peerModel = peerModel;
@@ -52,10 +54,13 @@ public class PeerThread extends Thread {
 		this.printWriter = new PrintWriter(socket.getOutputStream(),true); // 상대 서버스레드로 보내는 PrintWriter
 		this.dao = new DAO();
 	}
+	
 	public void run() {
 		boolean flag = true;
 		while(flag) {
 			try {
+				HashMap<String,String> additems = new HashMap<String,String>();
+				
 				// 블록정보와 트랜잭션 정보를 이쪽에서 처리
 				JsonObject jsonObject = Json.createReader(bufferedReader).readObject();
 				///////////////////////////////blocking///////////////////////////////////
@@ -75,21 +80,16 @@ public class PeerThread extends Thread {
 						// ? 결과도 암호화하여 전송해보기 
 					
 					peerModel.totalRespondedCount += 1; // 본인 
-					StringWriter sW = new StringWriter();
 					
 					if(result == 1) { // 검증 성공
-						Json.createWriter(sW).writeObject(Json.createObjectBuilder()
-																.add("verified", "true")
-																.add("blockNum",Block.count) // 검증 과정에서 리더 Peer를 파악하기 위한 정보제공
-																.build());		
-						peerModel.getServerListerner().sendMessage(sW.toString());
+						additems.put("verified", "true");
+						additems.put("blockNum", Block.count+"");
+						peerModel.getServerListerner().sendMessage(peerModel.makeJsonObject(additems));
 						peerModel.verifiedPeerCount += 1; // 본인
 					}else { // 검증 실패
-						Json.createWriter(sW).writeObject(Json.createObjectBuilder()
-																.add("verified", "false")
-																.add("blockNum", Block.count)
-																.build());
-						peerModel.getServerListerner().sendMessage(sW.toString());
+						additems.put("verified", "false");
+						additems.put("blockNum", Block.count+"");
+						peerModel.getServerListerner().sendMessage(peerModel.makeJsonObject(additems));
 					}
 					
 					// 임시 블럭 미리 생성해놓기
@@ -157,11 +157,11 @@ public class PeerThread extends Thread {
 						peerModel.totalRespondedCount++; // 다른 Peer 추가 
 						if(jsonObject.getString("verified").equals("true")){ // 검증 성공이면 true
 							System.out.println(hostAddress +":"+this.getPort()+ "의 검증여부 : true");
-							peer.setBlockNum(jsonObject.getInt("blockNum")); 
+							peer.setBlockNum(Integer.parseInt(jsonObject.getString("blockNum"))); 
 							peerModel.verifiedPeerCount++;
 						}else { 
 							System.out.println(hostAddress +":"+this.getPort() + "의 검증여부 : false"); 
-							peer.setBlockNum(jsonObject.getInt("blockNum")); 
+							peer.setBlockNum(Integer.parseInt(jsonObject.getString("blockNum"))); 
 							}		
 				}
 				//블록 요청 후 리더 Peer로부터 블럭 받기
@@ -199,13 +199,9 @@ public class PeerThread extends Thread {
 						peerModel.amILeader = false;
 					}else { // 만약 자신이 더 블럭 개수가 많은 경우
 						peerModel.amILeader = true;
-						StringWriter sw = new StringWriter();
-						//자신이 블럭이 더 많다고 알려주기 
-						Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-															.add("biggerThanYou", Block.count)
-															.add("username", peer.getUserName())
-															.build());
-						printWriter.println(sw.toString());
+						additems.put("biggerThanYou", Block.count+"");
+						additems.put("username", peer.getUserName());
+						send(peerModel.makeJsonObject(additems));
 					}
 				}
 				
@@ -228,49 +224,72 @@ public class PeerThread extends Thread {
 					
 					//전자서명 획득
 					byte[] signature = Base64.decode(jsonObject.getString("signature"));
-					
+					String transactionHash = jsonObject.getString("transactionHash");
 					//트랜잭션생성
 					Transaction newTransaction = new Transaction(sender,recipient,value);
 					newTransaction.setSignature(signature);
+					newTransaction.setHash(transactionHash);
 					
-					//전자서명 검증에 성공하면 UTXO 체크하기 
+					for(int i=0; i< jsonObject.getJsonArray("miners").size();i++) {
+						JsonValue minerJson = jsonObject.getJsonArray("miners").get(i);
+						JsonValue utxoHashJson = jsonObject.getJsonArray("utxoHashs").get(i);
+						JsonValue inputValueJson = jsonObject.getJsonArray("inputValueArr").get(i);
+						String miner = minerJson.toString().replaceAll("\"", "");
+						String utxoHash = utxoHashJson.toString().replaceAll("\"", "");
+						float inputValue = Float.parseFloat(inputValueJson.toString().replaceAll("\"", ""));
+	
+						System.out.println("트랜잭션 input miner : " + miner);
+						System.out.println("트랜잭션 input hash : " + utxoHash);
+						System.out.println("트랜잭션 input value : " + inputValue);
+
+						TransactionInput input = new TransactionInput(miner,utxoHash,inputValue);
+						input.setTransactionHash(newTransaction.getHash());
+						newTransaction.inputs.add(input);
+					}
+				
+					//전자서명 검증에 성공하면 TransactionList에 임시저장
 					if(newTransaction.verifySignature()) {
-						TransactionOutput UTXO = new TransactionOutput(recipient,value);
-						peerModel.UTXOs.add(UTXO);
-						/*
-						StringWriter sw = new StringWriter();
-						Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-																.add("RequestUTXO", "")
-																.add("sender",Base64.toBase64String(sender.getEncoded()))
-																.build());
-						//peerModel.getServerListerner().sendMessage(sw.toString());*/
+						peerModel.transactionList.add(newTransaction); // TransactioList는 합의에 성공하면 refresh되어야 함.
+						System.out.println("트랜잭션 리스트에 추가");
+						//next : minerController.java
 					}
 				}
 				
 				//UTXO 요청
 				if(jsonObject.containsKey("requestUTXO")) {
-					System.out.println("UTXO요청 잘 들어옴");
+					System.out.println("[잔액] UTXO요청 잘 들어옴");
 					byte[] byteOwner = Base64.decode(jsonObject.getString("owner"));
 					X509EncodedKeySpec spec = new X509EncodedKeySpec(byteOwner);
 					KeyFactory factory = KeyFactory.getInstance("ECDSA","BC");
 					PublicKey owner = factory.generatePublic(spec);
-					
+					System.out.println("[잔액] UTXO 개수 :" + peerModel.UTXOs.size());
 					for(int i=0; i<peerModel.UTXOs.size();i++) {
 						TransactionOutput UTXO = peerModel.UTXOs.get(i);
-						if(UTXO.recipient == owner) {
-							StringWriter sw = new StringWriter();
-							Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-																		.add("responseUTXO", "")
-																		.add("value", UTXO.value+"")
-																		.build());
-							printWriter.println(sw.toString());
-							Thread.sleep(100);
+						if(UTXO.isMine(owner)) {
+							additems.put("responseUTXO","");
+							additems.put("nonce",UTXO.getNonce()+"");
+							additems.put("miner", UTXO.getMiner());
+							additems.put("utxoHash", UTXO.getTxoHash());
+							additems.put("value", UTXO.value+"");
+							send(peerModel.makeJsonObject(additems));
+							System.out.println("[잔액] UTXO정보 전송완료");
 						}
 					}
+				}
+				
+				if(jsonObject.containsKey("completeProcessingTX")) {
+					//또 다른 트랜잭션 받기
+					peerModel.transactionList = new ArrayList<Transaction>();
+					Platform.runLater(()->{
+						Button miningStartButton = peerModel.miningStartButton;
+						miningStartButton.setDisable(false);
+						miningStartButton.setText("채굴시작");
+					});
 				}
 				//상대방의 연결이 끊겼을 경우 peerList에서 제거
 			} catch (Exception e) {
 				try {
+					e.printStackTrace();
 					for(Peer peer : peerModel.peerList) {
 						if(peer.getPeerThread() == PeerThread.this) {
 							peerModel.peerList.remove(peer);
@@ -287,12 +306,10 @@ public class PeerThread extends Thread {
 	
 	//P2P 네트워크 망에 연결되어 있는 Peer둘에게 연결 요청 보내기
 	public void addressSend(String localhost) throws IOException {
-		StringWriter sW = new StringWriter();
-		Json.createWriter(sW).writeObject(Json.createObjectBuilder()
-											.add("localhost", localhost)
-											.add("username",peerModel.walletModel.getUsername())
-											.build());
-		printWriter.println(sW);	
+		HashMap<String,String> additems = new HashMap<String,String>();
+		additems.put("localhost", localhost);
+		additems.put("username",peerModel.walletModel.getUsername());
+		send(peerModel.makeJsonObject(additems));
 	}
 
 	// 다른 Peer에서 채굴된 블럭 검증하기
@@ -305,22 +322,21 @@ public class PeerThread extends Thread {
 	
 	// 리더Peer에게 블럭 요청하기 
 	public void requestBlock() {
-			StringWriter sw = new StringWriter();
-			Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-										.add("blockNum", Block.count) 
-										.add("blockHash", peerModel.blockchainModel.getBlocks().get(peerModel.blockchainModel.getBlocks().size()-1).getHash())
-										.build());
-			
-			printWriter.println(sw.toString());	
+			HashMap<String,String> additems = new HashMap<String,String>();
+			additems.put("blockNum", Block.count+"");
+			additems.put("blockHash",peerModel.blockchainModel.getBlocks().get(peerModel.blockchainModel.getBlocks().size()-1).getHash());
+			send(peerModel.makeJsonObject(additems));
 	}
 	
 	//리더 Peer에게 본인이 리더임을 알림, 리더는 블록개수가 많은 Peer가 리더가 된다. 그러므로 여러명의 리더가 나올 수 있음(블록개수가 같은 경우)
 	public void sendLeader() {
-		StringWriter sw = new StringWriter();
-		Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-										.add("miningLeader", true)
-										.build());
-		printWriter.println(sw.toString());
+		HashMap<String,String> additems = new HashMap<String,String>();
+		additems.put("miningLeader", "true");
+		send(peerModel.makeJsonObject(additems));
+	}
+	
+	public void send(String sw) {
+		printWriter.println(sw);
 	}
 	
 	public Peer getPeer() {

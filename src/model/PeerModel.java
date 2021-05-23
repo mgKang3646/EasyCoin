@@ -8,11 +8,16 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.bouncycastle.util.encoders.Base64;
 
 import database.DAO;
 import database.DTO;
@@ -22,6 +27,7 @@ import javafx.stage.Stage;
 
 
 public class PeerModel {
+	public static final float REWARD = 50f;
 	public String hashDifficulty = "00000";
 	public int zeroNum = 5;
 	public Block block = null; // 가장 최신 블럭
@@ -44,6 +50,7 @@ public class PeerModel {
 	public Vector<TransactionOutput> UTXOs = new Vector<TransactionOutput>(); // 스레드 간의 동시접속이 가능한 리스트여서 Vector로 생성
 	public ArrayList<DTO> dtos = new ArrayList<DTO>();
 	public ArrayList<Peer> peerList = new ArrayList<Peer>();
+	public ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
 
 
 	public ServerListener getServerListerner() {
@@ -79,11 +86,6 @@ public class PeerModel {
 				peerModel.blockchainModel.getBlocks().add(block); // 제네시스 블록 블록체인 Model에 저장
 				dao.storeBlock(block, walletModel.getUsername()); // 제네시스 블록 DB 저장
 			}
-			
-			//임시 UTXO 만들기
-			TransactionOutput tempUTXO = new TransactionOutput(peerModel.walletModel.getPublicKey(),100f);
-			tempUTXO.id = "0";
-			peerModel.UTXOs.add(tempUTXO);
 			
 			return 1; // 서버 생성 성공
 	}
@@ -173,25 +175,20 @@ public class PeerModel {
 							
 							//상대 Peer에게 블록채굴완료 정보 전송하기
 							System.out.println("채굴 성공!");
-							StringWriter sw = new StringWriter();
-							Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-																.add("previousHash", previousHash)
-																.add("nonce", nonce)
-																.add("timestamp", currentTime)
-																.build());
-														
-							serverListener.sendMessage(sw.toString());
+							HashMap<String,String> additems = new HashMap<String,String>();
+							additems.put("previousHash", previousHash);
+							additems.put("nonce", nonce);
+							additems.put("timestamp", currentTime);																	
+							serverListener.sendMessage(makeJsonObject(additems));
 							
 							// 검증 결과 전송하기 
 							verifiedPeerCount++; // 본인 추가
 							totalRespondedCount++; // 본인 추가
 							
-							StringWriter sW = new StringWriter();
-							Json.createWriter(sW).writeObject(Json.createObjectBuilder()
-														.add("verified", "true")
-														.add("blockNum",Block.count) // 검증 과정에서 리더 Peer를 파악하기 위한 정보제공
-																	.build());		
-							serverListener.sendMessage(sW.toString());
+							additems = new HashMap<String,String>();
+							additems.put("verified", "true");
+							additems.put("blockNum",Block.count+"");													
+							serverListener.sendMessage(makeJsonObject(additems));
 					
 							// 검증결과 기다리기 
 							System.out.println("채굴 성공 후 검증 대기 중");
@@ -215,7 +212,6 @@ public class PeerModel {
 	
 	public int verifyBlock() throws InterruptedException {
 		//버튼 변화
-		
 		Platform.runLater(()->{
 			miningStartButton.setDisable(true);
 			miningStartButton.setText("합의 중....");
@@ -257,8 +253,7 @@ public class PeerModel {
 				verifiedPeerCount=0; //초기화
 				totalRespondedCount = 0; //초기화
 				Platform.runLater(()->{
-					miningStartButton.setDisable(false);
-					miningStartButton.setText("채굴시작");
+					miningStartButton.setText("트랜잭션 처리 중...");
 				});
 				return 1;
 		}
@@ -327,6 +322,56 @@ public class PeerModel {
 			}
 		}
 		return null;
+	}
+	
+	//JsonObject 만들기
+	public String makeJsonObject(HashMap<String,String> additems) {
+			StringWriter sw = new StringWriter();
+			JsonObjectBuilder job = Json.createObjectBuilder();
+			
+			Set<String> keyset = additems.keySet();
+			Iterator<String> iterator = keyset.iterator();
+			
+			while(iterator.hasNext()) {
+				String key = iterator.next();
+				String value = additems.get(key);
+				
+				job.add(key, value);
+			}
+			
+			Json.createWriter(sw).writeObject(job.build());
+			
+			return sw.toString();
+	}
+	// 트랜잭션 처리하기
+	public boolean processTransaction(Transaction tx) {
+		
+		float total = 0;
+		float balance = 0;
+		float value = tx.value;
+		
+		for(int i = 0; i < tx.inputs.size(); i++) {
+			total += tx.inputs.get(i).getInputValue();
+		}
+		// 총 금액이 송금액보다 작으면 false이다. 
+		if(value > total) {
+			return false;
+			
+		}else { // 총 금액이 송금액보다 크면 true이다. 
+			balance = total - value;
+			
+			//트랜잭션의 UTXO 생성
+			UTXOs.add(new TransactionOutput(tx.recipient, value, walletModel.getUsername()));
+			UTXOs.get(UTXOs.size()-1).generateHash();
+			tx.outputs.add(UTXOs.get(UTXOs.size()-1));
+			
+			//잔액 UTXO 생성
+			UTXOs.add(new TransactionOutput(tx.sender, balance, walletModel.getUsername()));
+			UTXOs.get(UTXOs.size()-1).generateHash();
+			tx.outputs.add(UTXOs.get(UTXOs.size()-1));
+						
+			return true;
+		}	
 	}
 	
 	
