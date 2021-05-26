@@ -27,12 +27,11 @@ public class JoinController implements Initializable {
 
 	@FXML private Button join_linkButton;
 	@FXML private TextField userNameText;
-	@FXML private Button goToIndexButton;
+//	@FXML private Button goToIndexButton;
+	@FXML private Button goLoginPageButton;
 	@FXML private Label privateKeyLabel;
-	@FXML private ImageView join_linkButtonImageView; 
+
 	
-	
-	Image join_linkButtonImage;
 	DTO userDTO;
 	DAO dao;
 	produceKey produceKey;
@@ -48,21 +47,25 @@ public class JoinController implements Initializable {
 		peerModel = new PeerModel(); // P2P 통신 모델
 		walletModel = new WalletModel(); // 지갑 생성
 		blockchainModel = new BlockchainModel(); // 블록체인 생성
-
-		
-		join_linkButton.setOnMouseEntered(e->{
-			join_linkButtonImage = new Image("/image/join_linkEntered.png");
-			join_linkButtonImageView.setImage(join_linkButtonImage);
-		});
-			
-		join_linkButton.setOnMouseExited(e->{
-			join_linkButtonImage = new Image("/image/join_link.png");
-			join_linkButtonImageView.setImage(join_linkButtonImage);
-		});
-		
+	
 		
 	}
 
+	
+	public void goLoginPage() {
+		
+		try {
+			Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+			Scene scene = new Scene(login);
+			Stage primaryStage = (Stage)goLoginPageButton.getScene().getWindow();
+			primaryStage.setScene(scene);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 	public void join() throws Exception {
 		

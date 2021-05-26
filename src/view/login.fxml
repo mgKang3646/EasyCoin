@@ -9,14 +9,14 @@
    <children>
       <ImageView fx:id="mainImageView" fitHeight="200.0" fitWidth="200.0" layoutX="45.0" layoutY="168.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="/image/main.gif" />
+            <Image url="@../image/main.gif" />
          </image></ImageView>
         
       <Button fx:id="loginButton" layoutX="330.0" layoutY="215.0" mnemonicParsing="false" onAction="#goMyPage" prefHeight="64.0" prefWidth="200.0" style="-fx-background-color: white;">
          <graphic>
             <ImageView fx:id="loginButtonImageView" fitHeight="64.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="/image/login.png" />
+                  <Image url="@../image/login.png" />
                </image>
             </ImageView>
          </graphic></Button>
@@ -24,13 +24,13 @@
          <graphic>
             <ImageView fx:id="joinButtonImageView" fitHeight="64.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="/image/join.png" />
+                  <Image url="@../image/join.png" />
                </image>
             </ImageView>
          </graphic></Button>
       <ImageView fx:id="titleImageView" fitHeight="179.0" fitWidth="580.0" layoutX="14.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="/image/EasyCoin.png" />
+            <Image url="@../image/EasyCoin.png" />
          </image>
       </ImageView>
    </children>

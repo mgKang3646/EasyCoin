@@ -1,10 +1,16 @@
 package controller;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import javax.json.Json;
+
+import org.bouncycastle.util.encoders.Base64;
+
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,6 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.Block;
 import model.PeerModel;
+import model.TransactionOutput;
 import model.PeerModel.Peer;
 
 public class MyPageController implements Initializable  {
@@ -41,7 +48,25 @@ public class MyPageController implements Initializable  {
 		
 	}
 	
+
 	
+	//송금하기
+	public void wire() throws IOException {
+		
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/wire.fxml"));
+		Parent root = loader.load();
+		WireController wc = loader.getController();
+		wc.setPeerModel(peerModel);
+		
+		Scene scene = new Scene(root);
+		Stage stage = new Stage();
+		stage.setScene(scene);
+		stage.setX(balanceTextField.getScene().getWindow().getX()+220);
+		stage.setY(balanceTextField.getScene().getWindow().getY());
+		stage.show();
+		
+	}
+		
 	public void setPeerModel(PeerModel peerModel) throws IOException{
 		this.peerModel = peerModel;
 		idText.setText(this.peerModel.walletModel.getUsername()); // ID 세팅하기

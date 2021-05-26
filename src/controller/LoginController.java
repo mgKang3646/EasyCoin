@@ -95,9 +95,9 @@ public class LoginController implements Initializable  {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}	
 	}
+	
 	
 	//? 로그인 시 개인키 공개키 구분하는 것 구현해야함 지금은 공개키로도 접속가능
 	public void goMyPage() throws Exception {

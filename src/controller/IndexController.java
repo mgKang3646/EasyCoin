@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,7 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.Block;
@@ -32,6 +31,10 @@ public class IndexController implements Initializable  {
 	@FXML private Button upgradeButton;
 	@FXML private Button goMyPageButton;
 	@FXML private Button stateConnectionButton;
+	@FXML private ImageView upgradeButtonImageView;
+	@FXML private AnchorPane EasyCoin;	
+	Image upgradeButtonImage;
+	
 	
 	private PeerModel peerModel;
 	private Parent miningPane;
@@ -40,7 +43,11 @@ public class IndexController implements Initializable  {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
 	
-		
+		upgradeButtonImageView.setOnMouseEntered(e->{
+			upgradeButtonImage = new Image("/image/main.gif");
+			upgradeButtonImageView.setImage(upgradeButtonImage);
+		});
+
 	}
 	
 	public void goMyPage() {

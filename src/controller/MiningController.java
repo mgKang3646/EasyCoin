@@ -36,9 +36,11 @@ public class MiningController implements Initializable {
 	@FXML private Pane blockContent;
 	@FXML private Circle c1;
 	@FXML private Circle c2;
+	@FXML private Circle c3;
 	private PeerModel peerModel;
 	RotateTransition rt1 = new RotateTransition();
 	RotateTransition rt2 = new RotateTransition();
+	RotateTransition rt3 = new RotateTransition();
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -56,9 +58,10 @@ public class MiningController implements Initializable {
 
 		rt1 = setRotate(c1,true,270,10);
 		rt2 = setRotate(c2,true,180, 5);
-		
+	
 		rt1.play();
 		rt2.play();
+
 	
 		peerModel.proofOfWorkCompleteFlag = false; // 아직 다른 상대가 채굴을 완료하지 않음.
 		peerModel.miningFlag = true; // 본인 Peer은 채굴ON! 채굴이 완료되면 false로 바뀜

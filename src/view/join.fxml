@@ -8,66 +8,52 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="420.0" prefWidth="545.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.JoinController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: black; -fx-background-radius: 30;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.JoinController">
    <children>
-      <StackPane prefHeight="420.0" prefWidth="545.0">
+      <Pane style="-fx-background-color: #131022; -fx-background-radius: 30;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
-            <VBox prefHeight="400.0" prefWidth="506.0">
+            <Label layoutX="161.0" layoutY="38.0" text="Easy" textFill="WHITE">
+               <font>
+                  <Font size="64.0" />
+               </font>
+            </Label>
+            <Label layoutX="293.0" layoutY="38.0" text="Coin" textFill="#fff600">
+               <font>
+                  <Font size="64.0" />
+               </font>
+            </Label>
+            <HBox layoutX="58.0" layoutY="174.0">
                <children>
-                  <HBox prefHeight="111.0" prefWidth="200.0" style="-fx-background-image: light sky blue;">
-                     <children>
-                        <ImageView fitHeight="111.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="/image/T_join.png" />
-                           </image>
-                           <HBox.margin>
-                              <Insets top="10.0" />
-                           </HBox.margin>
-                        </ImageView>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="133.0" prefWidth="546.0" style="-fx-background-color: white;">
-                     <children>
-                        <Label text="닉네임 : ">
-                           <font>
-                              <Font size="26.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="userNameText" prefHeight="33.0" prefWidth="367.0">
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets></TextField>
-                     </children>
-                     <VBox.margin>
+                  <Label text="닉네임 : " textFill="WHITE">
+                     <font>
+                        <Font size="26.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="userNameText" prefHeight="33.0" prefWidth="367.0" text="닉네임">
+                     <opaqueInsets>
                         <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="156.0" prefWidth="546.0" style="-fx-background-color: white;">
-                     <children>
-                        <Button fx:id="join_linkButton" mnemonicParsing="false" onAction="#join" prefHeight="78.0" prefWidth="189.0" style="-fx-background-color: white;">
-                           <font>
-                              <Font size="22.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fx:id="join_linkButtonImageView" fitHeight="83.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="/image/join_link.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
+                     </opaqueInsets>
+                  </TextField>
                </children>
-            </VBox>
+            </HBox>
+            <Button fx:id="join_linkButton" layoutX="187.0" layoutY="263.0" mnemonicParsing="false" onAction="#join" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="가입 및 연결" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="30.0" />
+               </font>
+            </Button>
+            <Button fx:id="goLoginPageButton" layoutY="338.0" mnemonicParsing="false" onAction="#goLoginPage" style="-fx-background-color: transparent;">
+               <graphic>
+                  <ImageView fitHeight="37.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/goBackIcon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
-      </StackPane>
+      </Pane>
    </children>
 </AnchorPane>
