@@ -1,8 +1,9 @@
 /application/
 /controller/
-/database/
-/image/
-/view/
 /css/
+/database/
+/image.zip
+/image/
 /model/
 /util/
+/view/
