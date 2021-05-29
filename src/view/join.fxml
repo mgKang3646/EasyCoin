@@ -46,7 +46,7 @@
             </Button>
             <Button fx:id="goLoginPageButton" layoutY="338.0" mnemonicParsing="false" onAction="#goLoginPage" style="-fx-background-color: transparent;">
                <graphic>
-                  <ImageView fitHeight="37.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="goLoginPageButtonImageView" fitHeight="37.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../image/goBackIcon.png" />
                      </image>

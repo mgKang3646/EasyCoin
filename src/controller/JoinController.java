@@ -27,10 +27,10 @@ public class JoinController implements Initializable {
 
 	@FXML private Button join_linkButton;
 	@FXML private TextField userNameText;
-//	@FXML private Button goToIndexButton;
 	@FXML private Button goLoginPageButton;
 	@FXML private Label privateKeyLabel;
-
+	@FXML private ImageView goLoginPageButtonImageView;
+	Image goLoginPageButtonImage;
 	
 	DTO userDTO;
 	DAO dao;
@@ -41,6 +41,12 @@ public class JoinController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
+		
+		goLoginPageButtonImageView.setOnMouseEntered(e->{
+			goLoginPageButtonImage = new Image("/image/goBackIconEntered.png");
+			goLoginPageButtonImageView.setImage(goLoginPageButtonImage);
+		});
+		
 		userDTO = new DTO();
 		dao = new DAO();
 		produceKey = new produceKey(); //privateKey와 publicKey 생성을 위한 Model
@@ -48,7 +54,6 @@ public class JoinController implements Initializable {
 		walletModel = new WalletModel(); // 지갑 생성
 		blockchainModel = new BlockchainModel(); // 블록체인 생성
 	
-		
 	}
 
 	

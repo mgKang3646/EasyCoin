@@ -18,7 +18,7 @@ public class Main extends Application {
 			Parent root = (Parent)FXMLLoader.load(getClass().getResource("/view/login.fxml"));
 			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("COIN");
+			primaryStage.setTitle("EasyCoin");
 			primaryStage.setResizable(false);
 			//종료 버튼 클릭시, 프로그램 종료
 			primaryStage.setOnCloseRequest(e->{
