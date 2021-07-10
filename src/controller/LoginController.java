@@ -68,6 +68,8 @@ public class LoginController implements Initializable  {
 	
 	//? 로그인 시 개인키 공개키 구분하는 것 구현해야함 지금은 공개키로도 접속가능
 	public void goMyPage() throws Exception {
+		
+		
 		// DB 접근 객체 생성
 		DAO dao = new DAO();
 		
@@ -86,41 +88,56 @@ public class LoginController implements Initializable  {
 			
 			//파일 읽어오기
 			ReadPemFile readPemFile = new ReadPemFile();
-			
-			//지갑 생성 및 초기화하기
+			//PEM 파일을 개인키 객체로 변환하기
 			PrivateKey privateKey = readPemFile.readPrivateKeyFromPemFile(file.getPath());
-			PublicKey publicKey = readPemFile.readPublicKeyFromPemFile("./pem/"+readPemFile.getUsername()+"publickey.pem");
-			WalletModel walletModel = dao.getPeer(readPemFile.getUsername());
-			walletModel.setPrivateKey(privateKey);
-			walletModel.setPublicKey(publicKey);
 			
-			//DB에서 블럭들 가지고 오기
-			LinkedList<Block> blocks = dao.getBlocks(readPemFile.getUsername());
-			
-			//블록체인 채우기
-			for(int i=0; i<blocks.size(); i++) {
-				 blockchainModel.getBlocks().add(blocks.get(i)); 
-				 if(i==blocks.size()-1) { // 리스트의 마지막 블럭인 경우
-					 peerModel.block = blocks.get(i); 
-					 Block.count=blocks.get(i).getNum();
-				 }
+			if(privateKey != null) {
+				PublicKey publicKey = readPemFile.readPublicKeyFromPemFile("./pem/"+readPemFile.getUsername()+"publickey.pem");
+				WalletModel walletModel = dao.getPeer(readPemFile.getUsername());
+				walletModel.setPrivateKey(privateKey);
+				walletModel.setPublicKey(publicKey);
+				
+				//DB에서 블럭들 가지고 오기
+				LinkedList<Block> blocks = dao.getBlocks(readPemFile.getUsername());
+				
+				//블록체인 채우기
+				for(int i=0; i<blocks.size(); i++) {
+					 blockchainModel.getBlocks().add(blocks.get(i)); 
+					 if(i==blocks.size()-1) { // 리스트의 마지막 블럭인 경우
+						 peerModel.block = blocks.get(i); 
+						 Block.count=blocks.get(i).getNum();
+					 }
+				}
+				
+				// P2P망 연결 시작
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/netprogress.fxml"));
+				Parent root = loader.load();
+				
+				Scene scene = new Scene(root);
+				Stage stage = new Stage();
+				stage.setScene(scene);
+				stage.setX(joinButton.getScene().getWindow().getX()+65);
+				stage.setY(joinButton.getScene().getWindow().getY()+50);
+				stage.setResizable(false);
+				stage.show();
+				
+				NetProgressController npc = loader.getController(); 
+				npc.setPrimaryStage((Stage)joinButton.getScene().getWindow());
+				npc.doProgress(peerModel, walletModel, blockchainModel,"login");
 			}
 			
-			// P2P망 연결 시작
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/netprogress.fxml"));
-			Parent root = loader.load();
-			
-			Scene scene = new Scene(root);
-			Stage stage = new Stage();
-			stage.setScene(scene);
-			stage.setX(joinButton.getScene().getWindow().getX()+65);
-			stage.setY(joinButton.getScene().getWindow().getY()+50);
-			stage.setResizable(false);
-			stage.show();
-			
-			NetProgressController npc = loader.getController(); 
-			npc.setPrimaryStage((Stage)joinButton.getScene().getWindow());
-			npc.doProgress(peerModel, walletModel, blockchainModel,"login");
+			else {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/popup.fxml"));
+				Parent root = loader.load();
+				PopupController pc = loader.getController();
+				pc.setMessage("잘못된 키 형식입니다. \r개인키 Pem파일을 선택해주십시오.");
+				Scene scene = new Scene(root);
+				Stage stage = new Stage();
+				stage.setScene(scene);
+				stage.setX(loginButton.getScene().getWindow().getX()+100);
+				stage.setY(loginButton.getScene().getWindow().getY());
+				stage.show();
+			}
 			
 		}
 	}

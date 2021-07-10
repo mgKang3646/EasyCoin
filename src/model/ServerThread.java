@@ -157,6 +157,7 @@ public class ServerThread extends Thread {
 					System.out.println("UTXO 소지 측 : UTXO 삭제 완료");
 					peerModel.UTXOs.remove(UTXO);
 				}
+				
 			}
 			// 상대방 연결이 끊겼을 시 대응
 		} catch (Exception e) {

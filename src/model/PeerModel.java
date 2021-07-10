@@ -245,10 +245,6 @@ public class PeerModel {
 		
 		//합의율 계산하기
 		if(((double)verifiedPeerCount/totalRespondedCount) >= verifiedCutLine) {
-				System.out.println("검증 성공한 Peer 개수 : " + verifiedPeerCount);
-				System.out.println("응답한 Peer 개수 : " + totalRespondedCount);
-				System.out.println("합 의 율 : " + (double)verifiedPeerCount/totalRespondedCount );
-				System.out.println("합읜 성공 Block count : "+ Block.count);
 				applyBlock(); // 임시블럭을 블럭체인에 적용하기
 				verifiedPeerCount=0; //초기화
 				totalRespondedCount = 0; //초기화
@@ -343,6 +339,7 @@ public class PeerModel {
 			
 			return sw.toString();
 	}
+	
 	// 트랜잭션 처리하기
 	public boolean processTransaction(Transaction tx) {
 		

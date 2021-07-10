@@ -225,6 +225,7 @@ public class PeerThread extends Thread {
 					//ÀüÀÚ¼­¸í È¹µæ
 					byte[] signature = Base64.decode(jsonObject.getString("signature"));
 					String transactionHash = jsonObject.getString("transactionHash");
+					
 					//Æ®·£Àè¼Ç»ı¼º
 					Transaction newTransaction = new Transaction(sender,recipient,value);
 					newTransaction.setSignature(signature);

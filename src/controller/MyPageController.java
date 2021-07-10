@@ -80,6 +80,9 @@ public class MyPageController implements Initializable  {
 		mc.setPeerModel(peerModel);
 		peerModel.setMiningStartButton(mc.getMiningStartButton());
 		
+		setUTXO();
+		getBalance();
+		
 	}
 	
 	public void miningHandler() throws IOException {
@@ -107,9 +110,6 @@ public class MyPageController implements Initializable  {
 		IndexController ic = loader.getController();
 		ic.setPeerModel(peerModel);
 		ic.blockchainHandler();
-		
-		
-
 	}
 	
 	public void stateConnectionHandler() throws IOException {
@@ -126,15 +126,53 @@ public class MyPageController implements Initializable  {
 		ic.stateConnectionHandler();
 	}
 	
-	public void walletHandler() throws IOException {
+	public void setUTXO() {
+				//UTXO value 받아오기
+				//지갑 안에 UTXO저장소 만들기
+				peerModel.walletModel.makeUTXOWallet();
+				
+				//UTXO 요청하기
+				StringWriter sw = new StringWriter();
+				Json.createWriter(sw).writeObject(Json.createObjectBuilder()
+														.add("requestUTXO", "")
+														.add("owner", Base64.toBase64String(peerModel.walletModel.getPublicKey().getEncoded()))
+														.build());
+				
+				peerModel.getServerListerner().sendMessage(sw.toString());
+				
+				
+				//본인 UTXOs에 자신의 publickey를 가진 UTXO가 있는지 확인하기 
+				for(int i=0; i<peerModel.UTXOs.size();i++) {
+					if(peerModel.UTXOs.get(i).isMine(peerModel.walletModel.getPublicKey())) {
+						peerModel.walletModel.getUTXOWallet().add(peerModel.UTXOs.get(i));
+					}
+				}
+		}
+	
+
+	public void getBalance() {
+		Thread balanceThread = new Thread(new Runnable() {
+			float total=0;
+			int count = 0;
+			@Override
+			public void run() {
+				while(count<=5) {
+					try {
+						total = 0; // 초기화 후 덧셈 재시작
+						for(TransactionOutput UTXO : peerModel.walletModel.getUTXOWallet()) {
+							total += UTXO.getValue();
+						}
+						Platform.runLater(()->{
+							balanceTextField.setText(total+"");
+						});
+						count++;
+						Thread.sleep(800);
+					} catch (InterruptedException e) {e.printStackTrace();}						
+				}	
+			}
+		});
 		
-		content.getChildren().clear();
-		
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/wallet.fxml"));
-		content.getChildren().add(loader.load());// 로드가 된 후 Controller 객체를 쓸 수 있다.
-		WalletController wc = loader.getController();
-		wc.setPeerModel(peerModel);
-		
+		balanceThread.start();		
 	}
 	
 }

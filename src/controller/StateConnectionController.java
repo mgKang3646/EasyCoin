@@ -20,6 +20,7 @@ public class StateConnectionController implements Initializable {
 	@FXML TableColumn<PeerRecord,String> usernameColumn;
 	@FXML TableColumn<PeerRecord,String> localhostColumn;
 	@FXML TableColumn<PeerRecord,String> leaderColumn;
+	
 	PeerModel peerModel;
 	
 	ObservableList<PeerRecord> list = FXCollections.observableArrayList();

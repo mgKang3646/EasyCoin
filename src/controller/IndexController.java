@@ -64,9 +64,7 @@ public class IndexController implements Initializable  {
 			
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+					}
 		
 	}
 	
@@ -135,6 +133,8 @@ public class IndexController implements Initializable  {
 			if(!peerModel.amILeader) {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/popup.fxml"));
 				Parent root = loader.load();
+				PopupController pc = loader.getController();
+				pc.setMessage("최신화를 하려면 리더가 있어야 합니다.\r리더 선출을 위해 채굴을 진행해주십시오.");
 				Scene scene = new Scene(root);
 				Stage stage = new Stage();
 				stage.setScene(scene);

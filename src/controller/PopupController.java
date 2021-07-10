@@ -7,6 +7,10 @@ public class PopupController {
 	
 	@FXML Label message;
 	
+	public void setMessage(String msg) {
+		message.setText(msg);
+	}
+	
 	
 
 }

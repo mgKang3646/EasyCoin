@@ -15,7 +15,10 @@ import javax.json.JsonArrayBuilder;
 import org.bouncycastle.util.encoders.Base64;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -51,7 +54,7 @@ public class WireController implements Initializable{
 		this.sender = peerModel.walletModel.getPublicKey();
 	}
 	
-	public void wire() {
+	public void wire() throws IOException {
 		checkvalue.setVisible(false);
 
 		try {
@@ -75,40 +78,54 @@ public class WireController implements Initializable{
 					System.out.println("JsonArray 전 데이터 : "+ input.getMiner());
 					if(total >= value) break;
 				}
+				// 잔액이 송금액보다 큰 경우
+				if(total >= value) {
 				
-				//트랜잭션 생성
-				Transaction newTransaction = new Transaction(sender,recipient,value); // 트랜잭션 생성
-				newTransaction.generateSignature(peerModel.walletModel.getPrivateKey()); //전자서명 생성
-				newTransaction.generateHash();
+					//트랜잭션 생성
+					Transaction newTransaction = new Transaction(sender,recipient,value); // 트랜잭션 생성
+					newTransaction.generateSignature(peerModel.walletModel.getPrivateKey()); //전자서명 생성
+					newTransaction.generateHash();
+					
+					//임시 트랜잭션 전송하기
+					StringWriter sw = new StringWriter();
+					
+					Json.createWriter(sw).writeObject(Json.createObjectBuilder()
+															.add("sender", Base64.toBase64String(sender.getEncoded()))															
+															.add("recipient",Base64.toBase64String(recipient.getEncoded()))
+															.add("value", value+"")
+															.add("signature", Base64.toBase64String(newTransaction.signature))
+															.add("miners", minerArr)
+															.add("utxoHashs", utxoHashArr)
+															.add("inputValueArr", inputValueArr)
+															.add("transactionHash", newTransaction.getHash())
+															.build());
+					
+					peerModel.getServerListerner().sendMessage(sw.toString());
+					
+					// 잔액이 송금액보다 작은 경우
+					String msg = "송금이 완료되었습니다.";
+					openPopup(msg);
 				
-				//임시 트랜잭션 전송하기
-				StringWriter sw = new StringWriter();
+					}else {
+						// 잔액이 송금액보다 작은 경우
+						String msg = "잔액이 부족합니다.";
+						openPopup(msg);
+					}
+				}
 				
-				Json.createWriter(sw).writeObject(Json.createObjectBuilder()
-														.add("sender", Base64.toBase64String(sender.getEncoded()))															
-														.add("recipient",Base64.toBase64String(recipient.getEncoded()))
-														.add("value", value+"")
-														.add("signature", Base64.toBase64String(newTransaction.signature))
-														.add("miners", minerArr)
-														.add("utxoHashs", utxoHashArr)
-														.add("inputValueArr", inputValueArr)
-														.add("transactionHash", newTransaction.getHash())
-														.build());
-				
-				peerModel.getServerListerner().sendMessage(sw.toString());
+				//입금액이 0.05 미만인 경우
+				else {
+					checkvalue.setText("0.05ETC 미만은 송금 하실 수 없습니다.");
+					checkvalue.setVisible(true);
+				}
 			
-			}
-			
-			//입금액이 0.05 미만인 경우
-			else {
-				checkvalue.setText("0.05ETC 미만은 송금 하실 수 없습니다.");
-				checkvalue.setVisible(true);
-			}
 			
 		}catch(NumberFormatException e) {
 			checkvalue.setText("잘못된 형식의 송금액입니다.");
 			checkvalue.setVisible(true);
 		}
+		
+		
 		
 		
 		
@@ -124,11 +141,34 @@ public class WireController implements Initializable{
 		
 		if(file != null) {
 			ReadPemFile readPemFile = new ReadPemFile();
-			recipient = readPemFile.readPublicKeyFromPemFile(file.getPath());
-			recipientName = readPemFile.getUsername();
-			
-			recipientTextField.setText(recipientName);
+			PublicKey tmpRecipient = readPemFile.readPublicKeyFromPemFile(file.getPath());
+			if(tmpRecipient!=null) {
+				recipient = tmpRecipient;
+				recipientName = readPemFile.getUsername();
+				recipientTextField.setText(recipientName);
+			}else {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/popup.fxml"));
+				Parent root = loader.load();
+				PopupController pc = loader.getController();
+				pc.setMessage("잘못된 키 형식입니다. \r 공개키 Pem파일을 선택해주십시오.");
+				Scene scene = new Scene(root);
+				Stage stage = new Stage();
+				stage.setScene(scene);
+				stage.setX(wireButton.getScene().getWindow().getX());
+				stage.setY(wireButton.getScene().getWindow().getY()+40);
+				stage.show();
+			}
 		}
+	}
+	
+	public void openPopup(String msg) throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/popup.fxml"));
+		Parent root = loader.load();
+		PopupController pc = loader.getController();
+		pc.setMessage(msg);
+		Scene scene = new Scene(root);
+		Stage stage = (Stage)wireButton.getScene().getWindow();
+		stage.setScene(scene);
 	}
 
 	

@@ -29,6 +29,6 @@ public class Pem {
 	}
 	
 	public String getPath() {
-		return file.getPath();
+		return file.getAbsolutePath();
 	}
 }

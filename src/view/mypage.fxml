@@ -26,7 +26,7 @@
                      <image>
                         <Image url="@../image/userIcon.png" />
                      </image></ImageView>
-               </children>
+           </children>
             </Pane>
             <AnchorPane layoutX="14.0" layoutY="60.0" prefHeight="531.0" prefWidth="907.0" style="-fx-background-color: #131022; -fx-background-radius: 10;" stylesheets="@../css/fullpackstyling.css">
                <children>

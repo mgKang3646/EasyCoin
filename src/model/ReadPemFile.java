@@ -17,38 +17,50 @@ public class ReadPemFile {
 	
 	private String username = null;
 
-	public PrivateKey readPrivateKeyFromPemFile(String privateKeyName) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public PrivateKey readPrivateKeyFromPemFile(String privateKeyName) throws IOException, NoSuchAlgorithmException  {
 		
-		String data = readString(privateKeyName);
-		System.out.println("EC 개인키를 "+ privateKeyName + "로부터 불러왔습니다.");
+		try {
+			String data = readString(privateKeyName);
+			System.out.println("EC 개인키를 "+ privateKeyName + "로부터 불러왔습니다.");
+			
+			data = data.replaceAll(username, "");
+			data = data.replaceAll("-----END -----","");
+			
+			System.out.println("data");
+			System.out.println(data);
+			
+			byte[] decoded = Base64.decode(data);
+			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
+			KeyFactory factory = KeyFactory.getInstance("ECDSA");
+			PrivateKey privateKey = factory.generatePrivate(spec);
+			
+			return privateKey;
 		
-		data = data.replaceAll(username, "");
-		data = data.replaceAll("-----END -----","");
-		
-		System.out.println("data");
-		System.out.println(data);
-		
-		byte[] decoded = Base64.decode(data);
-		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
-		KeyFactory factory = KeyFactory.getInstance("ECDSA");
-		PrivateKey privateKey = factory.generatePrivate(spec);
-		
-		return privateKey;
+		}catch(InvalidKeySpecException e) {
+			System.out.println("잘못된 개인키 생성");
+			return null;
+		}
 	}
 	
 	public PublicKey readPublicKeyFromPemFile(String publicKeyName) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		String data = readString(publicKeyName);
-		System.out.println("EC 공개키를 "+ publicKeyName + "로부터 불러왔습니다.");
+		try {
+			String data = readString(publicKeyName);
+			System.out.println("EC 공개키를 "+ publicKeyName + "로부터 불러왔습니다.");
+			
+			data = data.replaceAll(username, "");
+			data = data.replaceAll("-----END -----", "");
+			
+			byte[] decoded = Base64.decode(data);
+			X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
+			KeyFactory factory = KeyFactory.getInstance("ECDSA");
+			PublicKey publicKey = factory.generatePublic(spec);
+			
+			return publicKey;
 		
-		data = data.replaceAll(username, "");
-		data = data.replaceAll("-----END -----", "");
-		
-		byte[] decoded = Base64.decode(data);
-		X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
-		KeyFactory factory = KeyFactory.getInstance("ECDSA");
-		PublicKey publicKey = factory.generatePublic(spec);
-		
-		return publicKey;
+		}catch(InvalidKeySpecException e) {
+			System.out.println("잘못된 공개키 생성");
+			return null;
+		}
 	}
 	
 	// 아이디 얻기

@@ -75,13 +75,12 @@ public class JoinController implements Initializable {
 	public void join() throws Exception {
 		
 		// ID 중복체크
-		
 		String username = userNameText.getText(); 
 		int registerResult = dao.registerCheck(username);
 		
 		//DB에 이미 HOST 주소가 등록되어 있는 경우
 		if(registerResult == 1) {
-			
+
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/registercheck.fxml"));
 			Parent root = loader.load();
 			RegisterCheckController rcc = loader.getController();

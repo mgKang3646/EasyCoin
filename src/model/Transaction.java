@@ -58,7 +58,8 @@ public class Transaction {// => UTXO Unspent 소비되지 않은
 	}
 	
 	public boolean verifySignature() {
-		String data = util.BlockUtil.getStringFromKey(sender)+util.BlockUtil.getStringFromKey(recipient)+Float.toString(value);
+		String data = util.BlockUtil.getStringFromKey(sender)
+				+util.BlockUtil.getStringFromKey(recipient)+Float.toString(value);
 		return util.BlockUtil.verifyECDSASig(sender, data, signature);
 	}
 	
