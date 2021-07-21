@@ -5,13 +5,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import util.CreateFileChooser;
 import util.CreateNewPage;
 
 public class LoginController implements Controller  {
@@ -20,9 +19,9 @@ public class LoginController implements Controller  {
 	@FXML private Button loginButton;
 	@FXML private TextField privateKeyText;
 	@FXML private ImageView mainImageView;
+	
 	private Stage stage;
-	CreateNewPage createNewPage = new CreateNewPage();
-	Image mainImage;
+	private CreateNewPage createNewPage = new CreateNewPage();
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
@@ -33,15 +32,16 @@ public class LoginController implements Controller  {
 	
 	public void login() {
 		
-		FileChooser fc = new FileChooser();
-		fc.setTitle("로그인 할 개인키 파일을 선택해주세요.");
-		fc.setInitialDirectory(new File("./pem"));
-		File file = fc.showOpenDialog(stage);
+		CreateFileChooser createFileChooser = new CreateFileChooser();
+		String message = "로그인 할 개인키 PEM 파일을 선택하세요.";
+		
+		File file = createFileChooser.showFileChooser(message, stage);
+		
 		
 	}
 	
 	public void goJoinPage() {
-		createNewPage.createNewPage("/view/join.fxml", (Stage)joinButton.getScene().getWindow());
+		createNewPage.createNewPage("/view/join.fxml", stage);
 		
 	
 	}

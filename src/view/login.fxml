@@ -19,7 +19,7 @@
             <Font size="36.0" />
          </font>
       </Label>
-      <Button fx:id="loginButton" layoutX="323.0" layoutY="125.0" mnemonicParsing="false"  prefHeight="46.0" prefWidth="160.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="로그인" textFill="WHITE">
+      <Button fx:id="loginButton" layoutX="323.0" layoutY="125.0" mnemonicParsing="false"  prefHeight="46.0" prefWidth="160.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="로그인" textFill="WHITE" onAction="#login">
          <font>
             <Font size="24.0" />
          </font>
