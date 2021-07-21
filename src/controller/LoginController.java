@@ -21,7 +21,9 @@ public class LoginController implements Initializable  {
 	@FXML private Button loginButton;
 	@FXML private TextField privateKeyText;
 	@FXML private ImageView mainImageView;
+	CreateNewPage createNewPage = new CreateNewPage();
 	Image mainImage;
+	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -38,17 +40,9 @@ public class LoginController implements Initializable  {
 
 	}
 	
-	
 	public void goJoinPage() {
-		try {
-			Parent login = FXMLLoader.load(getClass().getResource("/view/join.fxml"));
-			Scene scene = new Scene(login);
-			Stage primaryStage = (Stage)joinButton.getScene().getWindow();
-			primaryStage.setScene(scene);
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+		
+		createNewPage.createNewPage("/view/join.fxml", (Stage)joinButton.getScene().getWindow());
+	
 	}
 }
