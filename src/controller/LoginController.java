@@ -1,19 +1,16 @@
 package controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import util.CreateNewPage;
 
 public class LoginController implements Initializable  {
 	
@@ -29,14 +26,14 @@ public class LoginController implements Initializable  {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
 		
-		mainImageView.setOnMousePressed(e->{
-			mainImage = new Image("/image/main.gif");
-			mainImageView.setImage(mainImage);
-		});
-		mainImageView.setOnMouseReleased(e->{
-			mainImage = new Image("/image/main.png");
-			mainImageView.setImage(mainImage);
-		});
+//		mainImageView.setOnMousePressed(e->{
+//			mainImage = new Image("/image/main.gif");
+//			mainImageView.setImage(mainImage);
+//		});
+//		mainImageView.setOnMouseReleased(e->{
+//			mainImage = new Image("/image/main.png");
+//			mainImageView.setImage(mainImage);
+//		});
 
 	}
 	
