@@ -2,6 +2,7 @@ package util;
 
 import java.io.IOException;
 
+import controller.Controller;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,13 +12,17 @@ public class CreateNewPage {
 	
 	public void createNewPage(String url, Stage stageValue) {
 		try {
-			Parent parent = FXMLLoader.load(getClass().getResource(url));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(url));
+			Parent parent = loader.load();
 			Scene scene = new Scene(parent);
 			Stage stage = stageValue;	
 			stage.setScene(scene);
 			
+			Controller controller = loader.getController();
+			controller.setStage(stage);
+			
 		} catch (IOException e) {
-			System.out.println("새로운 페이지 생성 중 에러 발생");
+			e.printStackTrace();
 		}	
 	}
 
