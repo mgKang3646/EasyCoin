@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class CreateNewPage {
+public class NewPage {
 	
 	public void createNewPage(String url, Stage stageValue) {
 		try {

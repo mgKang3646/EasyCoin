@@ -12,8 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import util.CreateFileChooser;
-import util.CreateNewPage;
+import util.FileChooserForPem;
+import util.NewPage;
 import util.KeyFromPem;
 
 public class LoginController implements Controller  {
@@ -24,7 +24,7 @@ public class LoginController implements Controller  {
 	@FXML private ImageView mainImageView;
 	
 	private Stage stage;
-	private CreateNewPage createNewPage = new CreateNewPage();
+	private NewPage createNewPage = new NewPage();
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
@@ -35,13 +35,20 @@ public class LoginController implements Controller  {
 	
 	public void login() throws NoSuchAlgorithmException, IOException{
 		
-		CreateFileChooser createFileChooser = new CreateFileChooser();
+		// 관심사 : 파일 탐색기 열어서 원하는 개인키 PEM 파일 경로 확보하기
 		String message = "로그인 할 개인키 PEM 파일을 선택하세요.";
+		FileChooserForPem createFileChooser = new FileChooserForPem();
+		File file = createFileChooser.showFileChooser(message, stage); 
 		
-		File file = createFileChooser.showFileChooser(message, stage);
-		
+		// 관심사 : PEM 파일 경로를 통해 개인키 객체 확보하기
 		KeyFromPem keyFromPem = new KeyFromPem();
 		PrivateKey privateKey = keyFromPem.readPrivateKeyFromPemFile(file.getPath());
+		
+		if(privateKey != null) {
+			// 네트워크 연결 페이지
+		}else {
+			// 팝업창 띄우기
+		}
 		
 	}
 	

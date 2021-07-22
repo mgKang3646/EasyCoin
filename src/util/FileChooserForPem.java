@@ -5,7 +5,7 @@ import java.io.File;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class CreateFileChooser {
+public class FileChooserForPem {
 	
 	
 	public File showFileChooser(String message, Stage stage) {
