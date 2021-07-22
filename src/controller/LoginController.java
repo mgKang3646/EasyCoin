@@ -24,7 +24,7 @@ public class LoginController implements Controller  {
 	@FXML private ImageView mainImageView;
 	
 	private Stage stage;
-	private NewPage createNewPage = new NewPage();
+	private NewPage newPage = new NewPage();
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
@@ -53,7 +53,7 @@ public class LoginController implements Controller  {
 	}
 	
 	public void goJoinPage() {
-		createNewPage.createNewPage("/view/join.fxml", stage);
+		newPage.createNewPage("/view/join.fxml", stage);
 		
 	
 	}

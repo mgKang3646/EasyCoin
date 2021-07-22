@@ -3,6 +3,7 @@ package controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import database.Dao;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,6 +37,16 @@ public class JoinController implements Controller {
 	}
 	
 	public void join() {
+		
+		Dao dao = new Dao();
+		int checkDuplicate = dao.checkDuplicateUserName(userNameText.getText());
+		
+		if(checkDuplicate == 1) { // 중복 X
+			// 관심사 : PEM 파일 만들기 
+		}else if(checkDuplicate == 0) { //중복 O
+		}else { 
+			// SQL문 실행 문제 발생 
+		}
 		
 	}
 	
