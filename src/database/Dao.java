@@ -12,12 +12,12 @@ public class Dao {
 		try {
 			// 관심사 : 커넥션 객체 생성
 			ConnectionMaker connectionMaker = new ConnectionMaker();
-			Connection connection = connectionMaker.getConnection();
+			Connection conn = connectionMaker.getConnection();
 			
 			String sql = "SELECT * FROM PEERTABLE WHERE username = ?";
 			
 			// 관심사 : SQL문 실행 객체 생성
-			PreparedStatement pstmt = connection.prepareStatement(sql);
+			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1,userName);
 			
 			// 관심사 : userName 중복 체크
@@ -28,9 +28,34 @@ public class Dao {
 				return 1; // 중복이 안 됨.
 			}
 		} catch (SQLException e) {
-			System.out.println("SQL문 실행 중 오류 발생");
+			System.out.println("UserName 중복 체크 SQL문 실행 중 오류 발생");
 			return -1; // SQL문 실행 중 문제 발생
 		}	
+	}
+	
+	// 관심사 회원가입 정보 DB 저장
+	public int join(String localhost, String userName){
+		
+		int result=0;
+		
+		try {
+			ConnectionMaker connectionMaker = new ConnectionMaker();
+			Connection conn = connectionMaker.getConnection();
+			
+			String sql = "INSERT INTO PEERTABLE VALUES (?,?)";
+			
+			PreparedStatement pstmt;
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, localhost);
+			pstmt.setString(2, userName);
+			
+			result = pstmt.executeUpdate();
+			
+			return result;
+		} catch (SQLException e) {
+			System.out.println("회원가입 정보 DB 저장 중 SQL 실행 오류 발생");
+			return result;
+		}
 	}
 	
 	
