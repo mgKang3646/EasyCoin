@@ -40,16 +40,17 @@ public class LoginController implements Controller  {
 		FileChooserForPem createFileChooser = new FileChooserForPem();
 		File file = createFileChooser.showFileChooser(message, stage); 
 		
-		// 관심사 : PEM 파일 경로를 통해 개인키 객체 확보하기
-		KeyFromPem keyFromPem = new KeyFromPem();
-		PrivateKey privateKey = keyFromPem.readPrivateKeyFromPemFile(file.getPath());
-		
-		if(privateKey != null) {
-			// 네트워크 연결 페이지
-		}else {
-			// 팝업창 띄우기
+		if(file != null) {
+			// 관심사 : PEM 파일 경로를 통해 개인키 객체 확보하기
+			KeyFromPem keyFromPem = new KeyFromPem();
+			PrivateKey privateKey = keyFromPem.readPrivateKeyFromPemFile(file.getPath());
+			
+			if(privateKey != null) {
+				// 네트워크 연결 페이지
+			}else {
+				// 팝업창 띄우기
+			}
 		}
-		
 	}
 	
 	public void goJoinPage() {

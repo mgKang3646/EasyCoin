@@ -2,6 +2,8 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ResourceBundle;
 
 import database.Dao;
@@ -14,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Peer;
 import util.NewPage;
 
 public class JoinController implements Controller {
@@ -41,6 +44,7 @@ public class JoinController implements Controller {
 		newPage.createNewPage("/view/login.fxml", stage);
 	}
 	
+	// 관심사 : 새로운 Peer 회원 정보 생성 
 	public void join() throws IOException{
 		
 		String userName = userNameText.getText();
@@ -50,49 +54,73 @@ public class JoinController implements Controller {
 			userNameCheck.setText("닉네임이 공백입니다.");
 			userNameCheck.setVisible(true);
 		}else {
-			// 관심사 : userName 중복 검사 
-			processDuplicateUserName(userName);
+			if(processDuplicateUserName(userName)) { // 관심사 : userName 중복 검사 
+				
+				GeneratingKey generatingKey = generateKey(userName); // 관심사 : 개인키, 공개키 생성
+				String localhost = getLocalhost();	// 관심사 : 주소 생성
+				makePemFile(generatingKey.getPrivateKey(),generatingKey.getPublicKey(),userName); // 관심사 : 개인키, 공개키 Pem 파일 생성
+				
+				// 관심사 : Peer 정보 DB 삽입
+				if(insertIntoDB(localhost,userName)) {
+					// 회원가입 성공 팝업 생성
+				}else {
+					//DB 삽입과정 중 문제 발생
+				}	
+			}
 		}
-		
 	}
 	
-	public void processDuplicateUserName(String userName) throws IOException {
+	// 관심사 : userName 중복 검사 유효성 결과 반환
+	public boolean processDuplicateUserName(String userName) throws IOException {
 		
 		Dao dao = new Dao();
 		int duplicateResult = dao.checkDuplicateUserName(userName);
 		
 		if(duplicateResult == 1) { // 중복 X
-			// 관심사 : 개인키, 공개키 생성
-			GeneratingKey generatingKey = new GeneratingKey();
-			generatingKey.generateKeyPair();
-			
-			// 관심사 : 개인키, 공개키 Pem 파일 생성
-			Pem pem = new Pem(userName);
-			pem.makePemFile(generatingKey.getPrivateKey());
-			pem.makePemFile(generatingKey.getPublicKey());
-			
-			// 관심사 : DB 가입 정보 저장
-			String localhost = "localhost:"+ (5500 + (int)(Math.random()*100)); // 주소 임의 설정
-			int joinResult = dao.join(localhost, userName);
-			
-			if(joinResult > 0) {
-				System.out.println("잘 저장됨");
-			}else {
-				System.out.println("잘 저장 안됨.");
-			}
-			
+			return true;
 		}else if(duplicateResult == 0) { //중복 O
 			userNameCheck.setText("닉네임이 중복됩니다.");
 			userNameCheck.setVisible(true);
-		}else { 
-			// SQL문 실행 문제 발생 
+			return false;
+		}else { // SQL문 실행 문제 발생 
+			return false;
 		}
 	}
 	
+	// 관심사 : 개인키, 공개키 생성
+	public GeneratingKey generateKey(String userName) {
+		// 관심사 : 개인키, 공개키 생성
+		GeneratingKey generatingKey = new GeneratingKey();
+		generatingKey.generateKeyPair();
+		
+		return generatingKey;
+	}
 	
+	// 관심사 : 주소 생성
+	public String getLocalhost() {
+		return "localhost:"+ (5500 + (int)(Math.random()*100));
+	}
 	
+	// 관심사 : 개인키, 공개키 Pem 파일 생성
+	public void makePemFile(PrivateKey privateKey, PublicKey publicKey,String userName) throws IOException {
+		
+		Pem pem = new Pem(userName);
+		pem.makePemFile(privateKey);
+		pem.makePemFile(publicKey);
+		
+	}
 	
-	
-	
+	// 관심사 : Peer 정보 DB 삽입
+	public boolean insertIntoDB(String localhost, String userName) {
+		// 관심사 : DB 가입 정보 저장
+		Dao dao = new Dao();
+		int joinResult = dao.join(localhost, userName);
+		if(joinResult > 0) {
+			return true;
+		}else {
+			return false;
+		}
+	}		
+}	
 
-}
+

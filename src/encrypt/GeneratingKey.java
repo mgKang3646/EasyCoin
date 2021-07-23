@@ -9,8 +9,8 @@ import java.security.spec.ECGenParameterSpec;
 
 public class GeneratingKey {
 	
-	public PrivateKey privateKey;
-	public PublicKey publicKey;
+	private PrivateKey privateKey;
+	private PublicKey publicKey;
 	
 	public PrivateKey getPrivateKey() {
 		return privateKey;
