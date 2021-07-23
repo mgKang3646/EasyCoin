@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import util.NewPage;
 
@@ -22,11 +23,12 @@ public class JoinController implements Controller {
 	@FXML private Button goLoginPageButton;
 	@FXML private Label privateKeyLabel;
 	@FXML private ImageView goLoginPageButtonImageView;
+	@FXML private Text userNameCheck;
 	Stage stage;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		
+		userNameCheck.setVisible(false);
 	}
 	
 	@Override
@@ -39,11 +41,24 @@ public class JoinController implements Controller {
 		newPage.createNewPage("/view/login.fxml", stage);
 	}
 	
-	public void join() throws IOException {
+	public void join() throws IOException{
 		
-		// 관심사 : ID 중복체크
-		Dao dao = new Dao();
 		String userName = userNameText.getText();
+		
+		// 관심사 : userName 유효성 검사 ( 공백 )
+		if(userName == "") {
+			userNameCheck.setText("닉네임이 공백입니다.");
+			userNameCheck.setVisible(true);
+		}else {
+			// 관심사 : userName 중복 검사 
+			processDuplicateUserName(userName);
+		}
+		
+	}
+	
+	public void processDuplicateUserName(String userName) throws IOException {
+		
+		Dao dao = new Dao();
 		int duplicateResult = dao.checkDuplicateUserName(userName);
 		
 		if(duplicateResult == 1) { // 중복 X
@@ -67,10 +82,11 @@ public class JoinController implements Controller {
 			}
 			
 		}else if(duplicateResult == 0) { //중복 O
+			userNameCheck.setText("닉네임이 중복됩니다.");
+			userNameCheck.setVisible(true);
 		}else { 
 			// SQL문 실행 문제 발생 
 		}
-		
 	}
 	
 	

@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: black; -fx-background-radius: 30;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.JoinController">
    <children>
@@ -53,6 +54,11 @@
                   </ImageView>
                </graphic>
             </Button>
+            <Text fx:id="userNameCheck" fill="RED" layoutX="200.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="닉네임이 중복됩니다.">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Text>
          </children>
       </Pane>
    </children>
