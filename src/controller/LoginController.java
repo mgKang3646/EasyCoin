@@ -7,14 +7,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.util.ResourceBundle;
 
+import encrypt.FileChooserForPem;
+import encrypt.KeyFromPem;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import util.FileChooserForPem;
 import util.NewPage;
-import util.KeyFromPem;
 
 public class LoginController implements Controller  {
 	
