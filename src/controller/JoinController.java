@@ -28,10 +28,12 @@ public class JoinController implements Controller {
 	@FXML private ImageView goLoginPageButtonImageView;
 	@FXML private Text userNameCheck;
 	Stage stage;
+	NewPage newPage;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		userNameCheck.setVisible(false);
+		newPage = new NewPage();
 	}
 	
 	@Override
@@ -40,8 +42,7 @@ public class JoinController implements Controller {
 	}
 	
 	public void backLoginPage() {
-		NewPage newPage = new NewPage();
-		newPage.createNewPage("/view/login.fxml", stage);
+		newPage.createPageOnCurrentStage("/view/login.fxml", stage);
 	}
 	
 	// 관심사 : 새로운 Peer 회원 정보 생성 
@@ -53,7 +54,9 @@ public class JoinController implements Controller {
 		if(userName == "") {
 			userNameCheck.setText("닉네임이 공백입니다.");
 			userNameCheck.setVisible(true);
-		}else {
+		}
+		// 관심사 : userName 중복 검사 및 DB 삽입
+		else {
 			if(processDuplicateUserName(userName)) { // 관심사 : userName 중복 검사 
 				
 				GeneratingKey generatingKey = generateKey(userName); // 관심사 : 개인키, 공개키 생성
@@ -62,7 +65,9 @@ public class JoinController implements Controller {
 				
 				// 관심사 : Peer 정보 DB 삽입
 				if(insertIntoDB(localhost,userName)) {
-					// 회원가입 성공 팝업 생성
+					// 관심사 : DB 저장 성공 시, 회원가입 성공 팝업 생성 후 로그인 페이지로 자동이동.
+					newPage.createPageOnCurrentStage("/view/login.fxml", stage); 
+					newPage.createPageOnNewStage("/view/popup.fxml", stage);
 				}else {
 					//DB 삽입과정 중 문제 발생
 				}	

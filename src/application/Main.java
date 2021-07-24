@@ -16,7 +16,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		
 		NewPage createNewPage = new NewPage();
-		createNewPage.createNewPage("/view/login.fxml",primaryStage);
+		createNewPage.createPageOnCurrentStage("/view/login.fxml",primaryStage);
 		primaryStage.setTitle("EasyCoin");
 		primaryStage.setResizable(false);
 		

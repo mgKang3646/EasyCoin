@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 public class NewPage {
 	
-	public void createNewPage(String url, Stage stageValue) {
+	public void createPageOnCurrentStage(String url, Stage stageValue) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(url));
 			Parent parent = loader.load();
@@ -25,5 +25,24 @@ public class NewPage {
 			e.printStackTrace();
 		}	
 	}
-
+	
+	public void createPageOnNewStage(String url, Stage stageValue) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(url));
+			Parent parent = loader.load();
+			Scene scene = new Scene(parent);
+			Stage stage = new Stage();	
+			stage.setScene(scene);
+			
+			stage.setX(stageValue.getX()+100);
+			stage.setY(stageValue.getY()+50);
+			stage.show();
+			
+			Controller controller = loader.getController();
+			controller.setStage(stage);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+	}
 }

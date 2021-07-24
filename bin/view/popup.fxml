@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="200.0" prefWidth="410.0" style="-fx-background-color: #00002D; -fx-background-radius: 30;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PopupController">
+   <children>
+      <Pane layoutX="12.0" layoutY="9.0" prefHeight="182.0" prefWidth="386.0" style="-fx-background-color: #000051; -fx-background-radius: 30; -fx-border-color: #1712AB; -fx-border-radius: 30;">
+         <children>
+            <Label fx:id="popupLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="59.0" layoutY="37.0" prefHeight="62.0" prefWidth="269.0" text="회원 가입이 완료되었습니다." textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Button fx:id="popupButton" layoutX="99.0" layoutY="111.0" mnemonicParsing="false" onAction="#closePopup" prefHeight="33.0" prefWidth="188.0" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="확인" textFill="WHITE">
+               <font>
+                  <Font size="22.0" />
+               </font></Button>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

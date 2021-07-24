@@ -54,7 +54,7 @@ public class LoginController implements Controller  {
 	}
 	
 	public void goJoinPage() {
-		newPage.createNewPage("/view/join.fxml", stage);
+		newPage.createPageOnCurrentStage("/view/join.fxml", stage);
 		
 	
 	}
