@@ -23,14 +23,22 @@ public class PopupController implements Controller {
 		this.parentStage = stageValue;
 	}
 	
-	public void setMsg(String msg) {
+	@Override
+	public void setObject(Object object) {
+		String msg = (String)object;
 		popupLabel.setText(msg);
 	}
-	
-	public void closePopup() {
+
+	@Override
+	public void mainButtonAction() {
 		Stage stage = (Stage)(popupButton.getScene().getWindow());
 		stage.close();
 	}
+
+	@Override
+	public void subButtonAction() {}
+	@Override
+	public void mainThreadAction() {}
 
 	
 }

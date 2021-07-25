@@ -34,49 +34,64 @@ public class LoginController implements Controller  {
 	public void setStage(Stage stageValue) {
 		stage = stageValue;
 	}
+	@Override
+	public void setObject(Object object) {}
 	
-	public void login() throws NoSuchAlgorithmException, IOException{
-		
+	// 관심사 : 로그인 버튼 클릭 시 동작 로직
+	@Override
+	public void mainButtonAction() {
 		// 관심사 : 파일 탐색기 열어서 원하는 개인키 PEM 파일 경로 확보하기
-		String message = "로그인 할 개인키 PEM 파일을 선택하세요.";
-		FileChooserForPem createFileChooser = new FileChooserForPem();
-		File file = createFileChooser.showFileChooser(message, stage); 
-		
-		if(file != null) {
-			// 관심사 : PEM 파일 경로를 통해 개인키 객체 확보하기
-			KeyFromPem keyFromPem = new KeyFromPem();
-			PrivateKey privateKey = keyFromPem.readPrivateKeyFromPemFile(file.getPath());
-			String userName = keyFromPem.getUserName();
-			
-			//개인키 객체를 확보한 경우
-			if(privateKey != null) {
-				// 관심사 : Peer 객체 생성
-				Dao dao = new Dao();
-				Peer peer = dao.getPeer(userName);
-				peer.setPrivateKey(privateKey);
-				// 관심사 : P2P 망 접속 화면 띄우기
-				this.newPage = new NewPage("/view/accessing.fxml", stage);
-				AccessingController ac = (AccessingController)newPage.getController();
-				ac.setPeer(peer);
-				ac.doProgress();
-				newPage.createPageOnNewStage();
+				String message = "로그인 할 개인키 PEM 파일을 선택하세요.";
+				FileChooserForPem createFileChooser = new FileChooserForPem();
+				File file = createFileChooser.showFileChooser(message, stage); 
+				
+				if(file != null) {
+					// 관심사 : PEM 파일 경로를 통해 개인키 객체 확보하기
+					try {
+						KeyFromPem keyFromPem = new KeyFromPem();
+						PrivateKey privateKey;
+						privateKey = keyFromPem.readPrivateKeyFromPemFile(file.getPath());
+						
+						String userName = keyFromPem.getUserName();
+						
+						//개인키 객체를 확보한 경우
+						if(privateKey != null) {
+							// 관심사 : Peer 객체 생성
+							Dao dao = new Dao();
+							Peer peer = dao.getPeer(userName);
+							peer.setPrivateKey(privateKey);
+							// 관심사 : P2P 망 접속 화면 띄우기
+							newPage = new NewPage("/view/accessing.fxml", stage);
+							Controller controller = newPage.getController();
+							controller.setObject(peer);
+							controller.mainThreadAction();
+							newPage.createPageOnNewStage();
+						}
+						//개인키 객체를 확보하지 못한 경우
+						else {
+							// 관심사 : 팝업창 띄우기
+							newPage = new NewPage("/view/popup.fxml", stage);
+							Controller controller = newPage.getController();
+							controller.setObject("잘못된 개인키 형식입니다.");
+							newPage.createPageOnNewStage();
+						}
+					} catch (NoSuchAlgorithmException | IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			//개인키 객체를 확보하지 못한 경우
-			else {
-				// 관심사 : 팝업창 띄우기
-				this.newPage = new NewPage("/view/popup.fxml", stage);
-				PopupController pc = (PopupController)this.newPage.getController();
-				pc.setMsg("잘못된 형식의 개인키입니다.");
-				newPage.createPageOnNewStage();
-			}
+	
+	// 관심사 : 회원가입 버튼 클릭시 동작 로직
+	@Override
+	public void subButtonAction() {
+		try {
+			this.newPage = new NewPage("/view/join.fxml", stage);
+			newPage.createPageOnCurrentStage();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
-	
-	public void goJoinPage() throws IOException {
-		this.newPage = new NewPage("/view/join.fxml", stage);
-		newPage.createPageOnCurrentStage();
-	}
-	
-
+	@Override
+	public void mainThreadAction() {}
 	
 }

@@ -19,6 +19,7 @@ public class ServerListener extends Thread {
 	public void run() {
 		try {
 			while(true) {
+				System.out.println("서버리스너 실행");
 				ServerThread serverThread = new ServerThread(serverSocket.accept());
 				serverThreads.add(serverThread);
 				serverThread.start();

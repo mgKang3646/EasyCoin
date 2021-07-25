@@ -94,7 +94,7 @@ public class Dao {
 	}
 	
 	// 관심사 : DB에 저장된 전체 PEER 갖고 오기
-	public ArrayList<Peer> getPeers() {
+	public ArrayList<Peer> getPeers(String userName) {
 		ArrayList<Peer> peers = new ArrayList<Peer>();
 
 		try {
@@ -107,6 +107,8 @@ public class Dao {
 			ResultSet rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
+				if(rs.getString("username").equals(userName)) continue; // 자기 자신은 제외
+				
 				Peer peer = new Peer();
 				peer.setLocalhost(rs.getString("localhost"));
 				peer.setUserName(rs.getString("username"));

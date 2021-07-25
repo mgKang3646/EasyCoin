@@ -7,7 +7,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import model.NewPage;
 
-// 해야 될 일 : 
+// 해야 될 일 : AccessingController 객체 ( P2P 접속 테스트 )
 public class Main extends Application {
 	
 	@Override

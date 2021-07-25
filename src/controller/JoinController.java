@@ -35,15 +35,10 @@ public class JoinController implements Controller  {
 	public void setStage(Stage stageValue) {
 		this.stage = stageValue;
 	}
-	
-	public void backLoginPage() throws IOException {
-		this.newPage = new NewPage("/view/login.fxml", stage);
-		newPage.createPageOnCurrentStage();
-	}
-	
-	// 관심사 : 새로운 Peer 회원 정보 생성 
-	public void join() throws IOException{
-		
+	@Override
+	public void setObject(Object object) {}
+	@Override
+	public void mainButtonAction()  {
 		String userName = userNameText.getText();
 		
 		// 관심사 : userName 유효성 검사 ( 공백 )
@@ -53,28 +48,44 @@ public class JoinController implements Controller  {
 		}
 		// 관심사 : userName 중복 검사 및 DB 삽입
 		else {
-			if(processDuplicateUserName(userName)) { // 관심사 : userName 중복 검사 
-				
-				GeneratingKey generatingKey = generateKey(userName); // 관심사 : 개인키, 공개키 생성
-				String localhost = getLocalhost();	// 관심사 : 주소 생성
-				makePemFile(generatingKey.getPrivateKey(),generatingKey.getPublicKey(),userName); // 관심사 : 개인키, 공개키 Pem 파일 생성
-				
-				// 관심사 : Peer 정보 DB 삽입
-				if(insertIntoDB(localhost,userName)) {
-					// 관심사 : DB 저장 성공 시, 회원가입 성공 팝업 생성 후 로그인 페이지로 자동이동.
-					this.newPage = new NewPage("/view/login.fxml", stage);
-					newPage.createPageOnCurrentStage();
-					this.newPage = new NewPage("/view/popup.fxml", stage);
-					PopupController popupController = (PopupController)this.newPage.getController();
-					popupController.setMsg("회원가입이 완료되었습니다.");
-					newPage.createPageOnNewStage();
-				}else {
-					//DB 삽입과정 중 문제 발생
-				}	
+			try {
+				if(processDuplicateUserName(userName)) { // 관심사 : userName 중복 검사 
+					
+					GeneratingKey generatingKey = generateKey(userName); // 관심사 : 개인키, 공개키 생성
+					String localhost = getLocalhost();	// 관심사 : 주소 생성
+					makePemFile(generatingKey.getPrivateKey(),generatingKey.getPublicKey(),userName); // 관심사 : 개인키, 공개키 Pem 파일 생성
+					
+					// 관심사 : Peer 정보 DB 삽입
+					if(insertIntoDB(localhost,userName)) {
+						// 관심사 : DB 저장 성공 시, 회원가입 성공 팝업 생성 후 로그인 페이지로 자동이동.
+							newPage = new NewPage("/view/login.fxml", stage);
+							newPage.createPageOnCurrentStage();
+							newPage = new NewPage("/view/popup.fxml", stage);
+							Controller controller = newPage.getController();
+							controller.setObject("회원가입이 완료되었습니다.");
+							newPage.createPageOnNewStage();
+					}else {
+						//DB 삽입과정 중 문제 발생
+					}	
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
-	
+	// 관심사 : 로그인 페이지로 돌아가기
+	@Override
+	public void subButtonAction() {
+		try {
+			this.newPage = new NewPage("/view/login.fxml", stage);
+			newPage.createPageOnCurrentStage();		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public void mainThreadAction() {}
+
 	// 관심사 : userName 중복 검사 유효성 결과 반환
 	public boolean processDuplicateUserName(String userName) throws IOException {
 		
@@ -126,7 +137,7 @@ public class JoinController implements Controller  {
 			return false;
 		}
 	}
-
+	
 
 
 		

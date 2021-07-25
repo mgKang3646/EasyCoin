@@ -35,13 +35,17 @@ public class AccessingController implements Controller {
 	public void setStage(Stage stageValue) {	
 		this.parentStage = stageValue;
 	}
-	
-	public void setPeer(Peer peer) {
-		this.peer = peer;
+	@Override
+	public void setObject(Object object) {
+		this.peer = (Peer)object;
 	}
+	@Override
+	public void mainButtonAction() {}
+	@Override
+	public void subButtonAction() {}
 	
-	public void doProgress() {
-		
+	@Override
+	public void mainThreadAction() {
 		Thread progressThread = new Thread() {
 			public void run() {
 				//P2P 네트워크 연결 과정
@@ -59,7 +63,7 @@ public class AccessingController implements Controller {
 						// 2. PeerThread 생성하여 DB에 저장된 서버리스너와 연결
 						// 관심사 : DB에 저장되 Peer 갖고오기
 						Dao dao = new Dao();
-						ArrayList<Peer> peers = dao.getPeers();
+						ArrayList<Peer> peers = dao.getPeers(peer.getUserName());
 						
 						if(peers != null) {
 							//3. Peer 스레드 생성하여 ServerListener와 연결
@@ -71,9 +75,10 @@ public class AccessingController implements Controller {
 									// 관심사 : PeerThread 생성
 									PeerThread peerThread = new PeerThread(socketUtil.getSocket());
 									peerThread.start();
+									System.out.println("이름 : "+ peers.get(i).getUserName() + " true");
 								}else {
 									// 소켓 연결 실패한 경우
-									System.out.println("소켓 연결 FALSE");
+									System.out.println("이름 : "+ peers.get(i).getUserName()+" FALSE");
 									continue;
 								}
 							}
@@ -85,8 +90,5 @@ public class AccessingController implements Controller {
 			};
 			
 			progressThread.start();
+		}	
 	}
-
-	
-	
-}
