@@ -1,22 +1,20 @@
 package application;
 
+import java.io.IOException;
 import java.security.Security;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-import util.NewPage;
+import model.NewPage;
 
-// 해야 될 일 : 회원가입 PEM 파일 생성 
+// 해야 될 일 : 
 public class Main extends Application {
 	
 	@Override
-	public void start(Stage primaryStage) {
+	public void start(Stage primaryStage) throws IOException {
 		
-		NewPage createNewPage = new NewPage();
-		createNewPage.createPageOnCurrentStage("/view/login.fxml",primaryStage);
+		NewPage createNewPage = new NewPage("/view/login.fxml",primaryStage);
+		createNewPage.createPageOnCurrentStage();
 		primaryStage.setTitle("EasyCoin");
 		primaryStage.setResizable(false);
 		

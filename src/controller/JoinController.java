@@ -16,10 +16,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.Peer;
-import util.NewPage;
+import model.NewPage;
 
-public class JoinController implements Controller {
+public class JoinController implements Controller  {
 	
 	@FXML private Button join_linkButton;
 	@FXML private TextField userNameText;
@@ -31,18 +30,15 @@ public class JoinController implements Controller {
 	NewPage newPage;
 	
 	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		userNameCheck.setVisible(false);
-		newPage = new NewPage();
-	}
-	
+	public void initialize(URL arg0, ResourceBundle arg1) {}
 	@Override
 	public void setStage(Stage stageValue) {
 		this.stage = stageValue;
 	}
 	
-	public void backLoginPage() {
-		newPage.createPageOnCurrentStage("/view/login.fxml", stage);
+	public void backLoginPage() throws IOException {
+		this.newPage = new NewPage("/view/login.fxml", stage);
+		newPage.createPageOnCurrentStage();
 	}
 	
 	// 관심사 : 새로운 Peer 회원 정보 생성 
@@ -66,8 +62,12 @@ public class JoinController implements Controller {
 				// 관심사 : Peer 정보 DB 삽입
 				if(insertIntoDB(localhost,userName)) {
 					// 관심사 : DB 저장 성공 시, 회원가입 성공 팝업 생성 후 로그인 페이지로 자동이동.
-					newPage.createPageOnCurrentStage("/view/login.fxml", stage); 
-					newPage.createPageOnNewStage("/view/popup.fxml", stage);
+					this.newPage = new NewPage("/view/login.fxml", stage);
+					newPage.createPageOnCurrentStage();
+					this.newPage = new NewPage("/view/popup.fxml", stage);
+					PopupController popupController = (PopupController)this.newPage.getController();
+					popupController.setMsg("회원가입이 완료되었습니다.");
+					newPage.createPageOnNewStage();
 				}else {
 					//DB 삽입과정 중 문제 발생
 				}	
@@ -125,7 +125,11 @@ public class JoinController implements Controller {
 		}else {
 			return false;
 		}
-	}		
+	}
+
+
+
+		
 }	
 
 

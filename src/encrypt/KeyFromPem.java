@@ -15,12 +15,18 @@ import java.security.spec.X509EncodedKeySpec;
 import org.bouncycastle.util.encoders.Base64;
 
 public class KeyFromPem {
+	
+	String userName;
+	
+	public String getUserName() {
+		return this.userName;
+	}
 
 	public PrivateKey readPrivateKeyFromPemFile(String privateKeyName) throws IOException, NoSuchAlgorithmException  {
 		
 		try { 
 			String tmpPem = makeStringFromPem(privateKeyName); //  Pem파일 String 객체로 만들기
-			String userName = getUserName(tmpPem); // userName 확보하기
+			String userName = findUserName(tmpPem); // userName 확보하기
 			String pem = eliminateDeadCode(tmpPem, userName); // 불필요한 부분 제거하기
 			
 			byte[] decoded = Base64.decode(pem);
@@ -39,7 +45,7 @@ public class KeyFromPem {
 	public PublicKey readPublicKeyFromPemFile(String publicKeyName) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		try {
 			String tmpPem = makeStringFromPem(publicKeyName); //  Pem파일 String 객체로 만들기
-			String userName = getUserName(tmpPem); // userName 확보하기
+			String userName = findUserName(tmpPem); // userName 확보하기
 			String pem = eliminateDeadCode(tmpPem, userName); // 불필요한 부분 제거하기
 			
 			byte[] decoded = Base64.decode(pem);
@@ -72,13 +78,15 @@ public class KeyFromPem {
 	}
 	
 	// 관심사 : UserName 확보하기
-	private String getUserName(String pem) throws IOException {
+	private String findUserName(String pem) throws IOException {
 		
 		BufferedReader br = new BufferedReader(new StringReader(pem));
 		
 		String line = br.readLine();
 		line = line.replaceAll("-----BEGIN ", "");
 		line = line.replaceAll("-----", "");
+		
+		this.userName = line;
 		
 		return line;
 	}

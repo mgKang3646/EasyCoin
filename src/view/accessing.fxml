@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="328.0" maxWidth="421.0" minHeight="328.0" minWidth="421.0" prefHeight="328.0" prefWidth="421.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/15.0.1"  fx:controller="controller.AccessingController" >
+   <children>
+      <StackPane layoutX="-2.0" layoutY="-2.0" maxHeight="328.0" maxWidth="421.0" minHeight="328.0" minWidth="421.0" prefHeight="328.0" prefWidth="421.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#7783dd" height="302.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="391.0">
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
+            </Rectangle>
+            <Pane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <TextArea fx:id="progressTextArea" layoutX="26.0" layoutY="98.0" prefHeight="112.0" prefWidth="350.0" />
+                  <ProgressBar fx:id="progressBar" layoutX="27.0" layoutY="247.0" prefHeight="30.0" prefWidth="350.0" progress="0.0" />
+                  <Label fx:id="progressLabel" layoutX="97.0" layoutY="22.0" prefHeight="43.0" prefWidth="260.0" text="P2P망 접속중(0%)" textFill="WHITE">
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

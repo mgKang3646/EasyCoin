@@ -54,7 +54,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Text fx:id="userNameCheck" fill="RED" layoutX="220.0" layoutY="247.0" strokeType="OUTSIDE" strokeWidth="0.0" text="닉네임이 중복됩니다.">
+            <Text fx:id="userNameCheck" fill="RED" layoutX="220.0" layoutY="247.0" strokeType="OUTSIDE" strokeWidth="0.0" text="닉네임이 중복됩니다." visible="false">
                <font>
                   <Font size="19.0" />
                </font>

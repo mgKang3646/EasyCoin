@@ -12,6 +12,7 @@ public class PopupController implements Controller {
 	
 	@FXML Label popupLabel;
 	@FXML Button popupButton;
+	String msg;
 	Stage parentStage;
 	
 	@Override
@@ -22,7 +23,7 @@ public class PopupController implements Controller {
 		this.parentStage = stageValue;
 	}
 	
-	public void setMessage(String msg) {
+	public void setMsg(String msg) {
 		popupLabel.setText(msg);
 	}
 	
@@ -30,4 +31,6 @@ public class PopupController implements Controller {
 		Stage stage = (Stage)(popupButton.getScene().getWindow());
 		stage.close();
 	}
+
+	
 }

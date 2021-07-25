@@ -9,6 +9,8 @@ public class Peer {
 	String userName;
 	String localhost;
 	
+	public Peer() {}
+
 	public Peer(PrivateKey privateKey, PublicKey publicKey, String userName, String localhost) {
 		this.privateKey = privateKey;
 		this.publicKey = publicKey;
