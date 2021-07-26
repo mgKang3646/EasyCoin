@@ -49,25 +49,41 @@ public class JoinController implements Controller  {
 		// 관심사 : userName 중복 검사 및 DB 삽입
 		else {
 			try {
-				if(processDuplicateUserName(userName)) { // 관심사 : userName 중복 검사 
+				// 관심사 : DB 중복 체크 
+				Dao dao = new Dao();
+				int checkDuplicateResult = dao.checkDuplicateUserName(userName);
+				
+				// 1. 중복이 안된 경우
+				if( checkDuplicateResult > 0) { // 관심사 : userName 중복 검사 
 					
-					GeneratingKey generatingKey = generateKey(userName); // 관심사 : 개인키, 공개키 생성
-					String localhost = getLocalhost();	// 관심사 : 주소 생성
-					makePemFile(generatingKey.getPrivateKey(),generatingKey.getPublicKey(),userName); // 관심사 : 개인키, 공개키 Pem 파일 생성
+					// 관심사 : 로그인시 필요한 Pem 파일 만들기
+					GeneratingKey generatingKey = new GeneratingKey();// 관심사 : 개인키, 공개키 생성
+					String localhost ="localhost:"+ (5500 + (int)(Math.random()*100));// 관심사 : 주소 생성
+					Pem pem = new Pem(userName); // 관심사 : Pem 파일 만들기
+					pem.makePrivateAndPublicPemFile(generatingKey.getPrivateKey(), generatingKey.getPublicKey());
 					
-					// 관심사 : Peer 정보 DB 삽입
-					if(insertIntoDB(localhost,userName)) {
-						// 관심사 : DB 저장 성공 시, 회원가입 성공 팝업 생성 후 로그인 페이지로 자동이동.
+					// 관심사 : Peer 정보 DB 저장
+					int joinResult = dao.join(localhost, userName);
+					// 회원정보 DB 저장 성공한 경우
+					if(joinResult > 0) {
+							// 페이지 전환
 							newPage = new NewPage("/view/login.fxml", stage);
 							newPage.createPageOnCurrentStage();
 							newPage = new NewPage("/view/popup.fxml", stage);
 							Controller controller = newPage.getController();
 							controller.setObject("회원가입이 완료되었습니다.");
 							newPage.createPageOnNewStage();
-					}else {
-						//DB 삽입과정 중 문제 발생
-					}	
-				}
+					}
+					// 회원정보 DB 저장 실패한 경우
+					else {}	
+					
+				// 2. 중복된 경우 
+				}else if(checkDuplicateResult == 0) {
+					userNameCheck.setText("닉네임이 중복됩니다.");
+					userNameCheck.setVisible(true);
+				// 3. SQL문 실행 문제 발생 
+				}else {}
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -85,60 +101,6 @@ public class JoinController implements Controller  {
 	}
 	@Override
 	public void mainThreadAction() {}
-
-	// 관심사 : userName 중복 검사 유효성 결과 반환
-	public boolean processDuplicateUserName(String userName) throws IOException {
-		
-		Dao dao = new Dao();
-		int duplicateResult = dao.checkDuplicateUserName(userName);
-		
-		if(duplicateResult == 1) { // 중복 X
-			return true;
-		}else if(duplicateResult == 0) { //중복 O
-			userNameCheck.setText("닉네임이 중복됩니다.");
-			userNameCheck.setVisible(true);
-			return false;
-		}else { // SQL문 실행 문제 발생 
-			return false;
-		}
-	}
-	
-	// 관심사 : 개인키, 공개키 생성
-	public GeneratingKey generateKey(String userName) {
-		// 관심사 : 개인키, 공개키 생성
-		GeneratingKey generatingKey = new GeneratingKey();
-		generatingKey.generateKeyPair();
-		
-		return generatingKey;
-	}
-	
-	// 관심사 : 주소 생성
-	public String getLocalhost() {
-		return "localhost:"+ (5500 + (int)(Math.random()*100));
-	}
-	
-	// 관심사 : 개인키, 공개키 Pem 파일 생성
-	public void makePemFile(PrivateKey privateKey, PublicKey publicKey,String userName) throws IOException {
-		
-		Pem pem = new Pem(userName);
-		pem.makePemFile(privateKey);
-		pem.makePemFile(publicKey);
-		
-	}
-	
-	// 관심사 : Peer 정보 DB 삽입
-	public boolean insertIntoDB(String localhost, String userName) {
-		// 관심사 : DB 가입 정보 저장
-		Dao dao = new Dao();
-		int joinResult = dao.join(localhost, userName);
-		if(joinResult > 0) {
-			return true;
-		}else {
-			return false;
-		}
-	}
-	
-
 
 		
 }	

@@ -40,6 +40,17 @@ public class Pem {
 		}
 	}
 	
+	public void makePrivateAndPublicPemFile(PrivateKey privateKey, PublicKey publicKey) {
+		try {
+			
+			makePemFile(privateKey);
+			makePemFile(publicKey);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public String getPath() {
 		return file.getAbsolutePath();
 	}

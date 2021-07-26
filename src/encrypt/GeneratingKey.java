@@ -12,13 +12,18 @@ public class GeneratingKey {
 	private PrivateKey privateKey;
 	private PublicKey publicKey;
 	
+	
+	
+	public GeneratingKey() {
+		generateKeyPair();
+	}
 	public PrivateKey getPrivateKey() {
 		return privateKey;
 	}
 	public PublicKey getPublicKey() {
 		return publicKey;
 	}
-
+	
 	//관심사 : 개인키 공유키 생성
 	public void generateKeyPair() {
 			// ? private key 생성 과정 분석 필요
