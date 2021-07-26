@@ -8,11 +8,9 @@ import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 public class SocketUtil {
-	
-	Socket socket;
-	
-	public SocketUtil() {
-		this.socket = new Socket();
+		
+	public Socket getSocket() {
+		return new Socket();
 	}
 	
 	public SocketAddress makeSocketAddress(String localhost) throws UnknownHostException {
@@ -25,7 +23,7 @@ public class SocketUtil {
 		return socketAddress;
 	}
 	
-	public boolean connectToSocketAddress(SocketAddress socketAddress) {
+	public boolean connectToSocketAddress(SocketAddress socketAddress, Socket socket) {
 		try {
 			socket.connect(socketAddress);
 			return true;
@@ -34,12 +32,4 @@ public class SocketUtil {
 		}
 	}
 	
-	public void makeNewSocket() {
-		this.socket = new Socket();
-	}
-	
-	public Socket getSocket() {
-		return this.socket;
-	}
-
 }

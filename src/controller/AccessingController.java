@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,11 +68,14 @@ public class AccessingController implements Controller {
 						
 						if(peers != null) {
 							//3. Peer 스레드 생성하여 ServerListener와 연결
+							SocketUtil socketUtil = new SocketUtil();
 							for(int i =0;i<peers.size();i++) {
+								
 								// 관심사 : 소켓 어드레스 생성
-								SocketUtil socketUtil = new SocketUtil();
+								Socket socket = socketUtil.getSocket();
 								SocketAddress socketAddress = socketUtil.makeSocketAddress(peers.get(i).getLocalhost());
-								if(socketUtil.connectToSocketAddress(socketAddress)) {
+								
+								if(socketUtil.connectToSocketAddress(socketAddress,socket)) {
 									// 관심사 : PeerThread 생성
 									PeerThread peerThread = new PeerThread(socketUtil.getSocket());
 									peerThread.start();

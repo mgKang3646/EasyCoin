@@ -89,6 +89,7 @@ public class JoinController implements Controller  {
 			}
 		}
 	}
+	
 	// 관심사 : 로그인 페이지로 돌아가기
 	@Override
 	public void subButtonAction() {
