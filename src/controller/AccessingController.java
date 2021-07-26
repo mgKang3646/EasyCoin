@@ -67,9 +67,9 @@ public class AccessingController implements Controller {
 						
 						if(peers != null) {
 							//3. Peer 스레드 생성하여 ServerListener와 연결
-							SocketUtil socketUtil = new SocketUtil();
 							for(int i =0;i<peers.size();i++) {
 								// 관심사 : 소켓 어드레스 생성
+								SocketUtil socketUtil = new SocketUtil();
 								SocketAddress socketAddress = socketUtil.makeSocketAddress(peers.get(i).getLocalhost());
 								if(socketUtil.connectToSocketAddress(socketAddress)) {
 									// 관심사 : PeerThread 생성
