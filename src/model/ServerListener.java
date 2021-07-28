@@ -10,6 +10,7 @@ public class ServerListener extends Thread {
 
 	private ServerSocket serverSocket;
 	private Set<ServerThread> serverThreads = new HashSet<ServerThread>();
+	private Peer peer;
 	
 	public ServerListener(String port) throws IOException{
 		this.serverSocket = new ServerSocket(Integer.valueOf(port));	
@@ -19,8 +20,8 @@ public class ServerListener extends Thread {
 	public void run() {
 		try {
 			while(true) {
-				System.out.println("서버리스너 실행");
 				ServerThread serverThread = new ServerThread(serverSocket.accept());
+				serverThread.setPeer(this.peer);
 				serverThreads.add(serverThread);
 				serverThread.start();
 			}
@@ -28,4 +29,15 @@ public class ServerListener extends Thread {
 			serverThreads.forEach(t->t.stop());
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "localhost:"+this.serverSocket.getLocalPort();
+	}
+	
+	public void setPeer(Peer peer) {
+		this.peer = peer;
+	}
+	
+	
 }

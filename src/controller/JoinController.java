@@ -31,6 +31,7 @@ public class JoinController implements Controller  {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
+	
 	@Override
 	public void setStage(Stage stageValue) {
 		this.stage = stageValue;
@@ -102,7 +103,8 @@ public class JoinController implements Controller  {
 	}
 	@Override
 	public void mainThreadAction() {}
-
+	
+	
 		
 }	
 

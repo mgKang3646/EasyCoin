@@ -7,7 +7,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import model.NewPage;
 
-// 해야 될 일 : AccessingController 객체 ( P2P 접속 테스트 )
+// 해야 될 일 : P2P 연결시 첫 로그인은 가능하나 두 번째 로그인이 안 됨
 public class Main extends Application {
 	
 	@Override

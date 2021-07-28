@@ -1,18 +1,34 @@
 package model;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
+
+import javax.json.Json;
+import javax.json.JsonObject;
 
 public class PeerThread extends Thread {
 
 	private Socket socket = null;
+	private Peer peer;
 
 	public PeerThread(Socket socket) throws IOException{
 		this.socket = socket;
+		send(peer.getLocalhost()+"");
 	}
 	
 	public void run() {
-		System.out.println(socket.getLocalAddress() +"Peer스레드 실행");
+		
+	}
+	
+	public void send(String msg) throws IOException {
+		
+	}
+	
+	
+	public void setPeer(Peer peer) {
+		this.peer = peer;
 	}
 		
 }

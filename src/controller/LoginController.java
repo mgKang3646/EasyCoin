@@ -30,6 +30,7 @@ public class LoginController implements Controller  {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
+	
 	@Override
 	public void setStage(Stage stageValue) {
 		stage = stageValue;
@@ -93,5 +94,7 @@ public class LoginController implements Controller  {
 	}
 	@Override
 	public void mainThreadAction() {}
+	
+	
 	
 }

@@ -40,5 +40,4 @@ public class PopupController implements Controller {
 	@Override
 	public void mainThreadAction() {}
 
-	
 }
