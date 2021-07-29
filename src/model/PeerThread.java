@@ -15,7 +15,6 @@ public class PeerThread extends Thread {
 
 	public PeerThread(Socket socket) throws IOException{
 		this.socket = socket;
-		send(peer.getLocalhost()+"");
 	}
 	
 	public void run() {
