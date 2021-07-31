@@ -27,6 +27,7 @@ public class JoinController implements Controller  {
 	@FXML private Label privateKeyLabel;
 	@FXML private ImageView goLoginPageButtonImageView;
 	@FXML private Text userNameCheck;
+	
 	private Stage stage;
 	private NewPage newPage;
 	private Dao dao;
@@ -40,17 +41,22 @@ public class JoinController implements Controller  {
 	public void initializeObjects() {
 		this.dao = new Dao();
 	}
+	
 	@Override
 	public void setStage(Stage stageValue) {
 		this.stage = stageValue;
+		newPage = new NewPage(stage);
 	}
+	
 	@Override
 	public void setObject(Object object) {}
+	
 	@Override
 	public void mainThreadAction() {}
+	
 	@Override
 	public void subButtonAction() throws IOException { 	// 관심사 : 로그인 페이지로 돌아가기
-			moveToLoginPage();
+		newPage.moveToLoginPage();
 	}
 	
 	@Override
@@ -69,6 +75,7 @@ public class JoinController implements Controller  {
 		if(userName == "") return true;
 		else return false;
 	}
+	
 	// 관심사 : 회원가입 작업진행
 	public void doJoinProcess(int duplicateResult) throws IOException {
 			if(duplicateResult > 0) { // 중복이 안된 경우
@@ -78,17 +85,20 @@ public class JoinController implements Controller  {
 				setUserNameCheck("닉네임이 중복됩니다.");
 			}else {} // SQL문 실행 문제 발생 
 	}
+	
 	// 관심사 : userName 중복체크
 	public int duplicateCheck() {
 		int result = dao.checkDuplicateUserName(this.userName);
 		return result;
 	}
+	
 	// 관심사 : 로그인시 필요한 Pem 파일 만들기
 	private void makePemFile() {
 		GeneratingKey generatingKey = new GeneratingKey();// 관심사 : 개인키, 공개키 생성
 		Pem pem = new Pem(this.userName); // 관심사 : Pem 파일 만들기
 		pem.makePrivateAndPublicPemFile(generatingKey.getPrivateKey(), generatingKey.getPublicKey());
 	}
+	
 	// 관심사 : 회원정보 DB에 저장하기
 	private void addPeerInDB() throws IOException {
 		int result = dao.join(getLocalhost(), this.userName);
@@ -97,23 +107,13 @@ public class JoinController implements Controller  {
 		}
 		else {}	// 회원정보 DB 저장 실패한 경우
 	}
+	
 	// 관심사 : 페이지 전환하기
 	private void changePage() throws IOException {
-		moveToLoginPage();
-		createPopupPage();
+		newPage.moveToLoginPage();
+		newPage.createPopupPage("회원가입이 완료되었습니다.");
 	}
-	// 관심사 : 로그인 페이지로 전환하기
-	private void moveToLoginPage() throws IOException {
-		newPage = new NewPage("/view/login.fxml", stage);
-		newPage.createPageOnCurrentStage();
-	}
-	// 관심사 : 팝업 페이지 띄우기
-	private void createPopupPage() throws IOException {
-		newPage = new NewPage("/view/popup.fxml", stage);
-		Controller controller = newPage.getController();
-		controller.setObject("회원가입이 완료되었습니다.");
-		newPage.createPageOnNewStage();
-	}
+	
 	// 관심사 : Peer의 주소생성
 	private String getLocalhost() {
 		return "localhost:"+ (5500 + (int)(Math.random()*100));

@@ -46,6 +46,7 @@ public class LoginController implements Controller  {
 	@Override
 	public void setStage(Stage stageValue) {
 		stage = stageValue;
+		newPage = new NewPage(stage);
 	}
 	@Override
 	public void setObject(Object object) {}
@@ -54,7 +55,7 @@ public class LoginController implements Controller  {
 	// 관심사 : 회원가입 페이지로 넘어가기
 	@Override
 	public void subButtonAction() {
-		moveToJoinPage();
+		newPage.moveToJoinPage();
 	}
 	// 관심사 : 로그인하기
 	@Override
@@ -65,6 +66,8 @@ public class LoginController implements Controller  {
 			applyPage();
 		}
 	}			
+	
+	
 	// 관심사 : 파일 탐색기 열어서 원하는 개인키 PEM 파일 경로 확보하기
 	private boolean isPemFile() {
 		this.file = getPemFilePath();
@@ -95,9 +98,9 @@ public class LoginController implements Controller  {
 	// 관심사 : 개인키 확보 여부에 따른 페이지전환
 	private void applyPage() {
 		if(privateKey != null) {
-			moveToAccessingPage();
+			newPage.createAccessingPage(peer);
 		}else {
-			createPopupPage();
+			newPage.createPopupPage("잘못된 개인키 형식입니다.");
 		}
 	}
 	// 관심사 : Pem파일 경로 확보하기
@@ -107,36 +110,5 @@ public class LoginController implements Controller  {
 		fc.setInitialDirectory(new File("./pem"));
 		return fc.showOpenDialog(stage);
 	}
-	// 관심사 : P2P 망 접속 화면 띄우기
-	private void moveToAccessingPage() {
-		try {
-			newPage = new NewPage("/view/accessing.fxml", stage);
-			Controller controller = newPage.getController();
-			controller.setObject(peer);
-			controller.mainThreadAction();
-			newPage.createPageOnNewStage();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	// 관심사 : 팝업창 띄우기
-	private void createPopupPage() {
-		try {
-			newPage = new NewPage("/view/popup.fxml", stage);
-			Controller controller = newPage.getController();
-			controller.setObject("잘못된 개인키 형식입니다.");
-			newPage.createPageOnNewStage();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}	
-	// 관심사 : 회원가입 페이지로 이동
-	private void moveToJoinPage() {
-		try {
-			this.newPage = new NewPage("/view/join.fxml", stage);
-			newPage.createPageOnCurrentStage();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	
 }

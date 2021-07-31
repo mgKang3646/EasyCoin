@@ -12,17 +12,8 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		
-		NewPage createNewPage = new NewPage("/view/login.fxml",primaryStage);
-		createNewPage.createPageOnCurrentStage();
-		primaryStage.setTitle("EasyCoin");
-		primaryStage.setResizable(false);
-		
-		//종료 버튼 클릭시, 프로그램 종료
-		primaryStage.setOnCloseRequest(e->{
-				System.exit(0);
-		});
-		
+		NewPage newPage = new NewPage(primaryStage);
+		newPage.moveToLoginPage();
 		primaryStage.show();
 	}
 	

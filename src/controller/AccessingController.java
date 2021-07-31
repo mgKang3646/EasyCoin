@@ -31,6 +31,7 @@ public class AccessingController implements Controller {
 	private Dao dao;
 	private Peer peer;
 	private ServerListener serverListener;
+	private NewPage newPage;
 	SocketUtil socketUtil;
 	private double progress;
 
@@ -51,6 +52,7 @@ public class AccessingController implements Controller {
 	@Override
 	public void setStage(Stage stageValue) {	
 		this.parentStage = stageValue;
+		newPage = new NewPage(parentStage);
 	}
 	@Override
 	public void setObject(Object object) {
@@ -79,9 +81,6 @@ public class AccessingController implements Controller {
 			progressThread.start();
 	}
 	
-	///////////////////////////////////////////// LEVEL 1 ///////////////////////////////////////////////////
-
-
 	// 관심사 : 서버리스너 만들기
 	private void createServerListener() {
 		runServerListener(getPortNum());
@@ -90,11 +89,6 @@ public class AccessingController implements Controller {
 	private void connectToAnotherServerListener() {
 		connectToServerListenerOfAnotherPeers(getPeersInDB());
 	}
-	
-
-	///////////////////////////////////////////// LEVEL 2 ///////////////////////////////////////////////////
-
-	
 	// 관심사 : 서버리스너 실행
 	private void runServerListener(String portNum) {
 		makeServerListener(portNum);
@@ -121,9 +115,6 @@ public class AccessingController implements Controller {
 				}
 			}	
 	}
-	
-	///////////////////////////////////////////// LEVEL 3 ///////////////////////////////////////////////////
-	
 	
 	// 관심사 : 포트번호 추출
 	private String getPortNum() {

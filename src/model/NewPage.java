@@ -10,57 +10,78 @@ import javafx.stage.Stage;
 
 public class NewPage {
 	
-	String url;
-	Stage stage;
-	FXMLLoader loader;
-	Scene scene;
-	Controller controller;
-
-	public NewPage(String url, Stage stageValue) throws IOException {
-		this.url = url;
-		this.stage = stageValue;
-		createLoader();
-		createScene();
-		setController();
+	private Stage stage;
+	private Scene scene;
+	private Controller controller;
+	
+	public NewPage(Stage stage) { 
+		this.stage = stage;
 	}
+	
+	// 관심사 : 로그인 페이지로 전환하기
+	public void moveToLoginPage() throws IOException {
+		String url ="/view/login.fxml";
+		doDefaultSetting(url);
+		setStageSettings();
+		createPageOnCurrentStage();
+	}
+	
+	// 관심사 : 회원가입 페이지로 이동
+	public void moveToJoinPage() {
+			String url = "/view/join.fxml";
+			doDefaultSetting(url);
+			createPageOnCurrentStage();
+	}
+		
+	// 관심사 : AccessingPage로 이동하기
+	public void createAccessingPage(Peer peer) {
+			String url = "/view/accessing.fxml";
+			doDefaultSetting(url);
+			this.controller.setObject(peer);
+			controller.mainThreadAction();
+			createPageOnNewStage();
+	}
+	
+	// 관심사 : 팝업창 띄우기
+	public void createPopupPage(String msg) {
+			String url = "/view/popup.fxml";
+			doDefaultSetting(url);
+			controller.setObject(msg);
+			createPageOnNewStage();
+	}
+	
 	// 관심사 : FXMLLoader 객체 생성하기
-	public void createLoader() {
-		this.loader = new FXMLLoader(getClass().getResource(url));	
-	}
-	// 관심사 : Scene 객체 생성하기
-	public void createScene() {
+	private void doDefaultSetting(String url){
 		try {
-			Parent root = this.loader.load();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(url));
+			Parent root = loader.load();
 			this.scene = new Scene(root);
+			this.controller = loader.getController();
+			this.controller.setStage(this.stage);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}	
-	}
-	// 관심사 : 컨트롤러 설정하기
-	public void setController() {
-		this.controller = this.loader.getController();
+		}
 	}
 	
 	// 관심사 : 기존 창에 새로운 페이지 열기
-	public void createPageOnCurrentStage() {
+	private void createPageOnCurrentStage() {
 			stage.setScene(this.scene);
-			this.controller.setStage(stage);
-
 	}
 	// 관심사 : 새로운 창에 페이지 열기
-	public void createPageOnNewStage() {
-			Stage stage = new Stage();	
-			stage.setScene(this.scene);
-			stage.setX(this.stage.getX()+100);
-			stage.setY(this.stage.getY()+50);
-			stage.show();	
-			
-			this.controller.setStage(stage);
+	private void createPageOnNewStage() {
+			Stage newStage = new Stage();	
+			newStage.setScene(this.scene);
+			newStage.setX(this.stage.getX()+100);
+			newStage.setY(this.stage.getY()+50);
+			newStage.show();	
 	}
 	
-	
-	// 관심사 : Controller 객체 얻기 ( 추가적인 세팅이 필요한 경우 )
-	public Controller getController() {
-		return this.controller;
+	// 관심사 : Stage 기본 세팅 설정
+	private void setStageSettings() {
+		stage.setTitle("EasyCoin");
+		stage.setResizable(false);
+		stage.setOnCloseRequest(e->{
+				System.exit(0);
+		});
 	}
 }
