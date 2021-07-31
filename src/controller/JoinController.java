@@ -63,7 +63,6 @@ public class JoinController implements Controller  {
 			}
 	}
 	
-	
 	// 관심사 : userName 공백체크
 	private boolean isEmptyUserName() {
 		this.userName = userNameText.getText();
