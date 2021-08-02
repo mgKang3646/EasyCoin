@@ -7,14 +7,14 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import model.NewPage;
 
-// 해야 될 일 : P2P 연결시 첫 로그인은 가능하나 두 번째 로그인이 안 됨
+// 해야 될 일 : 상대측 PeerThread 만들기 ing. Json 형식이 맞게 전송이 안되는 듯 함.
 public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		NewPage newPage = new NewPage(primaryStage);
 		newPage.moveToLoginPage();
-		primaryStage.show();
+		newPage.show();
 	}
 	
 	public static void main(String[] args) {

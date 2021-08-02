@@ -50,6 +50,11 @@ public class NewPage {
 			createPageOnNewStage();
 	}
 	
+	// 관심사 : 스테이지 창 열기
+	public void show() {
+		stage.show();
+	}
+	
 	// 관심사 : FXMLLoader 객체 생성하기
 	private void doDefaultSetting(String url){
 		try {
