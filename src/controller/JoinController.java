@@ -2,8 +2,6 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ResourceBundle;
 
 import database.Dao;
@@ -16,8 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.NewPage;
-import util.SocketUtil;
+import util.NewPage;
 
 public class JoinController implements Controller  {
 	

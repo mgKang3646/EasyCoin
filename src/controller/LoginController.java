@@ -15,8 +15,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.NewPage;
 import model.Peer;
+import util.NewPage;
 
 public class LoginController implements Controller  {
 	

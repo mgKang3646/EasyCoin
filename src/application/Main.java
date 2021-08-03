@@ -5,7 +5,7 @@ import java.security.Security;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import model.NewPage;
+import util.NewPage;
 
 // 해야 될 일 : 상대측 PeerThread 만들기 ing. Json 형식이 맞게 전송이 안되는 듯 함.
 public class Main extends Application {

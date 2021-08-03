@@ -3,6 +3,7 @@ package model;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -21,6 +22,7 @@ public class ServerThread extends Thread {
 	}
 	
 	public void initializeObjects() throws IOException {
+		
 	}
 	
 	public void run() {
@@ -28,8 +30,9 @@ public class ServerThread extends Thread {
 			this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			while(true) {
 					JsonObject jsonObject = Json.createReader(bufferedReader).readObject();
-				
+					
 					if(jsonObject.containsKey("localhost")) {
+						
 						String hostAddress = jsonObject.getString("localhost");
 						String[] address = hostAddress.split(":");
 						
@@ -39,8 +42,8 @@ public class ServerThread extends Thread {
 						peerThread.start();
 					}
 			}
-		} catch (Exception e) {
-			System.out.println(peer.getUserName() + " : 서버스레드 Peer스레드 소켓 생성 과정 중 오류 발생");
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

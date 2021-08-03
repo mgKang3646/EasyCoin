@@ -15,11 +15,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
-import model.NewPage;
 import model.Peer;
 import model.PeerThread;
 import model.ServerListener;
 import util.JsonUtil;
+import util.NewPage;
 import util.SocketUtil;
 
 public class AccessingController implements Controller {
