@@ -17,7 +17,6 @@ public class JsonUtil {
 	private StringWriter getStringWriter(JsonObject obj) {
 		StringWriter sw = new StringWriter();
 		Json.createWriter(sw).writeObject(obj);
-		System.out.println("json°ª : " + sw.toString());
 		return sw;
 	}
 

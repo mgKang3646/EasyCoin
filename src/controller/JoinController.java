@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import database.Dao;
 import encrypt.GeneratingKey;
 import encrypt.Pem;
+import factory.UtilFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,6 +28,7 @@ public class JoinController implements Controller  {
 	
 	private Stage stage;
 	private NewPage newPage;
+	private UtilFactory utilFactory;
 	private Dao dao;
 	private String userName;
 	
@@ -36,13 +38,14 @@ public class JoinController implements Controller  {
 	}
 	
 	public void initializeObjects() {
+		this.utilFactory = new UtilFactory();
 		this.dao = new Dao();
 	}
 	
 	@Override
 	public void setStage(Stage stageValue) {
 		this.stage = stageValue;
-		newPage = new NewPage(stage);
+		newPage = utilFactory.getNewPage(stageValue);
 	}
 	
 	@Override

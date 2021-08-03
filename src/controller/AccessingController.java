@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import database.Dao;
+import factory.UtilFactory;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -33,9 +34,12 @@ public class AccessingController implements Controller {
 	private Peer peer;
 	private ServerListener serverListener;
 	private NewPage newPage;
+	private UtilFactory utilFactory;
 	private SocketUtil socketUtil;
 	private double progress;
 	private JsonUtil jsonUtil;
+	private ArrayList<Peer> peers;
+	
 
 	
 	@Override
@@ -44,9 +48,10 @@ public class AccessingController implements Controller {
 		initializeComponents();
 	}
 	public void initializeObjects() {
+		this.utilFactory = new UtilFactory();
 		this.dao = new Dao();
-		this.socketUtil = new SocketUtil();
-		this.jsonUtil = new JsonUtil();
+		this.socketUtil = utilFactory.getSocketUtil();
+		this.jsonUtil = utilFactory.getJsonUtil();
 	}
 	public void initializeComponents() {
 		progressBar.setStyle("-fx-accent : #58FA82;");
@@ -55,7 +60,7 @@ public class AccessingController implements Controller {
 	@Override
 	public void setStage(Stage stageValue) {	
 		this.parentStage = stageValue;
-		newPage = new NewPage(parentStage);
+		newPage = utilFactory.getNewPage(stageValue);
 	}
 	@Override
 	public void setObject(Object object) {
@@ -71,45 +76,40 @@ public class AccessingController implements Controller {
 		Thread progressThread = new Thread() {
 			public void run() {
 				try {
-					
-					createServerListener(); // 1. 서버리스너 생성
+					createServerListener();
 					processUI("서버 생성 완료 : " + serverListener.toString(), getProgress(0.1)); // 관심사 : UI 처리
 					connectToAnotherServerListener(); // 2. PeerThread 생성하여 DB 저장된 Peer들과 소켓연결
-					Thread.sleep(500);
-					processUI("P2P 네트워크망 연결완료",1); // 관심사 : UI 처리		
-				
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+					processUI("P2P 네트워크망 연결완료",1); // 관심사 : UI 처리	
+				} catch (IOException e) {}
 			}
 		};
 		progressThread.start();
 	}
 	
 	// 관심사 : 서버리스너 만들기
-	private void createServerListener() {
+	private void createServerListener() throws IOException {
 		runServerListener(getPortNum());
 	}
 	// 관심사 : 다른 Peer의 서버리스너와 연결하기
-	private void connectToAnotherServerListener() {
-		connectToServerListenerOfAnotherPeers(getPeersInDB());
+	private void connectToAnotherServerListener() throws IOException {
+		setPeersFromDB();
+		connectToServerListenerOfAnotherPeers();
 	}
 	// 관심사 : 서버리스너 실행
-	private void runServerListener(String portNum) {
+	private void runServerListener(String portNum) throws IOException {
 		makeServerListener(portNum);
 		serverListener.start();
 	}
 	
 	// 관심사 : DB에 저장된 Peer들 정보 갖고오기
-	private ArrayList<Peer> getPeersInDB() {
-		ArrayList<Peer> peers = dao.getPeers(peer.getUserName());
-		return peers;
+	private void setPeersFromDB() {
+		this.peers = dao.getPeers(peer.getUserName());
 	}
 	
 	// 관심사 : 다른 Peer의 서버리스너와 연결하기 + 관심사 : UI 처리하기 ( 한 가지 메소드 안에 두 가지 관심사 )
-	private void connectToServerListenerOfAnotherPeers(ArrayList<Peer> peers) {
-			for(Peer peerValue : peers) {
-				doConnect(peerValue, peers.size());
+	private void connectToServerListenerOfAnotherPeers() throws IOException {
+			for(Peer peerValue : this.peers) {
+				doConnect(peerValue);
 			}	
 	}
 	
@@ -121,36 +121,27 @@ public class AccessingController implements Controller {
 	}
 	
 	// 관심사 : 서버리스너 생성
-	private void makeServerListener(String portNum) {
-		try {
+	private void makeServerListener(String portNum) throws IOException {
 			this.serverListener = new ServerListener(portNum);
 			this.serverListener.setPeer(peer);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
 	}
 	
 	// 관심사 : Socket 연결 시작하기
-	private void doConnect(Peer peerValue, int length) {
-		try {
+	private void doConnect(Peer peerValue) throws IOException {
 			if(connectServerListener(getSocketAddress(peerValue))) {
-				processUI(getConnectionMsg(peerValue,true), getProgress(getConnectionPercent(length))); // 관심사 : UI 처리
+				processUI(getConnectionMsg(peerValue,true), getProgress(getConnectionPercent(this.peers.size()))); // 관심사 : UI 처리
 			}else {
-				processUI(getConnectionMsg(peerValue,false), getProgress(getConnectionPercent(length))); // 관심사 : UI 처리
+				processUI(getConnectionMsg(peerValue,false), getProgress(getConnectionPercent(this.peers.size()))); // 관심사 : UI 처리
 			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	// 관심사 : 소켓 어드레스 생성
 	private SocketAddress getSocketAddress(Peer peer) throws UnknownHostException {
-		SocketAddress socketAddress = socketUtil.makeSocketAddress(peer.getLocalhost());
-		return socketAddress;
+		return socketUtil.makeSocketAddress(peer.getLocalhost());
 	}
 	
 	// 관심사 : 상대 ServerListener와 연결
-	private boolean connectServerListener(SocketAddress socketAddress) {
+	private boolean connectServerListener(SocketAddress socketAddress) throws IOException {
 		Socket socket = socketUtil.getSocket();
 		if(socketUtil.connectToSocketAddress(socketAddress,socket)) {
 			createPeerThread(socket);
@@ -160,15 +151,11 @@ public class AccessingController implements Controller {
 	}
 	
 	// 관심사 : PeerThread 생성
-	private void createPeerThread(Socket socket) {
-		try {
+	private void createPeerThread(Socket socket) throws IOException {
 			PeerThread peerThread = new PeerThread(socket);
 			peerThread.setPeer(this.peer);
 			peerThread.start();
-			peerThread.send(jsonUtil.sendLocalhost(serverListener.toString()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			peerThread.send(jsonUtil.sendLocalhost(serverListener.toString()));// 관심사가 다름 분리해야 됨
 	}
 	
 	// 관심사 : 추가된 progress 리턴

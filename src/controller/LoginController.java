@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import database.Dao;
 import encrypt.KeyFromPem;
+import factory.UtilFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -28,6 +29,7 @@ public class LoginController implements Controller  {
 	private Stage stage;
 	private NewPage newPage;
 	private FileChooser fc;
+	private UtilFactory utilFactory;
 	private KeyFromPem keyFromPem;
 	private Dao dao;
 	private Peer peer;
@@ -39,14 +41,15 @@ public class LoginController implements Controller  {
 		initializeObjects();
 	}
 	private void initializeObjects() {
-		fc = new FileChooser();
-		keyFromPem = new KeyFromPem();
-		dao = new Dao();
+		this.utilFactory = new UtilFactory();
+		this.fc = new FileChooser();
+		this.keyFromPem = new KeyFromPem();
+		this.dao = new Dao();
 	}
 	@Override
 	public void setStage(Stage stageValue) {
 		stage = stageValue;
-		newPage = new NewPage(stage);
+		newPage = utilFactory.getNewPage(stageValue);
 	}
 	@Override
 	public void setObject(Object object) {}
@@ -57,6 +60,7 @@ public class LoginController implements Controller  {
 	public void subButtonAction() {
 		newPage.moveToJoinPage();
 	}
+	
 	// 관심사 : 로그인하기
 	@Override
 	public void mainButtonAction() {
