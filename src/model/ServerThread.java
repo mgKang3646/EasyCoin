@@ -3,12 +3,13 @@ package model;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.Socket;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+
+import factory.IOFactory;
 
 public class ServerThread extends Thread {
 
@@ -22,17 +23,17 @@ public class ServerThread extends Thread {
 	}
 	
 	public void initializeObjects() throws IOException {
-		
+		IOFactory ioFactory = new IOFactory();
+		this.bufferedReader = ioFactory.getBufferedReader(socket);
+
 	}
 	
 	public void run() {
 		try {
-			this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			while(true) {
 					JsonObject jsonObject = Json.createReader(bufferedReader).readObject();
 					
 					if(jsonObject.containsKey("localhost")) {
-						
 						String hostAddress = jsonObject.getString("localhost");
 						String[] address = hostAddress.split(":");
 						
