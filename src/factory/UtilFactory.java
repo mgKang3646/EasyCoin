@@ -1,14 +1,20 @@
 package factory;
 
 import javafx.stage.Stage;
-import util.JsonUtil;
+import model.Peer;
+import util.JsonReceive;
+import util.JsonSend;
 import util.NewPage;
 import util.SocketUtil;
 
 public class UtilFactory {
 	
-	public JsonUtil getJsonUtil() {
-		return new JsonUtil();
+	public JsonSend getJsonSend() {
+		return new JsonSend();
+	}
+	
+	public JsonReceive getJsonReceive() {
+		return new JsonReceive();
 	}
 	
 	public NewPage getNewPage(Stage stage) {

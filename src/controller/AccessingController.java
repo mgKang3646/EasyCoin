@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 import model.Peer;
 import model.PeerThread;
 import model.ServerListener;
-import util.JsonUtil;
+import util.JsonSend;
 import util.NewPage;
 import util.SocketUtil;
 
@@ -37,7 +37,7 @@ public class AccessingController implements Controller {
 	private UtilFactory utilFactory;
 	private SocketUtil socketUtil;
 	private double progress;
-	private JsonUtil jsonUtil;
+	private JsonSend jsonSend;
 	private ArrayList<Peer> peers;
 	
 
@@ -48,10 +48,10 @@ public class AccessingController implements Controller {
 		initializeComponents();
 	}
 	public void initializeObjects() {
-		this.utilFactory = new UtilFactory();
-		this.dao = new Dao();
-		this.socketUtil = utilFactory.getSocketUtil();
-		this.jsonUtil = utilFactory.getJsonUtil();
+		utilFactory = new UtilFactory();
+		dao = new Dao();
+		socketUtil = utilFactory.getSocketUtil();
+		jsonSend = utilFactory.getJsonSend();
 	}
 	public void initializeComponents() {
 		progressBar.setStyle("-fx-accent : #58FA82;");
@@ -76,14 +76,18 @@ public class AccessingController implements Controller {
 		Thread progressThread = new Thread() {
 			public void run() {
 				try {
-					createServerListener();
-					processUI("서버 생성 완료 : " + serverListener.toString(), getProgress(0.1)); // 관심사 : UI 처리
-					connectToAnotherServerListener(); // 2. PeerThread 생성하여 DB 저장된 Peer들과 소켓연결
-					processUI("P2P 네트워크망 연결완료",1); // 관심사 : UI 처리	
+					doAccessing();
 				} catch (IOException e) {}
 			}
 		};
 		progressThread.start();
+	}
+	
+	private void doAccessing() throws IOException {
+		createServerListener();
+		processUI("서버 생성 완료 : " + serverListener.toString(), getProgress(0.1)); // 관심사 : UI 처리
+		connectToAnotherServerListener(); // 2. PeerThread 생성하여 DB 저장된 Peer들과 소켓연결
+		processUI("P2P 네트워크망 연결완료",1); // 관심사 : UI 처리	
 	}
 	
 	// 관심사 : 서버리스너 만들기
@@ -155,7 +159,7 @@ public class AccessingController implements Controller {
 			PeerThread peerThread = new PeerThread(socket);
 			peerThread.setPeer(this.peer);
 			peerThread.start();
-			peerThread.send(jsonUtil.sendLocalhost(serverListener.toString()));// 관심사가 다름 분리해야 됨
+			peerThread.send(jsonSend.sendLocalhost(serverListener.toString()));// 관심사가 다름 분리해야 됨
 	}
 	
 	// 관심사 : 추가된 progress 리턴

@@ -3,9 +3,7 @@ package model;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.Socket;
 
 import javax.json.Json;
@@ -13,13 +11,15 @@ import javax.json.JsonObject;
 
 import factory.IOFactory;
 import factory.UtilFactory;
-import util.JsonUtil;
+import util.JsonReceive;
+import util.JsonSend;
 
 public class PeerThread extends Thread {
 
 	private Socket socket = null;
 	private Peer peer;
-	private JsonUtil jsonUtil;
+	private JsonSend jsonSend;
+	private JsonReceive jsonReceive;
 	private PrintWriter printWriter;
 	private BufferedReader br;
 	private BufferedWriter bw;
@@ -33,7 +33,8 @@ public class PeerThread extends Thread {
 		UtilFactory utilFactory = new UtilFactory();
 		IOFactory ioFactory = new IOFactory();
 		
-		jsonUtil = utilFactory.getJsonUtil();
+		jsonSend = utilFactory.getJsonSend();
+		jsonReceive = utilFactory.getJsonReceive();
 		printWriter = ioFactory.getPrintWriter(socket);
 		br = ioFactory.getBufferedReader(socket);
 	}
@@ -44,7 +45,7 @@ public class PeerThread extends Thread {
 		}
 	}
 	
-	public void send(StringWriter msg) throws IOException {
+	public void send(String msg) throws IOException {
 		printWriter.println(msg);
 	}
 	

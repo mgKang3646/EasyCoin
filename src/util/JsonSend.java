@@ -6,18 +6,21 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-public class JsonUtil {
+public class JsonSend {
 	
-	public StringWriter sendLocalhost(String localhost) { // 메소드 이름 수정해야됨
+	public String sendLocalhost(String localhost) { 
+		
 		JsonObjectBuilder job = Json.createObjectBuilder();
+		job.add("order", "makePeerThread");
 		job.add("localhost",localhost);
-		return getStringWriter(job.build());
+		return changeJsonToString(job.build());
+		
 	}
 	
-	private StringWriter getStringWriter(JsonObject obj) {
+	private String changeJsonToString(JsonObject obj) {
 		StringWriter sw = new StringWriter();
 		Json.createWriter(sw).writeObject(obj);
-		return sw;
+		return sw.toString();
 	}
 
 }
