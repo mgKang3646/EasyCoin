@@ -16,7 +16,7 @@ public class JsonReceive {
 
 	public JsonReceive(Peer peer) {
 		this.peer = peer;
-		//initializeObjects();
+		initializeObjects();
 	}
 	
 	public void initializeObjects() {

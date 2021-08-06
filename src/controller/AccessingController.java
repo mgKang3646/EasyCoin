@@ -30,7 +30,6 @@ public class AccessingController implements Controller {
 	private @FXML ProgressBar progressBar;
 	private @FXML Label progressLabel;
 	
-	private Stage parentStage;
 	private Dao dao;
 	private Peer peer;
 	private ServerListener serverListener;
@@ -64,7 +63,6 @@ public class AccessingController implements Controller {
 	}
 	@Override
 	public void setStage(Stage stageValue) {	
-		this.parentStage = stageValue;
 		newPage = utilFactory.getNewPage(stageValue);
 	}
 	@Override
@@ -81,7 +79,11 @@ public class AccessingController implements Controller {
 		Thread progressThread = new Thread() {
 			public void run() {
 				try {
+					
 					doAccessing();
+					moveToMypage();
+					closeStage();
+					
 				} catch (IOException e) {}
 			}
 		};
@@ -188,6 +190,19 @@ public class AccessingController implements Controller {
 			progressBar.setProgress(progress);
 			progressLabel.setText("P2P¸Á Á¢¼ÓÁß("+(int)(progress*100)+"%)");
 			progressTextArea.appendText(msg+"\n");
+		});
+	}
+	
+	private void moveToMypage() {
+		Platform.runLater(()->{
+			newPage.moveToMyPage(peer);
+		});
+	}
+	
+	private void closeStage() {
+		Platform.runLater(()->{
+			Stage stage = (Stage)progressBar.getScene().getWindow();
+			stage.close();
 		});
 	}
 		

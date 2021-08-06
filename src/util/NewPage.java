@@ -33,6 +33,14 @@ public class NewPage {
 			doDefaultSetting(url);
 			createPageOnCurrentStage();
 	}
+	
+	// 관심사 : 마이페이지로 이동
+	public void moveToMyPage(Peer peer) {
+		String url ="/view/mypage.fxml";
+		doDefaultSetting(url);
+		this.controller.setObject(peer);
+		createPageOnCurrentStage();
+	}
 		
 	// 관심사 : AccessingPage로 이동하기
 	public void createAccessingPage(Peer peer) {
