@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+
 import factory.IOFactory;
 import factory.UtilFactory;
 import util.JsonReceive;
 import util.JsonSend;
 
-public class ServerThread extends Thread {
+public class ServerThread extends SocketThread {
 
 	private Socket socket;
 	private Peer peer;
@@ -19,8 +22,9 @@ public class ServerThread extends Thread {
 	private JsonSend jsonSend;
 	private JsonReceive jsonReceive;
 	
-	public ServerThread(Socket socket)throws IOException{
+	public ServerThread(Socket socket, Peer peer)throws IOException{
 		this.socket = socket;
+		this.peer = peer;
 		initializeObjects();
 	}
 	
@@ -29,7 +33,7 @@ public class ServerThread extends Thread {
 		UtilFactory utilFactory = new UtilFactory();
 		
 		jsonSend = utilFactory.getJsonSend();
-		jsonReceive = utilFactory.getJsonReceive();
+		jsonReceive = utilFactory.getJsonReceive(peer);
 		printWriter = ioFactory.getPrintWriter(socket);
 		bufferedReader = ioFactory.getBufferedReader(socket);
 	}
@@ -41,19 +45,20 @@ public class ServerThread extends Thread {
 			}
 		}catch(Exception e) { 
 				try {
+					e.printStackTrace();
 					closeIO();
 				} catch (IOException e1) {}
 		}
 	}
 	
-	public void closeIO() throws IOException {
+	private void closeIO() throws IOException {
 		socket.close();
 		bufferedReader.close();
 		printWriter.close();
 	}
 	
-	public void setPeer(Peer peer) {
-		this.peer = peer;
+	public void send(String msg) {
+		printWriter.println(msg);
 	}
 	
 	

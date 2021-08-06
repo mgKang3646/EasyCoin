@@ -14,18 +14,18 @@ import factory.UtilFactory;
 import util.JsonReceive;
 import util.JsonSend;
 
-public class PeerThread extends Thread {
+public class PeerThread extends SocketThread {
 
 	private Socket socket = null;
 	private Peer peer;
 	private JsonSend jsonSend;
 	private JsonReceive jsonReceive;
 	private PrintWriter printWriter;
-	private BufferedReader br;
-	private BufferedWriter bw;
+	private BufferedReader bufferedReader;
 
-	public PeerThread(Socket socket) throws IOException{
+	public PeerThread(Socket socket, Peer peer) throws IOException{
 		this.socket = socket;
+		this.peer = peer;
 		initializeObjects();
 	}
 	
@@ -34,24 +34,32 @@ public class PeerThread extends Thread {
 		IOFactory ioFactory = new IOFactory();
 		
 		jsonSend = utilFactory.getJsonSend();
-		jsonReceive = utilFactory.getJsonReceive();
+		jsonReceive = utilFactory.getJsonReceive(peer);
 		printWriter = ioFactory.getPrintWriter(socket);
-		br = ioFactory.getBufferedReader(socket);
+		bufferedReader = ioFactory.getBufferedReader(socket);
+	}
+	@Override
+	public void run()  {
+		try {
+			while(true) {
+				jsonReceive.getJsonObject(bufferedReader);
+			}
+		}catch(Exception e) {
+			try {
+				e.printStackTrace();
+				closeIO();
+			} catch (IOException e1) {}
+		}
 	}
 	
-	public void run()  {
-		while(true) {
-			JsonObject jsonObject = Json.createReader(br).readObject();
-		}
+	public void closeIO() throws IOException {
+		socket.close();
+		bufferedReader.close();
+		printWriter.close();
 	}
 	
 	public void send(String msg) throws IOException {
 		printWriter.println(msg);
-	}
-	
-	
-	public void setPeer(Peer peer) {
-		this.peer = peer;
 	}
 	
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import database.Dao;
+import factory.SocketThreadFactory;
 import factory.UtilFactory;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,8 +18,8 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import model.Peer;
-import model.PeerThread;
 import model.ServerListener;
+import model.SocketThread;
 import util.JsonSend;
 import util.NewPage;
 import util.SocketUtil;
@@ -35,6 +36,8 @@ public class AccessingController implements Controller {
 	private ServerListener serverListener;
 	private NewPage newPage;
 	private UtilFactory utilFactory;
+	private SocketThreadFactory socketThreadFactory;
+	
 	private SocketUtil socketUtil;
 	private double progress;
 	private JsonSend jsonSend;
@@ -49,6 +52,8 @@ public class AccessingController implements Controller {
 	}
 	public void initializeObjects() {
 		utilFactory = new UtilFactory();
+		socketThreadFactory = new SocketThreadFactory();
+		
 		dao = new Dao();
 		socketUtil = utilFactory.getSocketUtil();
 		jsonSend = utilFactory.getJsonSend();
@@ -156,10 +161,9 @@ public class AccessingController implements Controller {
 	
 	// 관심사 : PeerThread 생성
 	private void createPeerThread(Socket socket) throws IOException {
-			PeerThread peerThread = new PeerThread(socket);
-			peerThread.setPeer(this.peer);
-			peerThread.start();
-			peerThread.send(jsonSend.sendLocalhost(serverListener.toString()));// 관심사가 다름 분리해야 됨
+			SocketThread socketThread = socketThreadFactory.getPeerThread(socket,peer);
+			socketThread.start();
+			socketThread.send(jsonSend.requestPeerThread(serverListener.toString()));// 관심사가 다름 분리해야 됨
 	}
 	
 	// 관심사 : 추가된 progress 리턴

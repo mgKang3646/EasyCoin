@@ -8,10 +8,10 @@ import javax.json.JsonObjectBuilder;
 
 public class JsonSend {
 	
-	public String sendLocalhost(String localhost) { 
+	public String requestPeerThread(String localhost) { 
 		
 		JsonObjectBuilder job = Json.createObjectBuilder();
-		job.add("order", "makePeerThread");
+		job.add("order", "requestPeerThread");
 		job.add("localhost",localhost);
 		return changeJsonToString(job.build());
 		

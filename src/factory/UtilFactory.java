@@ -13,8 +13,8 @@ public class UtilFactory {
 		return new JsonSend();
 	}
 	
-	public JsonReceive getJsonReceive() {
-		return new JsonReceive();
+	public JsonReceive getJsonReceive(Peer peer) {
+		return new JsonReceive(peer);
 	}
 	
 	public NewPage getNewPage(Stage stage) {
