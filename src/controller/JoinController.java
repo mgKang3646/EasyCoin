@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Peer;
 import util.NewPage;
 
 public class JoinController implements Controller  {
@@ -26,34 +27,30 @@ public class JoinController implements Controller  {
 	@FXML private ImageView goLoginPageButtonImageView;
 	@FXML private Text userNameCheck;
 	
-	private Stage stage;
 	private NewPage newPage;
+	private Stage stage;
 	private UtilFactory utilFactory;
 	private Dao dao;
 	private String userName;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		initializeObjects();
+		createObjects();
 	}
-	
-	public void initializeObjects() {
+	public void createObjects() {
 		this.utilFactory = new UtilFactory();
 		this.dao = new Dao();
 	}
-	
 	@Override
-	public void setStage(Stage stageValue) {
-		this.stage = stageValue;
-		newPage = utilFactory.getNewPage(stageValue);
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
-	
 	@Override
-	public void setObject(Object object) {}
-	
-	@Override
-	public void mainThreadAction() {}
-	
+	public void executeDefaultProcess() throws IOException {
+		newPage = utilFactory.getNewPage(stage);
+	}
+
+
 	@Override
 	public void subButtonAction() throws IOException { 	// 관심사 : 로그인 페이지로 돌아가기
 		newPage.moveToLoginPage();
@@ -61,12 +58,12 @@ public class JoinController implements Controller  {
 	
 	@Override
 	public void mainButtonAction() throws IOException  {
-			if(!isEmptyUserName()) {
-				doJoinProcess(duplicateCheck());
-			}
-			else {
-				setUserNameCheck("닉네임이 공백입니다.");
-			}
+		if(!isEmptyUserName()) {
+			doJoinProcess(duplicateCheck());
+		}
+		else {
+			setUserNameCheck("닉네임이 공백입니다.");
+		}
 	}
 	
 	// 관심사 : userName 공백체크
@@ -78,12 +75,12 @@ public class JoinController implements Controller  {
 	
 	// 관심사 : 회원가입 작업진행
 	public void doJoinProcess(int duplicateResult) throws IOException {
-			if(duplicateResult > 0) { // 중복이 안된 경우
-				makePemFile(); // Pem파일생성
-				addPeerInDB(); // 회원정보 DB저장
-			}else if(duplicateResult == 0) { // 중복된 경우 
-				setUserNameCheck("닉네임이 중복됩니다.");
-			}else {} // SQL문 실행 문제 발생 
+		if(duplicateResult > 0) { // 중복이 안된 경우
+			makePemFile(); // Pem파일생성
+			addPeerInDB(); // 회원정보 DB저장
+		}else if(duplicateResult == 0) { // 중복된 경우 
+			setUserNameCheck("닉네임이 중복됩니다.");
+		}else {} // SQL문 실행 문제 발생 
 	}
 	
 	// 관심사 : userName 중복체크
@@ -123,6 +120,13 @@ public class JoinController implements Controller  {
 		userNameCheck.setText(msg);
 		userNameCheck.setVisible(true);
 	}
+
+	@Override
+	public void setPeer(Peer peer) {}
+	@Override
+	public void setObject(Object object) {}
+	@Override
+	public void mainThreadAction() {}
 }	
 
 

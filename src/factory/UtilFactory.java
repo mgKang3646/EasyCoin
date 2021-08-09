@@ -21,6 +21,10 @@ public class UtilFactory {
 		return new NewPage(stage);
 	}
 	
+	public NewPage getNewPage(Stage stage, Peer peer) {
+		return new NewPage(stage,peer);
+	}
+	
 	public SocketUtil getSocketUtil() {
 		return new SocketUtil();
 	}

@@ -11,91 +11,131 @@ import model.Peer;
 
 public class NewPage {
 	
+	private FXMLLoader loader;
 	private Stage stage;
 	private Scene scene;
 	private Controller controller;
+	private Peer peer;
+	private Object object;
+	private String url;
 	
 	public NewPage(Stage stage) { 
-		this.stage = stage;
+			this.stage = stage;
+	}
+	
+	public NewPage(Stage stage, Peer peer) {
+			this.stage = stage;
+			this.peer = peer;
+	}
+	
+	// 관심사 : 스테이지 반환
+	public Stage getStage() {
+			return this.stage;
+	}
+	// 관심사 : peer 세팅
+	public void setPeer(Peer peer) {
+			this.peer = peer;
 	}
 	
 	// 관심사 : 로그인 페이지로 전환하기
-	public void moveToLoginPage() throws IOException {
-		String url ="/view/login.fxml";
-		doDefaultSetting(url);
-		setStageSettings();
-		createPageOnCurrentStage();
+	public void moveToLoginPage() {
+			url ="/view/login.fxml";
+			doDefaultProcess();
+			createPageOnCurrentStage();
 	}
 	
 	// 관심사 : 회원가입 페이지로 이동
 	public void moveToJoinPage() {
-			String url = "/view/join.fxml";
-			doDefaultSetting(url);
+			url = "/view/join.fxml";
+			doDefaultProcess();
 			createPageOnCurrentStage();
 	}
 	
 	// 관심사 : 마이페이지로 이동
-	public void moveToMyPage(Peer peer) {
-		String url ="/view/mypage.fxml";
-		doDefaultSetting(url);
-		this.controller.setObject(peer);
-		createPageOnCurrentStage();
+	public void moveToMyPage(){
+			url ="/view/mypage.fxml";
+			doDefaultProcess();
+			createPageOnCurrentStage();
+	}
+	
+	// 관심사 : 인덱스페이지로 이동
+	public void moveToIndexPage(String childPage){
+			url ="/view/index.fxml";
+			object = childPage;
+			doDefaultProcess();
+			createPageOnCurrentStage();
 	}
 		
 	// 관심사 : AccessingPage로 이동하기
-	public void createAccessingPage(Peer peer) {
-			String url = "/view/accessing.fxml";
-			doDefaultSetting(url);
-			this.controller.setObject(peer);
-			controller.mainThreadAction();
+	public void createAccessingPage() {
+			url = "/view/accessing.fxml";
+			doDefaultProcess();
 			createPageOnNewStage();
 	}
 	
 	// 관심사 : 팝업창 띄우기
-	public void createPopupPage(String msg) {
-			String url = "/view/popup.fxml";
-			doDefaultSetting(url);
-			controller.setObject(msg);
+	public void createPopupPage(String msg){
+			url = "/view/popup.fxml";
+			object = msg;
+			doDefaultProcess();
 			createPageOnNewStage();
 	}
 	
 	// 관심사 : 스테이지 창 열기
 	public void show() {
-		stage.show();
+			stage.show();
+	}
+	
+	// 관심사 : 페이지 만들기 절차
+	private void doDefaultProcess(){
+			try {
+				initializeLoader(url);
+				initializeScene();
+				setController();
+				setStageSettings();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 	
 	// 관심사 : FXMLLoader 객체 생성하기
-	private void doDefaultSetting(String url){
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(url));
+	private void initializeLoader(String url){
+			loader = new FXMLLoader(getClass().getResource(url));
+	}
+	// 관심사 : Scene 객체 생성하기
+	private void initializeScene() throws IOException {
 			Parent root = loader.load();
-			this.scene = new Scene(root);
-			this.controller = loader.getController();
-			this.controller.setStage(this.stage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			scene = new Scene(root);
+	}
+	// 관심사 : Controller 설정하기
+	private void setController() throws IOException {
+			controller = loader.getController();
+			controller.setStage(stage);
+			controller.setPeer(peer);
+			controller.setObject(object);
+			controller.mainThreadAction();
+			controller.executeDefaultProcess();
 	}
 	
 	// 관심사 : 기존 창에 새로운 페이지 열기
 	private void createPageOnCurrentStage() {
-			stage.setScene(this.scene);
+			stage.setScene(scene);
 	}
 	// 관심사 : 새로운 창에 페이지 열기
 	private void createPageOnNewStage() {
 			Stage newStage = new Stage();	
-			newStage.setScene(this.scene);
-			newStage.setX(this.stage.getX()+100);
-			newStage.setY(this.stage.getY()+50);
+			newStage.setScene(scene);
+			newStage.setX(stage.getX()+100);
+			newStage.setY(stage.getY()+50);
 			newStage.show();	
 	}
 	
 	// 관심사 : Stage 기본 세팅 설정
 	private void setStageSettings() {
-		stage.setTitle("EasyCoin");
-		stage.setResizable(false);
-		stage.setOnCloseRequest(e->{
-				System.exit(0);
-		});
+			stage.setTitle("EasyCoin");
+			stage.setResizable(false);
+			stage.setOnCloseRequest(e->{
+					System.exit(0);
+			});
 	}
 }

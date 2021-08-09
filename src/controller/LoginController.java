@@ -38,23 +38,23 @@ public class LoginController implements Controller  {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		initializeObjects();
+		createObjects();
 	}
-	private void initializeObjects() {
+	private void createObjects() {
 		this.utilFactory = new UtilFactory();
 		this.fc = new FileChooser();
 		this.keyFromPem = new KeyFromPem();
 		this.dao = new Dao();
 	}
 	@Override
-	public void setStage(Stage stageValue) {
-		stage = stageValue;
-		newPage = utilFactory.getNewPage(stageValue);
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 	@Override
-	public void setObject(Object object) {}
-	@Override
-	public void mainThreadAction() {}
+	public void executeDefaultProcess() throws IOException {
+		newPage = utilFactory.getNewPage(stage);
+	}
+	
 	// 관심사 : 회원가입 페이지로 넘어가기
 	@Override
 	public void subButtonAction() {
@@ -70,7 +70,6 @@ public class LoginController implements Controller  {
 			applyPage();
 		}
 	}			
-	
 	
 	// 관심사 : 파일 탐색기 열어서 원하는 개인키 PEM 파일 경로 확보하기
 	private boolean isPemFile() {
@@ -101,8 +100,9 @@ public class LoginController implements Controller  {
 	}
 	// 관심사 : 개인키 확보 여부에 따른 페이지전환
 	private void applyPage() {
+		newPage.setPeer(peer);
 		if(privateKey != null) {
-			newPage.createAccessingPage(peer);
+			newPage.createAccessingPage();
 		}else {
 			newPage.createPopupPage("잘못된 개인키 형식입니다.");
 		}
@@ -112,7 +112,15 @@ public class LoginController implements Controller  {
 		String message = "로그인 할 개인키 PEM 파일을 선택하세요.";
 		fc.setTitle(message);
 		fc.setInitialDirectory(new File("./pem"));
-		return fc.showOpenDialog(stage);
+		return fc.showOpenDialog(newPage.getStage());
 	}
+	
+	
+	@Override
+	public void setPeer(Peer peer) {}
+	@Override
+	public void setObject(Object object) {}
+	@Override
+	public void mainThreadAction() {}
 	
 }

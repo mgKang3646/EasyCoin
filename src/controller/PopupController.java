@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -7,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import model.Peer;
 
 public class PopupController implements Controller {
 	
@@ -17,15 +19,16 @@ public class PopupController implements Controller {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
-
 	@Override
 	public void setStage(Stage stageValue) {
 		this.parentStage = stageValue;
 	}
-	
 	@Override
 	public void setObject(Object object) {
-		String msg = (String)object;
+		msg = (String)object;
+	}
+	@Override
+	public void executeDefaultProcess() throws IOException {
 		popupLabel.setText(msg);
 	}
 
@@ -39,5 +42,8 @@ public class PopupController implements Controller {
 	public void subButtonAction() {}
 	@Override
 	public void mainThreadAction() {}
+	@Override
+	public void setPeer(Peer peer) {}
 
+	
 }

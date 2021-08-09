@@ -32,11 +32,11 @@ public class AccessingController implements Controller {
 	
 	private Dao dao;
 	private Peer peer;
+	private Stage stage;
 	private ServerListener serverListener;
 	private NewPage newPage;
 	private UtilFactory utilFactory;
 	private SocketThreadFactory socketThreadFactory;
-	
 	private SocketUtil socketUtil;
 	private double progress;
 	private JsonSend jsonSend;
@@ -46,33 +46,33 @@ public class AccessingController implements Controller {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		initializeObjects();
+		createObjects();
 		initializeComponents();
 	}
-	public void initializeObjects() {
+	private void createObjects() {
 		utilFactory = new UtilFactory();
 		socketThreadFactory = new SocketThreadFactory();
-		
 		dao = new Dao();
 		socketUtil = utilFactory.getSocketUtil();
 		jsonSend = utilFactory.getJsonSend();
 	}
+	
 	public void initializeComponents() {
 		progressBar.setStyle("-fx-accent : #58FA82;");
 		progressTextArea.setEditable(false);
 	}
 	@Override
-	public void setStage(Stage stageValue) {	
-		newPage = utilFactory.getNewPage(stageValue);
+	public void setStage(Stage stage) {	
+		this.stage = stage;
 	}
 	@Override
-	public void setObject(Object object) {
-		this.peer = (Peer)object;
+	public void setPeer(Peer peer) {	
+		this.peer = peer;
 	}
 	@Override
-	public void mainButtonAction() {}
-	@Override
-	public void subButtonAction() {}
+	public void executeDefaultProcess() throws IOException {
+		newPage = utilFactory.getNewPage(stage, peer);
+	}
 	
 	@Override
 	public void mainThreadAction() {
@@ -195,7 +195,7 @@ public class AccessingController implements Controller {
 	
 	private void moveToMypage() {
 		Platform.runLater(()->{
-			newPage.moveToMyPage(peer);
+			newPage.moveToMyPage();
 		});
 	}
 	
@@ -205,5 +205,13 @@ public class AccessingController implements Controller {
 			stage.close();
 		});
 	}
-		
+	
+	
+	@Override
+	public void setObject(Object object) {}
+	@Override
+	public void mainButtonAction() {}
+	@Override
+	public void subButtonAction() {}
+	
 }
