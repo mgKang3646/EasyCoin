@@ -65,7 +65,7 @@
                   </LinearGradient>
                </stroke>
             </Circle>
-            <Button fx:id="miningStartButton" layoutX="177.0" layoutY="361.0" mnemonicParsing="false" onAction="#miningStart" prefHeight="50.0" prefWidth="300.0" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="채굴시작" textFill="WHITE">
+            <Button fx:id="miningStartButton" layoutX="177.0" layoutY="361.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="채굴시작" textFill="WHITE" onAction="#mainButtonAction">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>

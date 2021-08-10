@@ -24,19 +24,20 @@ public class IndexController implements Controller  {
 	@FXML private HBox content;
 	@FXML private Button blockchainButton;
 	@FXML private TextField idText;
-	@FXML private Button wireButton;
+	//@FXML private Button wireButton;
 	@FXML private Button upgradeButton;
 	@FXML private Button goMyPageButton;
 	@FXML private Button stateConnectionButton;
 	@FXML private ImageView upgradeButtonImageView;
 	@FXML private AnchorPane EasyCoin;	
-	Image upgradeButtonImage;
 	
 	private Peer peer;
 	private Stage stage;
 	private String childPage;
 	private UtilFactory utilFactory;
 	private NewPage newPage;
+	private Image upgradeButtonImage;
+
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -59,13 +60,13 @@ public class IndexController implements Controller  {
 	}
 	@Override
 	public void executeDefaultProcess() throws IOException {
+		newPage = utilFactory.getNewPage(stage,peer);
 		setUserName();
 		mainButtonAction();
-		newPage = utilFactory.getNewPage(stage,peer);
 		setButtonAction(blockchainButton,"blockchain");
 		setButtonAction(miningButton,"mining");
 		setButtonAction(stateConnectionButton,"stateConnection");
-		setButtonAction(wireButton,"wire");
+		//setButtonAction(wireButton,"wire");
 		//업그레이드 버튼 추가되어야 함
 	}
 	
@@ -106,7 +107,7 @@ public class IndexController implements Controller  {
 	}
 	
 	private void miningHandler() throws IOException {
-		addChildPage("/view/mining.fxml");
+		newPage.addMiningPage(content);
 	}
 	
 	private void blockchainHandler() throws IOException {
@@ -120,14 +121,7 @@ public class IndexController implements Controller  {
 	private void wireHandler() {
 		System.out.println("송금 핸들러 실행");
 	}
-	
-	private void addChildPage(String url) throws IOException {
-		content.getChildren().clear();
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(url));
-		Parent parent = loader.load();
-		content.getChildren().add(parent);
-	}
-	
+
 	private void doUpgrade() throws IOException {
 	}
 

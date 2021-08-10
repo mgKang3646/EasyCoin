@@ -30,57 +30,69 @@ public class MiningController implements Controller {
 	@FXML private Pane blockContent;
 	@FXML private Circle c1;
 	@FXML private Circle c2;
-	@FXML private Circle c3;
-	RotateTransition rt1 = new RotateTransition();
-	RotateTransition rt2 = new RotateTransition();
-	RotateTransition rt3 = new RotateTransition();
+	
+	private Stage stage;
+	private RotateTransition rt1;
+	private RotateTransition rt2;
+	private boolean rotateFlag;
 	
 	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
-		Image image = new Image("/image/rotateCoin.png");
-		c2.setFill(new ImagePattern(image));
+	public void initialize(URL arg0, ResourceBundle arg1) {}
+	
+	@Override
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 	
 	@Override
-	public void setStage(Stage stage) {}
+	public void executeDefaultProcess() throws IOException {
+		settingRotateCircle();
+	}
+	
+	@Override
+	public void mainButtonAction() throws IOException {
+		rotateCircle();
+	}
+	
+	
+	private void rotateCircle() {
+		if(!rotateFlag) {
+			miningStartButton.setText("√§±º ¡ﬂ...");	
+			rt1.play();
+			rt2.play();
+			rotateFlag = true;
+		}else {
+			miningStartButton.setText("√§±º Ω√¿€");
+			rt1.stop();
+			rt2.stop();
+			rotateFlag = false;
+		}
+	}
+	
+	private void settingRotateCircle() {
+		c2.setFill(new ImagePattern(new Image("/image/rotateCoin.png")));
+		rt1 = new RotateTransition();
+		rt2 = new RotateTransition();
+		rt1 = setRotate(c1,true,270,10);
+		rt2 = setRotate(c2,true,180, 5);
+	}
+	
+	private RotateTransition setRotate(Circle c, boolean reverse, int angle, int duration) {
+		RotateTransition rt = new RotateTransition(Duration.seconds(duration),c);
+		rt.setAutoReverse(reverse);
+		rt.setByAngle(angle);
+		rt.setRate(3);
+		rt.setCycleCount(18);
+		return rt;
+	}
+	
+	
 	@Override
 	public void setPeer(Peer peer) {}
 	@Override
 	public void setObject(Object object) {}
 	@Override
-	public void mainButtonAction() throws IOException {}
-	@Override
 	public void subButtonAction() throws IOException {}
 	@Override
 	public void mainThreadAction() {}
-	@Override
-	public void executeDefaultProcess() throws IOException {}
-	
-	private Button getMiningStartButton() {
-		return miningStartButton;
-	}
-	
-	private void miningStart() throws IOException, InterruptedException {
-		miningStartButton.setText("√§±º ¡ﬂ...");	
-
-		rt1 = setRotate(c1,true,270,10);
-		rt2 = setRotate(c2,true,180, 5);
-	
-		rt1.play();
-		rt2.play();
-	}
-	
-	private void verifyMining() {}
-	
-	private RotateTransition setRotate(Circle c, boolean reverse, int angle,int duration) {
-		RotateTransition rt = new RotateTransition(Duration.seconds(duration),c);
-		
-		rt.setAutoReverse(reverse);
-		rt.setByAngle(angle);
-		rt.setRate(3);
-		rt.setCycleCount(18);
-		
-		return rt;
-	}
 }

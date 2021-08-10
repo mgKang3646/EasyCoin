@@ -6,13 +6,15 @@ import controller.Controller;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.Peer;
 
 public class NewPage {
 	
-	private FXMLLoader loader;
 	private Stage stage;
+	private FXMLLoader loader;
+	private Parent parent;
 	private Scene scene;
 	private Controller controller;
 	private Peer peer;
@@ -81,40 +83,63 @@ public class NewPage {
 			createPageOnNewStage();
 	}
 	
+	public void addMiningPage(HBox content) {
+			url = "/view/mining.fxml";
+			doAddProcess(content);
+	}
+	
 	// 관심사 : 스테이지 창 열기
 	public void show() {
 			stage.show();
 	}
 	
 	// 관심사 : 페이지 만들기 절차
-	private void doDefaultProcess(){
-			try {
+	private void doDefaultProcess() {
 				initializeLoader(url);
+				initalizeParent();
 				initializeScene();
 				setController();
 				setStageSettings();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	}
+	
+	//관심사 :  페이지 삽입 절차
+	private void doAddProcess(HBox content) {
+				content.getChildren().clear();
+				initializeLoader(url);
+				initalizeParent();
+				setController();
+				content.getChildren().add(parent);
 	}
 	
 	// 관심사 : FXMLLoader 객체 생성하기
 	private void initializeLoader(String url){
 			loader = new FXMLLoader(getClass().getResource(url));
 	}
+	
+	// 관심사 : Parent 객체 생성하기
+	private void initalizeParent() {
+			try {
+				parent = loader.load();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
 	// 관심사 : Scene 객체 생성하기
-	private void initializeScene() throws IOException {
-			Parent root = loader.load();
-			scene = new Scene(root);
+	private void initializeScene(){
+			scene = new Scene(parent);
 	}
 	// 관심사 : Controller 설정하기
-	private void setController() throws IOException {
-			controller = loader.getController();
-			controller.setStage(stage);
-			controller.setPeer(peer);
-			controller.setObject(object);
-			controller.mainThreadAction();
-			controller.executeDefaultProcess();
+	private void setController() {
+			try {
+				controller = loader.getController();
+				controller.setStage(stage);
+				controller.setPeer(peer);
+				controller.setObject(object);
+				controller.mainThreadAction();
+				controller.executeDefaultProcess();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 	
 	// 관심사 : 기존 창에 새로운 페이지 열기
