@@ -60,7 +60,7 @@ public class IndexController implements Controller  {
 	}
 	@Override
 	public void executeDefaultProcess() throws IOException {
-		newPage = utilFactory.getNewPage(stage,peer);
+		newPage = utilFactory.getNewPage(stage,peer); // 추상화 수준이 다름
 		setUserName();
 		mainButtonAction();
 		setButtonAction(blockchainButton,"blockchain");
@@ -111,7 +111,7 @@ public class IndexController implements Controller  {
 	}
 	
 	private void blockchainHandler() throws IOException {
-		System.out.println("블록체인 핸들러 실행");
+		newPage.addBlockChainPage(content);
 	}
 	
 	private void stateConnectionHandler() throws IOException {

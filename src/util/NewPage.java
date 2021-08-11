@@ -1,13 +1,16 @@
 package util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import controller.BlockController;
 import controller.Controller;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import model.Block;
 import model.Peer;
 
 public class NewPage {
@@ -82,10 +85,18 @@ public class NewPage {
 			doDefaultProcess();
 			createPageOnNewStage();
 	}
-	
+	// 관심사 : 인덱스 페이지에 채굴페이지 삽입하기
 	public void addMiningPage(HBox content) {
 			url = "/view/mining.fxml";
+			content.getChildren().clear();
 			doAddProcess(content);
+	}
+	
+	// 관심사 : 인덱스 페이지에 블록체인 페이지 삽입하기
+	public void addBlockChainPage(HBox content) {
+			url = "/view/block.fxml";
+			content.getChildren().clear();
+			addBlockProcess(content);
 	}
 	
 	// 관심사 : 스테이지 창 열기
@@ -104,12 +115,21 @@ public class NewPage {
 	
 	//관심사 :  페이지 삽입 절차
 	private void doAddProcess(HBox content) {
-				content.getChildren().clear();
 				initializeLoader(url);
 				initalizeParent();
 				setController();
 				content.getChildren().add(parent);
 	}
+	
+	//관심사 : 블록 연쇄 삽입 절차
+	private void addBlockProcess(HBox content) {
+				ArrayList<Block> blocks = peer.getBlockchain().getBlocks();
+				for(int i=0; i<blocks.size();i++) {
+					this.object = blocks.get(i);
+					doAddProcess(content);
+				}
+	}
+	
 	
 	// 관심사 : FXMLLoader 객체 생성하기
 	private void initializeLoader(String url){

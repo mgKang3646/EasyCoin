@@ -4,20 +4,19 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 public class Peer {
-	PrivateKey privateKey;
-	PublicKey publicKey;
-	String userName;
-	String localhost;
+	private PrivateKey privateKey;
+	private PublicKey publicKey;
+	private String userName;
+	private String localhost;
+	private BlockChain blockchain;
 	
-	public Peer() {}
-
-	public Peer(PrivateKey privateKey, PublicKey publicKey, String userName, String localhost) {
-		this.privateKey = privateKey;
-		this.publicKey = publicKey;
-		this.userName = userName;
-		this.localhost = localhost;
+	public Peer() {
+		this.blockchain = new BlockChain(); 
 	}
-	
+
+	public BlockChain getBlockchain() {
+		return blockchain;
+	}
 	public String getUserName() {
 		return userName;
 	}
