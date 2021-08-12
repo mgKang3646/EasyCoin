@@ -26,7 +26,7 @@ public class BlockChain {
 		Block genesisBlock = new Block();
 		
 		genesisBlock.setPreviousBlockHash("0000000000000000000000000000000000000000000000000000000000000000");
-		genesisBlock.setNonce("0000");
+		genesisBlock.setNonce("00000000");
 		genesisBlock.setTimestamp("00000000");
 		genesisBlock.setNum(0);
 		genesisBlock.setHash(DigestUtils.sha256Hex(genesisBlock.getDataForHash()));
