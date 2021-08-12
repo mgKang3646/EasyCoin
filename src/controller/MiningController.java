@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import model.Mining;
 import model.Peer;
 import util.CircleRotate;
+import util.NewPage;
 
 
 public class MiningController implements Controller {
@@ -25,6 +26,7 @@ public class MiningController implements Controller {
 	@FXML private Circle c2;
 	
 	private UtilFactory utilFactory;
+	private NewPage newPage;
 	private CircleRotate cr1;
 	private CircleRotate cr2;
 	private Stage stage;
@@ -42,16 +44,15 @@ public class MiningController implements Controller {
 	private void createObjects() {
 		utilFactory = new UtilFactory();
 	}
-	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
+	
 	@Override
 	public void setPeer(Peer peer) {
 		this.peer = peer;
 	}
+	
 	@Override
-	public void executeDefaultProcess() throws IOException {
+	public void execute(){
+		newPage = utilFactory.getNewPage(stage,peer);
 		mining = new Mining(peer.getBlockchain());
 		cr1 = utilFactory.getCircleRotate(c1,true,270,10);
 		cr2 = utilFactory.getCircleRotate(c2,true,180, 5);
@@ -96,11 +97,17 @@ public class MiningController implements Controller {
 		mining.setMiningFlag(true);
 		mining.mineBlock();
 	}
+	 // 채굴이 종료되어 끝나는 것과 채굴버튼을 눌러 정지시킬 때를 구분해야 한다. 
 	private void finishMining() {
 		isMining = false;
 		Platform.runLater(()->{
 			stopUI();
+			viewMiningResult();
 		});
+	}
+	// 좀 더 다각화 하거나 관심사를 분리하거나 하자.
+	private void viewMiningResult() {
+		newPage.createMiningResultPage("successMining");
 	}
 	
 	private void startUI() {
@@ -120,6 +127,5 @@ public class MiningController implements Controller {
 	public void setObject(Object object) {}
 	@Override
 	public void subButtonAction() throws IOException {}
-	@Override
-	public void mainThreadAction() {}
+	
 }

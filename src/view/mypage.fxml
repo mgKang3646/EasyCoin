@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane style="-fx-background-radius: 20;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MyPageController">
+<AnchorPane style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MyPageController">
    <children>
       <AnchorPane layoutY="2.0" prefHeight="605.0" prefWidth="915.0" style="-fx-background-color: #030307; -fx-background-radius: 15;">
          <children>
@@ -25,7 +25,8 @@
                   <ImageView fitHeight="35.0" fitWidth="39.0" layoutX="31.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../image/userIcon.png" />
-                     </image></ImageView>
+                     </image>
+                  </ImageView>
            </children>
             </Pane>
             <AnchorPane layoutX="14.0" layoutY="60.0" prefHeight="531.0" prefWidth="907.0" style="-fx-background-color: #131022; -fx-background-radius: 10;" stylesheets="@../css/fullpackstyling.css">
@@ -97,7 +98,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="miningButton" alignment="BASELINE_LEFT" layoutX="49.0" layoutY="328.0" mnemonicParsing="false"  prefHeight="66.0" prefWidth="472.0" styleClass="button3" stylesheets="@../css/fullpackstyling.css" text="채굴" textFill="#41951c">
+                  <Button fx:id="miningButton" alignment="BASELINE_LEFT" layoutX="49.0" layoutY="328.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="472.0" styleClass="button3" stylesheets="@../css/fullpackstyling.css" text="채굴" textFill="#41951c">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -109,7 +110,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="stateConnectionButton" alignment="BASELINE_LEFT" layoutX="49.0" layoutY="414.0" mnemonicParsing="false"  prefHeight="66.0" prefWidth="472.0" styleClass="button3" stylesheets="@../css/fullpackstyling.css" text="연결상태" textFill="#41951c">
+                  <Button fx:id="stateConnectionButton" alignment="BASELINE_LEFT" layoutX="49.0" layoutY="414.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="472.0" styleClass="button3" stylesheets="@../css/fullpackstyling.css" text="연결상태" textFill="#41951c">
                      <font>
                         <Font size="24.0" />
                      </font>

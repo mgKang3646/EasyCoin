@@ -27,10 +27,6 @@ public class BlockController implements Controller {
 	public void initialize(URL arg0, ResourceBundle arg1) {}
 
 	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-	@Override
 	public void setPeer(Peer peer) {
 		this.peer = peer;
 	}
@@ -39,7 +35,7 @@ public class BlockController implements Controller {
 		this.block = (Block)object;
 	}
 	@Override
-	public void executeDefaultProcess() throws IOException {
+	public void execute()  {
 		blockNumText.setText("#"+block.getNum());
 		nonceText.setText(block.getNonce()+"");
 		previousHashText.setText(block.getPreviousBlockHash());
@@ -60,7 +56,6 @@ public class BlockController implements Controller {
 	public void mainButtonAction() throws IOException {	}
 	@Override
 	public void subButtonAction() throws IOException {	}
-	@Override
-	public void mainThreadAction() {}
+	
 
 }

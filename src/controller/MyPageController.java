@@ -41,15 +41,11 @@ public class MyPageController implements Controller  {
 	}
 	
 	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-	@Override
 	public void setPeer(Peer peer) {
 		this.peer = peer;
 	}
 	@Override
-	public void executeDefaultProcess() throws IOException {
+	public void execute() {
 		setUserName();
 		newPage = utilFactory.getNewPage(stage,peer);
 		setButtonAction(blockchainButton,"blockchain");
@@ -79,6 +75,5 @@ public class MyPageController implements Controller  {
 	public void setObject(Object object) {}
 	@Override
 	public void subButtonAction() throws IOException {}
-	@Override
-	public void mainThreadAction() {}
+	
 }

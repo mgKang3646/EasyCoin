@@ -19,16 +19,13 @@ public class PopupController implements Controller {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
-	@Override
-	public void setStage(Stage stageValue) {
-		this.parentStage = stageValue;
-	}
+	
 	@Override
 	public void setObject(Object object) {
 		msg = (String)object;
 	}
 	@Override
-	public void executeDefaultProcess() throws IOException {
+	public void execute()  {
 		popupLabel.setText(msg);
 	}
 
@@ -40,8 +37,6 @@ public class PopupController implements Controller {
 
 	@Override
 	public void subButtonAction() {}
-	@Override
-	public void mainThreadAction() {}
 	@Override
 	public void setPeer(Peer peer) {}
 

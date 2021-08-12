@@ -28,7 +28,8 @@ public class AccessingController implements Controller {
 	
 	private @FXML TextArea progressTextArea;
 	private @FXML ProgressBar progressBar;
-	private @FXML Label progressLabel;
+	private @FXML Label percentLabel;
+	private @FXML Label titleLabel;
 	
 	private Dao dao;
 	private Peer peer;
@@ -61,31 +62,28 @@ public class AccessingController implements Controller {
 		progressBar.setStyle("-fx-accent : #58FA82;");
 		progressTextArea.setEditable(false);
 	}
-	@Override
-	public void setStage(Stage stage) {	
-		this.stage = stage;
-	}
+	
 	@Override
 	public void setPeer(Peer peer) {	
 		this.peer = peer;
 	}
 	@Override
-	public void executeDefaultProcess() throws IOException {
+	public void execute() {
 		newPage = utilFactory.getNewPage(stage, peer);
+		runAccessingThread();
 	}
 	
-	@Override// 이거 하나 때문에 모든 컨트롤러가 mainThreadAction을 가져야함 제거하는 방향으로 설계 필요
-	public void mainThreadAction() {
+	public void runAccessingThread() {
 		Thread progressThread = new Thread() {
 			public void run() {
 				try {
-					
 					doAccessing();
+					sleepMoment();
 					moveToMypage();
 					closeStage();
-					
 				} catch (IOException e) {
-					// 이미 해당주소로 창이 열려있는 경우 팝업창 띄우기
+					closeStage();
+					openErrorPopup();
 				}
 			}
 		};
@@ -97,6 +95,14 @@ public class AccessingController implements Controller {
 		processUI("서버 생성 완료 : " + serverListener.toString(), getProgress(0.1)); // 관심사 : UI 처리
 		connectToAnotherServerListener(); // 2. PeerThread 생성하여 DB 저장된 Peer들과 소켓연결
 		processUI("P2P 네트워크망 연결완료",1); // 관심사 : UI 처리	
+	}
+	
+	private void sleepMoment() {
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	// 관심사 : 서버리스너 만들기
@@ -190,7 +196,7 @@ public class AccessingController implements Controller {
 	private void processUI(String msg, double progress) {
 		Platform.runLater(()->{
 			progressBar.setProgress(progress);
-			progressLabel.setText("P2P망 접속중("+(int)(progress*100)+"%)");
+			percentLabel.setText("("+(int)(progress*100)+"%)");
 			progressTextArea.appendText(msg+"\n");
 		});
 	}
@@ -207,6 +213,13 @@ public class AccessingController implements Controller {
 			stage.close();
 		});
 	}
+	
+	private void openErrorPopup() {
+		Platform.runLater(()->{
+			newPage.createPopupPage("이미 접속 중인 개인키입니다.");
+		});
+	}
+	
 	
 	
 	@Override

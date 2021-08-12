@@ -7,19 +7,19 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="600.0" style="-fx-background-color: #131022;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
    <children>
       <ImageView fx:id="mainImageView" fitHeight="397.0" fitWidth="489.0" layoutX="-184.0" layoutY="-94.0" pickOnBounds="true" preserveRatio="true" rotate="41.9">
          <image>
             <Image url="@../image/main.png" />
          </image>
       </ImageView>
-      <Label layoutX="231.0" layoutY="33.0" text="Welcome to EasyCoin">
+      <Label layoutX="231.0" layoutY="33.0" text="Welcome to Easy" textFill="#fffefe">
          <font>
             <Font size="36.0" />
          </font>
       </Label>
-      <Button fx:id="loginButton" layoutX="323.0" layoutY="125.0" mnemonicParsing="false"  prefHeight="46.0" prefWidth="160.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="로그인" textFill="WHITE" onAction="#mainButtonAction">
+      <Button fx:id="loginButton" layoutX="323.0" layoutY="125.0" mnemonicParsing="false" onAction="#mainButtonAction" prefHeight="46.0" prefWidth="160.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="로그인" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font>
@@ -29,5 +29,10 @@
             <Font size="24.0" />
          </font>
       </Button>
+      <Label layoutX="501.0" layoutY="34.0" text="Coin" textFill="#fff600">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

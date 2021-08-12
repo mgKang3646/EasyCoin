@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="200.0" prefWidth="410.0" style="-fx-background-color: #00002D; -fx-background-radius: 30;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PopupController">
+<AnchorPane prefHeight="200.0" prefWidth="410.0" style="-fx-background-color: #00002D;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PopupController">
    <children>
       <Pane layoutX="12.0" layoutY="9.0" prefHeight="182.0" prefWidth="386.0" style="-fx-background-color: #000051; -fx-background-radius: 30; -fx-border-color: #1712AB; -fx-border-radius: 30;">
          <children>

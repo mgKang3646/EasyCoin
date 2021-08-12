@@ -41,16 +41,9 @@ public class IndexController implements Controller  {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		createObjects();
-	}
-	
-	private void createObjects() {
 		utilFactory = new UtilFactory();
-	}
-	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
+	}		
+	
 	public void setPeer(Peer peer) {
 		this.peer = peer;
 	}
@@ -59,10 +52,10 @@ public class IndexController implements Controller  {
 		childPage = (String)object;
 	}
 	@Override
-	public void executeDefaultProcess() throws IOException {
+	public void execute() {
 		newPage = utilFactory.getNewPage(stage,peer); // 추상화 수준이 다름
 		setUserName();
-		mainButtonAction();
+		switchContent();
 		setButtonAction(blockchainButton,"blockchain");
 		setButtonAction(miningButton,"mining");
 		setButtonAction(stateConnectionButton,"stateConnection");
@@ -70,11 +63,8 @@ public class IndexController implements Controller  {
 		//업그레이드 버튼 추가되어야 함
 	}
 	
-	@Override
-	public void mainThreadAction() {}
-
-	@Override
-	public void mainButtonAction() throws IOException {
+	
+	private void switchContent() {
 		switch(childPage) {
 			case "blockchain" : blockchainHandler(); break;
 			case "mining" : miningHandler(); break;
@@ -84,21 +74,14 @@ public class IndexController implements Controller  {
 		}
 	}
 
-	//MyPage로 가기
-	@Override
-	public void subButtonAction() throws IOException {
-	}
-	
 	public void setChildPage(String childPage) {
 		this.childPage = childPage;
 	}
 
 	private void setButtonAction(Button button, String name) {
 		button.setOnAction(ActionEvent->{
-			try {
 				childPage = name;
-				mainButtonAction();
-			} catch (IOException e) {}
+				switchContent();
 		});
 	}
 	
@@ -106,15 +89,15 @@ public class IndexController implements Controller  {
 		idText.setText(peer.getUserName());
 	}
 	
-	private void miningHandler() throws IOException {
+	private void miningHandler() {
 		newPage.addMiningPage(content);
 	}
 	
-	private void blockchainHandler() throws IOException {
+	private void blockchainHandler()  {
 		newPage.addBlockChainPage(content);
 	}
 	
-	private void stateConnectionHandler() throws IOException {
+	private void stateConnectionHandler()  {
 		System.out.println("연결관계 행들러 실행");
 	}
 	
@@ -122,10 +105,13 @@ public class IndexController implements Controller  {
 		System.out.println("송금 핸들러 실행");
 	}
 
-	private void doUpgrade() throws IOException {
+	private void doUpgrade(){
 	}
 
-	
+	@Override
+	public void mainButtonAction() throws IOException {}
+	@Override
+	public void subButtonAction() throws IOException {}
 
 	
 }

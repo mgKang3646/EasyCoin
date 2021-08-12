@@ -22,11 +22,15 @@ public class BlockChain {
 	}
 	
 	public String getPreviousHash() {
-		return blocks.get(blocks.size()-1).getHash();
+		return getLastBlock().getHash();
 	}
 	
 	public int getBlockNum() {
 		return blocks.size();
+	}
+	
+	public Block getLastBlock() {
+		return blocks.get(blocks.size()-1);
 	}
 	
 	public ArrayList<Block> resetBlocks() {

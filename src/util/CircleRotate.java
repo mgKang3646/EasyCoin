@@ -18,6 +18,7 @@ public class CircleRotate {
 	public void setCircleImage(String url) {
 		circle.setFill(new ImagePattern(new Image(url)));
 	}
+	
 	public void start() {
 		rt.play();
 	}

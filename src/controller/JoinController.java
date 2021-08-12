@@ -41,12 +41,9 @@ public class JoinController implements Controller  {
 		this.utilFactory = new UtilFactory();
 		this.dao = new Dao();
 	}
+	
 	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-	@Override
-	public void executeDefaultProcess() throws IOException {
+	public void execute() {
 		newPage = utilFactory.getNewPage(stage);
 	}
 
@@ -125,8 +122,7 @@ public class JoinController implements Controller  {
 	public void setPeer(Peer peer) {}
 	@Override
 	public void setObject(Object object) {}
-	@Override
-	public void mainThreadAction() {}
+	
 }	
 
 
