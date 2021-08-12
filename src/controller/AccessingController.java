@@ -74,7 +74,7 @@ public class AccessingController implements Controller {
 		newPage = utilFactory.getNewPage(stage, peer);
 	}
 	
-	@Override
+	@Override// 이거 하나 때문에 모든 컨트롤러가 mainThreadAction을 가져야함 제거하는 방향으로 설계 필요
 	public void mainThreadAction() {
 		Thread progressThread = new Thread() {
 			public void run() {
@@ -84,7 +84,9 @@ public class AccessingController implements Controller {
 					moveToMypage();
 					closeStage();
 					
-				} catch (IOException e) {}
+				} catch (IOException e) {
+					// 이미 해당주소로 창이 열려있는 경우 팝업창 띄우기
+				}
 			}
 		};
 		progressThread.start();

@@ -41,7 +41,7 @@ public class BlockController implements Controller {
 	@Override
 	public void executeDefaultProcess() throws IOException {
 		blockNumText.setText("#"+block.getNum());
-		nonceText.setText(block.getNonce());
+		nonceText.setText(block.getNonce()+"");
 		previousHashText.setText(block.getPreviousBlockHash());
 		hashText.setText(block.getHash());
 		timestampText.setText(block.getTimestamp());
