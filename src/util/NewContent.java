@@ -9,7 +9,7 @@ import javafx.scene.layout.HBox;
 import model.Block;
 import model.Peer;
 
-public class NewContent implements PageMaker {
+public class NewContent implements NewPage {
 	private FxmlFactory fxmlFactory;
 	private HBox content;
 	private Peer peer;
@@ -22,30 +22,80 @@ public class NewContent implements PageMaker {
 		fxmlFactory = new FxmlFactory();
 	}
 	
+	public NewContent(HBox content,Peer peer) {
+		this.peer = peer;
+		this.content = content;
+		fxmlFactory = new FxmlFactory();
+	}
+	
 	public void makePage(String url) {
-		content.getChildren().clear();
-		setFxmlFactory(url);
-
+		if(isBlockChainUrl(url)) {
+			makeBlockChainPage("/view/block.fxml");
+		}else {
+			makeGeneralPage(url);
+		}
 	}
 	public void makePage(String url, Object object) {
+		if(isBlockChainUrl(url)) {
+			makeBlockChainPage("/view/block.fxml");
+		}else {
+			setObject(object);
+			makeGeneralPage(url);
+		}
+	}
+	
+	public void show() {}
+	
+	private void makeGeneralPage(String url) {
+		clearContent();
 		setFxmlFactory(url);
 		setParent();
-		setController();
 		addIntoContent();
+		setController();
+	}
+	
+	private void makeBlockChainPage(String url) {
+		clearContent();
+		addBlockChainIntoContent(url);
+		
+	}
+	
+	private boolean isBlockChainUrl(String url) {
+		if(url.equals("BlockChain")) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	private void setFxmlFactory(String url) {
-		fxmlFactory.setUrl(url);
-		fxmlFactory.generateFxmlObjets();
+		fxmlFactory.generateFxmlObjets(url);
+	}
+	
+	private void setObject(Object object) {
+		this.object = object;
 	}
 	
 	private void setParent() {
-		this.parent = fxmlFactory.getParent();
+		parent = fxmlFactory.getParent();
 	}
 	
-	private void addIntoContent() {
+	private void clearContent() {
 		content.getChildren().clear();
+	}
+	private void addIntoContent() {
 		content.getChildren().add(parent);
+	}
+	
+	private void addBlockChainIntoContent(String url) {
+		ArrayList<Block> blocks = peer.getBlockchain().getBlocks();
+		for(Block block : blocks) {
+			setObject(block);
+			setFxmlFactory(url);
+			setParent();
+			setController();
+			content.getChildren().add(parent);		
+		}
 	}
 	
 	private void setController() {
@@ -53,13 +103,5 @@ public class NewContent implements PageMaker {
 		controller.setPeer(peer);
 		controller.setObject(object);
 		controller.execute();
-	}
-		
-	private void addBlockProcess(HBox content) {
-				ArrayList<Block> blocks = peer.getBlockchain().getBlocks();
-				for(int i=0; i<blocks.size();i++) {
-					this.object = blocks.get(i);
-					doAddProcess(content);
-				}
 	}
 }

@@ -20,7 +20,7 @@
       </StackPane>
    </top>
    <center>
-      <HBox fx:id="content" alignment="CENTER" maxHeight="571.0" maxWidth="380.0" minHeight="470.0" minWidth="380.0" prefHeight="518.0" prefWidth="380.0" style="-fx-background-color: #393351;" BorderPane.alignment="CENTER">
+      <HBox fx:id="content" alignment="CENTER" maxHeight="571.0" maxWidth="380.0" minHeight="470.0" minWidth="380.0" prefHeight="518.0" prefWidth="380.0" style="-fx-background-color: #2f2b43;;" BorderPane.alignment="CENTER">
          <opaqueInsets>
             <Insets top="10.0" />
          </opaqueInsets>

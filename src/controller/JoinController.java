@@ -20,7 +20,7 @@ import util.NewPage;
 
 public class JoinController implements Controller  {
 	
-	@FXML private Button join_linkButton;
+	@FXML private Button joinButton;
 	@FXML private TextField userNameText;
 	@FXML private Button goLoginPageButton;
 	@FXML private Label privateKeyLabel;
@@ -28,29 +28,32 @@ public class JoinController implements Controller  {
 	@FXML private Text userNameCheck;
 	
 	private NewPage newPage;
-	private Stage stage;
 	private UtilFactory utilFactory;
 	private Dao dao;
 	private String userName;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		createObjects();
-	}
-	public void createObjects() {
 		this.utilFactory = new UtilFactory();
 		this.dao = new Dao();
 	}
 	
 	@Override
 	public void execute() {
-		newPage = utilFactory.getNewPage(stage);
+	}
+	
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
+	
+	private Stage getStage() {
+		return (Stage)joinButton.getScene().getWindow();
 	}
 
-
-	@Override
-	public void subButtonAction() throws IOException { 	// 관심사 : 로그인 페이지로 돌아가기
-		newPage.moveToLoginPage();
+	@Override		// 관심사 : 로그인 페이지로 돌아가기
+	public void subButtonAction() throws IOException {
+		setNewPage(utilFactory.getNewScene(getStage()));
+		newPage.makePage("/view/login.fxml");
 	}
 	
 	@Override
@@ -104,8 +107,12 @@ public class JoinController implements Controller  {
 	
 	// 관심사 : 페이지 전환하기
 	private void changePage() throws IOException {
-		newPage.moveToLoginPage();
-		newPage.createPopupPage("회원가입이 완료되었습니다.");
+		Stage stage = getStage();
+		setNewPage(utilFactory.getNewScene(stage));
+		newPage.makePage("/view/login.fxml");
+		setNewPage(utilFactory.getNewStage(stage));
+		newPage.makePage("/view/popup.fxml","회원가입이 완료되었습니다.");
+		newPage.show();
 	}
 	
 	// 관심사 : Peer의 주소생성

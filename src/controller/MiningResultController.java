@@ -22,7 +22,6 @@ public class MiningResultController implements Controller {
 	@FXML private Rectangle rec;
 	
 	private Peer peer;
-	private Block block;
 	private UtilFactory utilFactory;
 	private NewPage newPage;
 	private String miningResult;
@@ -46,12 +45,15 @@ public class MiningResultController implements Controller {
 	
 	@Override
 	public void execute() {
-		setNewPage();
 		judgeResult();
 	}
 	
-	private void setNewPage() {
-		newPage = utilFactory.getNewPage(null,peer);
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
+	
+	private Stage getStage() {
+		return (Stage)content.getScene().getWindow();
 	}
 	
 	private void judgeResult() {
@@ -64,7 +66,8 @@ public class MiningResultController implements Controller {
 	
 	private void doSuccessMining() {
 			verifiedLabel.setText("블록 채굴 성공");
-			newPage.addBlockResultPage(content);
+			setNewPage(utilFactory.getNewContent(content));
+			newPage.makePage("/view/block.fxml",peer.getBlockchain().getLastBlock());
 	}	
 	
 	private void doSuccessVerify(){}

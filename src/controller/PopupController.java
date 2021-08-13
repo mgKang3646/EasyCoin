@@ -12,27 +12,31 @@ import model.Peer;
 
 public class PopupController implements Controller {
 	
-	@FXML Label popupLabel;
-	@FXML Button popupButton;
-	String msg;
-	Stage parentStage;
+	private @FXML Label popupLabel;
+	private @FXML Button popupButton;
+	private String msg;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
-	
 	@Override
 	public void setObject(Object object) {
 		msg = (String)object;
 	}
 	@Override
 	public void execute()  {
-		popupLabel.setText(msg);
+		setLabelText();
 	}
-
 	@Override
 	public void mainButtonAction() {
-		Stage stage = (Stage)(popupButton.getScene().getWindow());
-		stage.close();
+		getStage().close();
+	}
+	
+	private Stage getStage() {
+		return (Stage)(popupButton.getScene().getWindow());
+	}
+	
+	private void setLabelText() {
+		popupLabel.setText(msg);
 	}
 
 	@Override

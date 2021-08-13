@@ -32,7 +32,6 @@ public class IndexController implements Controller  {
 	@FXML private AnchorPane EasyCoin;	
 	
 	private Peer peer;
-	private Stage stage;
 	private String childPage;
 	private UtilFactory utilFactory;
 	private NewPage newPage;
@@ -43,7 +42,7 @@ public class IndexController implements Controller  {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		utilFactory = new UtilFactory();
 	}		
-	
+	@Override
 	public void setPeer(Peer peer) {
 		this.peer = peer;
 	}
@@ -53,7 +52,6 @@ public class IndexController implements Controller  {
 	}
 	@Override
 	public void execute() {
-		newPage = utilFactory.getNewPage(stage,peer); // 추상화 수준이 다름
 		setUserName();
 		switchContent();
 		setButtonAction(blockchainButton,"blockchain");
@@ -63,6 +61,13 @@ public class IndexController implements Controller  {
 		//업그레이드 버튼 추가되어야 함
 	}
 	
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
+	
+	private Stage getStage() {
+		return (Stage)content.getScene().getWindow();
+	}
 	
 	private void switchContent() {
 		switch(childPage) {
@@ -90,11 +95,13 @@ public class IndexController implements Controller  {
 	}
 	
 	private void miningHandler() {
-		newPage.addMiningPage(content);
+		setNewPage(utilFactory.getNewContent(content,peer));
+		newPage.makePage("/view/mining.fxml");
 	}
 	
 	private void blockchainHandler()  {
-		newPage.addBlockChainPage(content);
+		setNewPage(utilFactory.getNewContent(content,peer));
+		newPage.makePage("BlockChain");
 	}
 	
 	private void stateConnectionHandler()  {

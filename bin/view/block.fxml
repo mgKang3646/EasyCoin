@@ -9,15 +9,15 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.BlockController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="481.0" prefWidth="404.0" style="-fx-background-color: #2f2b43;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.BlockController">
    <children>
-      <Pane layoutY="26.0" prefHeight="500.0" prefWidth="380.0" style="-fx-background-radius: 30;" styleClass="linear-grad" stylesheets="@../css/fullpackstyling.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <Pane layoutX="18.0" prefHeight="481.0" prefWidth="374.0" style="-fx-background-radius: 30;" styleClass="linear-grad" stylesheets="@../css/fullpackstyling.css">
          <children>
             <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="380.0">
                <children>
-                  <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="130.0">
+                  <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="121.0">
                      <children>
-                        <Label alignment="CENTER" layoutY="98.0" text="넌스 : " textFill="WHITE">
+                        <Label alignment="CENTER" layoutY="83.0" text="넌스 : " textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
@@ -25,7 +25,7 @@
                               <Insets left="37.5" right="37.5" />
                            </padding>
                         </Label>
-                        <Label alignment="CENTER" layoutY="195.0" text="거래정보 : " textFill="WHITE">
+                        <Label alignment="CENTER" layoutY="172.0" text="거래정보 : " textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
@@ -33,7 +33,7 @@
                               <Insets left="17.5" right="17.5" />
                            </padding>
                         </Label>
-                        <Label alignment="CENTER" layoutY="386.0" text="이전해쉬 : " textFill="WHITE">
+                        <Label alignment="CENTER" layoutY="368.0" text="이전해쉬 : " textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
@@ -41,7 +41,7 @@
                               <Insets left="17.5" right="17.5" />
                            </padding>
                         </Label>
-                        <Label alignment="CENTER" layoutY="430.0" text="해쉬 : " textFill="WHITE">
+                        <Label alignment="CENTER" layoutY="416.0" text="해쉬 : " textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
@@ -49,7 +49,7 @@
                               <Insets left="37.5" right="37.5" />
                            </padding>
                         </Label>
-                        <Label alignment="CENTER" layoutY="148.0" text="타임스탬프 : " textFill="WHITE">
+                        <Label alignment="CENTER" layoutY="127.0" text="타임스탬프 : " textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
@@ -57,28 +57,23 @@
                               <Insets left="7.5" right="7.5" />
                            </padding>
                         </Label>
-                        <Label alignment="CENTER" layoutY="51.0" text="블럭넘버 : " textFill="WHITE">
+                     </children>
+                  </Pane>
+                  <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="267.0">
+                     <children>
+                        <TextField fx:id="nonceText" layoutX="4.0" layoutY="83.0" prefHeight="28.0" prefWidth="220.0" text="넌스" />
+                        <TextArea fx:id="dataText" layoutX="3.0" layoutY="175.0" prefHeight="172.0" prefWidth="220.0" text="거래정보" />
+                        <TextField fx:id="previousHashText" layoutX="3.0" layoutY="368.0" prefHeight="28.0" prefWidth="220.0" text="이전해쉬" />
+                        <TextField fx:id="hashText" layoutX="3.0" layoutY="417.0" prefHeight="28.0" prefWidth="220.0" text="해쉬" />
+                        <TextField fx:id="timestampText" layoutX="4.0" layoutY="127.0" prefHeight="28.0" prefWidth="220.0" text="타임스탬프" />
+                        <Label fx:id="blockNumLabel" alignment="CENTER" layoutX="-31.0" layoutY="15.0" prefHeight="48.0" prefWidth="196.0" text="Block #0" textFill="WHITE">
                            <font>
-                              <Font name="System Bold" size="20.0" />
+                              <Font name="Calibri" size="40.0" />
                            </font>
                            <padding>
                               <Insets left="17.5" right="17.5" />
                            </padding>
                         </Label>
-                     </children>
-                  </Pane>
-                  <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="250.0">
-                     <children>
-                        <TextField fx:id="blockNumText" layoutX="4.0" layoutY="51.0" prefHeight="28.0" prefWidth="220.0" text="블럭넘버">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </TextField>
-                        <TextField fx:id="nonceText" layoutX="4.0" layoutY="98.0" prefHeight="28.0" prefWidth="220.0" text="넌스" />
-                        <TextArea fx:id="dataText" layoutX="4.0" layoutY="195.0" prefHeight="172.0" prefWidth="220.0" text="거래정보" />
-                        <TextField fx:id="previousHashText" layoutX="4.0" layoutY="386.0" prefHeight="28.0" prefWidth="220.0" text="이전해쉬" />
-                        <TextField fx:id="hashText" layoutX="4.0" layoutY="430.0" prefHeight="28.0" prefWidth="220.0" text="해쉬" />
-                        <TextField fx:id="timestampText" layoutX="4.0" layoutY="148.0" prefHeight="28.0" prefWidth="220.0" text="타임스탬프" />
                      </children>
                      <HBox.margin>
                         <Insets />
@@ -89,4 +84,10 @@
          </children>
       </Pane>
    </children>
+   <padding>
+      <Insets left="20.0" right="20.0" />
+   </padding>
+   <opaqueInsets>
+      <Insets left="20.0" right="20.0" />
+   </opaqueInsets>
 </AnchorPane>

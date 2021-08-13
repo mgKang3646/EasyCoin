@@ -9,11 +9,11 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="495.0" prefWidth="653.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MiningController">
+<AnchorPane prefHeight="495.0" prefWidth="653.0" style="-fx-background-color: #2f2b43;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MiningController">
    <children>
       <Pane fx:id="blockContent" layoutX="-1.0" prefHeight="495.0" prefWidth="653.0">
          <children>
-            <Circle fill="WHITE" layoutX="327.0" layoutY="172.0" radius="150.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fill="WHITE" layoutX="327.0" layoutY="172.0" radius="150.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
             <Circle fx:id="c2" fill="#1f93ff00" layoutX="327.0" layoutY="172.0" radius="99.0" strokeType="INSIDE" strokeWidth="10.0" style="-fx-stroke-dash-array: 62;">
                <stroke>
                   <LinearGradient endX="1.0" endY="1.0">
@@ -65,7 +65,7 @@
                   </LinearGradient>
                </stroke>
             </Circle>
-            <Button fx:id="miningButton" layoutX="177.0" layoutY="361.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="채굴시작" textFill="WHITE" onAction="#mainButtonAction">
+            <Button fx:id="miningButton" layoutX="177.0" layoutY="361.0" mnemonicParsing="false" onAction="#mainButtonAction" prefHeight="50.0" prefWidth="300.0" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="채굴시작" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>

@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.Peer;
 
-public class NewScene implements PageMaker {
+public class NewScene implements NewPage {
 	private Stage stage;
 	private Scene scene;
 	private Controller controller;
@@ -35,7 +35,12 @@ public class NewScene implements PageMaker {
 		doProcess(url);
 	}
 	
+	public void show() {
+		stage.show();
+	}
+	
 	private void doProcess(String url) {
+		setStage();
 		setFxmlFactory(url);
 		setScene();
 		setController();
@@ -43,8 +48,7 @@ public class NewScene implements PageMaker {
 	}
 
 	private void setFxmlFactory(String url) {
-		fxmlFactory.setUrl(url);
-		fxmlFactory.generateFxmlObjets();
+		fxmlFactory.generateFxmlObjets(url);
 	}
 	
 	private void setObject(Object obj) {
@@ -64,6 +68,14 @@ public class NewScene implements PageMaker {
 	
 	private void changeScene() {
 		stage.setScene(scene);
+	}
+	
+	private void setStage() {
+		stage.setTitle("EasyCoin");
+		stage.setResizable(false);
+		stage.setOnCloseRequest(e->{ 
+			System.exit(0);
+		});
 	}
 }
 

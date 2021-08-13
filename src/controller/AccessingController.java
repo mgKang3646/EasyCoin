@@ -33,7 +33,7 @@ public class AccessingController implements Controller {
 	
 	private Dao dao;
 	private Peer peer;
-	private Stage stage;
+	private Stage parentStage;
 	private ServerListener serverListener;
 	private NewPage newPage;
 	private UtilFactory utilFactory;
@@ -67,10 +67,23 @@ public class AccessingController implements Controller {
 	public void setPeer(Peer peer) {	
 		this.peer = peer;
 	}
+	
+	@Override
+	public void setObject(Object object) {
+		parentStage = (Stage)object;
+	}
+	
 	@Override
 	public void execute() {
-		newPage = utilFactory.getNewPage(stage, peer);
 		runAccessingThread();
+	}
+	
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
+	
+	private Stage getStage() {
+		return (Stage)progressBar.getScene().getWindow();
 	}
 	
 	public void runAccessingThread() {
@@ -99,7 +112,7 @@ public class AccessingController implements Controller {
 	
 	private void sleepMoment() {
 		try {
-			Thread.sleep(100);
+			Thread.sleep(300);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -203,27 +216,26 @@ public class AccessingController implements Controller {
 	
 	private void moveToMypage() {
 		Platform.runLater(()->{
-			newPage.moveToMyPage();
-		});
-	}
-	
-	private void closeStage() {
-		Platform.runLater(()->{
-			Stage stage = (Stage)progressBar.getScene().getWindow();
-			stage.close();
+			setNewPage(utilFactory.getNewScene(parentStage,peer));
+			newPage.makePage("/view/mypage.fxml");
 		});
 	}
 	
 	private void openErrorPopup() {
 		Platform.runLater(()->{
-			newPage.createPopupPage("이미 접속 중인 개인키입니다.");
+			setNewPage(utilFactory.getNewStage(getStage()));
+			newPage.makePage("/view/popup.fxml","이미 접속 중인 개인키입니다.");
+			newPage.show();
+		});
+	}
+	
+	private void closeStage() {
+		Platform.runLater(()->{
+			getStage().close();
 		});
 	}
 	
 	
-	
-	@Override
-	public void setObject(Object object) {}
 	@Override
 	public void mainButtonAction() {}
 	@Override

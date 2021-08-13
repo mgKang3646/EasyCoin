@@ -9,13 +9,12 @@ import javafx.scene.Scene;
 
 public class FxmlFactory {
 	
-	private String url;
 	private FXMLLoader loader;
 	private Scene scene;
 	private Parent parent;
 	private Controller controller;
 	
-	public void generateFxmlObjets() {
+	public void generateFxmlObjets(String url) {
 		try {
 			loader = new FXMLLoader(getClass().getResource(url));
 			parent = loader.load();
@@ -24,10 +23,6 @@ public class FxmlFactory {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void setUrl(String url) {
-		this.url = url;
 	}
 	
 	public FXMLLoader getLoader() {

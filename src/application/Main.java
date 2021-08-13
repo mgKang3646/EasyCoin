@@ -3,6 +3,7 @@ package application;
 import java.io.IOException;
 import java.security.Security;
 
+import factory.UtilFactory;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import util.NewPage;
@@ -13,8 +14,9 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		NewPage newPage = new NewPage(primaryStage);
-		newPage.moveToLoginPage();
+		UtilFactory utilFactory = new UtilFactory();
+		NewPage newPage = utilFactory.getNewScene(primaryStage);
+		newPage.makePage("/view/login.fxml");
 		newPage.show();
 	}
 	

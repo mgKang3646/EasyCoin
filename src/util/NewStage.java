@@ -6,22 +6,26 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.Peer;
 
-public class NewStage implements PageMaker{
+public class NewStage implements NewPage{
 	private Stage stage;
+	private Stage parentStage;
 	private Scene scene;
 	private Controller controller;
 	private Peer peer;
 	private Object object;
 	private FxmlFactory fxmlFactory;
 	
-	public NewStage() {
+	public NewStage(Stage parentStage) {
 		stage = new Stage();
+		this.parentStage = parentStage;
 		fxmlFactory = new FxmlFactory();
 	}
 	
-	public NewStage(Peer peer) {
+	public NewStage(Stage parentStage, Peer peer) {
 		stage = new Stage();
+		this.parentStage = parentStage;
 		this.peer = peer;
+		fxmlFactory = new FxmlFactory();
 	}
 	
 	public void makePage(String url) {
@@ -33,21 +37,19 @@ public class NewStage implements PageMaker{
 		doProcess(url);
 	}
 	
+	public void show() {
+		stage.show();
+	}
+	
 	private void doProcess(String url) {
 		setFxmlFactory(url);
 		setScene();
 		setController();
-		createNewStage();
-	}
-
-	private void createNewStage() {
 		setNewStage();
-		showStage();
 	}
 	
 	private void setFxmlFactory(String url) {
-		fxmlFactory.setUrl(url);
-		fxmlFactory.generateFxmlObjets();
+		fxmlFactory.generateFxmlObjets(url);
 	}
 	
 	private void setObject(Object obj) {
@@ -73,21 +75,13 @@ public class NewStage implements PageMaker{
 		stage.setResizable(false);
 	}
 	
-	private void showStage() {
-		stage.show();
-	}
-	
 	private double getWidth() {
-		return stage.getX()+stage.getWidth()/2-fxmlFactory.getParent().prefWidth(0)/2;
+		return parentStage.getX()+parentStage.getWidth()/2-fxmlFactory.getParent().prefWidth(0)/2;
 	}
 	
 	private double getHeight() {
-		return stage.getY()+35;
+		return parentStage.getY()+35;
 	}
 	
-	public void setCloseProgram() {
-		stage.setOnCloseRequest(e->{ 
-			System.exit(0);
-		});
-	}
+	
 }

@@ -26,7 +26,6 @@ public class LoginController implements Controller  {
 	@FXML private TextField privateKeyText;
 	@FXML private ImageView mainImageView;
 	
-	private Stage stage;
 	private NewPage newPage;
 	private FileChooser fc;
 	private UtilFactory utilFactory;
@@ -38,24 +37,17 @@ public class LoginController implements Controller  {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		createObjects();
-	}
-	private void createObjects() {
 		this.utilFactory = new UtilFactory();
 		this.fc = new FileChooser();
 		this.keyFromPem = new KeyFromPem();
 		this.dao = new Dao();
 	}
-
-	@Override
-	public void execute() {
-		newPage = utilFactory.getNewPage(stage);
-	}
 	
 	// 관심사 : 회원가입 페이지로 넘어가기
 	@Override
 	public void subButtonAction() {
-		newPage.moveToJoinPage();
+		setNewPage(utilFactory.getNewScene(getStage()));
+		newPage.makePage("/view/join.fxml");
 	}
 	
 	// 관심사 : 로그인하기
@@ -66,7 +58,15 @@ public class LoginController implements Controller  {
 			createPeerInDB();
 			applyPage();
 		}
-	}			
+	}
+	
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
+	
+	private Stage getStage() {
+		return (Stage)loginButton.getScene().getWindow();
+	}
 	
 	// 관심사 : 파일 탐색기 열어서 원하는 개인키 PEM 파일 경로 확보하기
 	private boolean isPemFile() {
@@ -97,11 +97,14 @@ public class LoginController implements Controller  {
 	}
 	// 관심사 : 개인키 확보 여부에 따른 페이지전환
 	private void applyPage() {
-		newPage.setPeer(peer);
 		if(privateKey != null) {
-			newPage.createAccessingPage();
+			setNewPage(utilFactory.getNewStage(getStage(),peer));
+			newPage.makePage("/view/accessing.fxml",getStage());
+			newPage.show();
 		}else {
-			newPage.createPopupPage("잘못된 개인키 형식입니다.");
+			setNewPage(utilFactory.getNewStage(getStage()));
+			newPage.makePage("/view/popup.fxml","잘못된 개인키 형식입니다.");
+			newPage.show();
 		}
 	}
 	// 관심사 : Pem파일 경로 확보하기
@@ -109,10 +112,13 @@ public class LoginController implements Controller  {
 		String message = "로그인 할 개인키 PEM 파일을 선택하세요.";
 		fc.setTitle(message);
 		fc.setInitialDirectory(new File("./pem"));
-		return fc.showOpenDialog(newPage.getStage());
+		return fc.showOpenDialog(getStage());
 	}
 	
 	
+	
+	@Override
+	public void execute() {}
 	@Override
 	public void setPeer(Peer peer) {}
 	@Override

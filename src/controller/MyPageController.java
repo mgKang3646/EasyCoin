@@ -17,7 +17,6 @@ import util.NewPage;
 public class MyPageController implements Controller  {
 	
 	@FXML private Button miningButton;
-	@FXML private HBox content;
 	@FXML private Button blockchainButton;
 	@FXML private TextField idText;
 	@FXML private Button wireButton;
@@ -26,7 +25,6 @@ public class MyPageController implements Controller  {
 	@FXML private TextField balanceTextField;
 	
 	private Peer peer;
-	private Stage stage;
 	private String childPage;
 	private NewPage newPage;
 	private UtilFactory utilFactory;
@@ -47,15 +45,23 @@ public class MyPageController implements Controller  {
 	@Override
 	public void execute() {
 		setUserName();
-		newPage = utilFactory.getNewPage(stage,peer);
 		setButtonAction(blockchainButton,"blockchain");
 		setButtonAction(miningButton,"mining");
 		setButtonAction(wireButton,"wire");
 		setButtonAction(stateConnectionButton,"stateConnection");
 	}
+	
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
+	
+	private Stage getStage() {
+		return (Stage)miningButton.getScene().getWindow();
+	}
 	@Override
 	public void mainButtonAction() throws IOException {
-		newPage.moveToIndexPage(childPage);
+		setNewPage(utilFactory.getNewScene(getStage(),peer));
+		newPage.makePage("/view/index.fxml",childPage);
 	}
 	
 	private void setUserName() {

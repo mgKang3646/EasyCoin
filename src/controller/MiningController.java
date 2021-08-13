@@ -29,7 +29,6 @@ public class MiningController implements Controller {
 	private NewPage newPage;
 	private CircleRotate cr1;
 	private CircleRotate cr2;
-	private Stage stage;
 	private Peer peer;
 	private Mining mining;
 	
@@ -52,11 +51,18 @@ public class MiningController implements Controller {
 	
 	@Override
 	public void execute(){
-		newPage = utilFactory.getNewPage(stage,peer);
 		mining = new Mining(peer.getBlockchain());
 		cr1 = utilFactory.getCircleRotate(c1,true,270,10);
 		cr2 = utilFactory.getCircleRotate(c2,true,180, 5);
 		cr2.setCircleImage("/image/rotateCoin.png");
+	}
+	
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
+	
+	private Stage getStage() {
+		return (Stage)miningButton.getScene().getWindow();
 	}
 	
 	//채굴버튼
@@ -105,9 +111,12 @@ public class MiningController implements Controller {
 			viewMiningResult();
 		});
 	}
+	
 	// 좀 더 다각화 하거나 관심사를 분리하거나 하자.
 	private void viewMiningResult() {
-		newPage.createMiningResultPage("successMining");
+		setNewPage(utilFactory.getNewStage(getStage(),peer));
+		newPage.makePage("/view/miningResult.fxml","successMining");
+		newPage.show();
 	}
 	
 	private void startUI() {
