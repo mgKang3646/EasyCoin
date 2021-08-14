@@ -16,6 +16,8 @@ public class NewContent implements NewPage {
 	private Object object;
 	private Parent parent;
 	private Controller controller;
+	private ArrayList<Block> blocks;
+
 	
 	public NewContent(HBox content) {
 		this.content = content;
@@ -25,39 +27,49 @@ public class NewContent implements NewPage {
 	public NewContent(HBox content,Peer peer) {
 		this.peer = peer;
 		this.content = content;
-		fxmlFactory = new FxmlFactory();
+		this.blocks = peer.getBlockchain().getBlocks();
+		this.fxmlFactory = new FxmlFactory();
 	}
 	
 	public void makePage(String url) {
-		if(isBlockChainUrl(url)) {
-			makeBlockChainPage("/view/block.fxml");
-		}else {
-			makeGeneralPage(url);
-		}
+		makePageProcess(url);
 	}
 	public void makePage(String url, Object object) {
+		setObject(object);
+		makePageProcess(url);
+	}
+	
+	private void makePageProcess(String url) {
 		if(isBlockChainUrl(url)) {
 			makeBlockChainPage("/view/block.fxml");
 		}else {
-			setObject(object);
 			makeGeneralPage(url);
 		}
 	}
-	
-	public void show() {}
 	
 	private void makeGeneralPage(String url) {
 		clearContent();
-		setFxmlFactory(url);
-		setParent();
+		setFxmlObjects(url);
 		addIntoContent();
-		setController();
 	}
 	
 	private void makeBlockChainPage(String url) {
 		clearContent();
 		addBlockChainIntoContent(url);
-		
+	}
+	
+	private void setFxmlObjects(String url) {
+		setFxmlFactory(url);
+		setParent();
+		setController();
+	}
+	
+	private void addBlockChainIntoContent(String url) {
+		for(Block block : blocks) {
+			setObject(block);
+			setFxmlObjects(url);
+			addIntoContent();		
+		}
 	}
 	
 	private boolean isBlockChainUrl(String url) {
@@ -87,21 +99,13 @@ public class NewContent implements NewPage {
 		content.getChildren().add(parent);
 	}
 	
-	private void addBlockChainIntoContent(String url) {
-		ArrayList<Block> blocks = peer.getBlockchain().getBlocks();
-		for(Block block : blocks) {
-			setObject(block);
-			setFxmlFactory(url);
-			setParent();
-			setController();
-			content.getChildren().add(parent);		
-		}
-	}
-	
 	private void setController() {
 		controller = fxmlFactory.getController();
 		controller.setPeer(peer);
 		controller.setObject(object);
 		controller.execute();
 	}
+	
+	public void show() {}
+
 }
