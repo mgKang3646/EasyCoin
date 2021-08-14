@@ -47,13 +47,4 @@ public class BlockController implements Controller {
 		hashText.setEditable(false);
 		timestampText.setEditable(false);
 	}
-	
-	
-	
-	@Override
-	public void mainButtonAction() throws IOException {	}
-	@Override
-	public void subButtonAction() throws IOException {	}
-	
-
 }

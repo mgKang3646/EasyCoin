@@ -72,13 +72,4 @@ public class MiningResultController implements Controller {
 	
 	private void doSuccessVerify(){}
 	private void doFailVerify(){}
-
-	
-	
-	@Override
-	public void mainButtonAction() throws IOException {}
-	@Override
-	public void subButtonAction() throws IOException {}
-	
-	
 }

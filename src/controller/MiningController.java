@@ -50,24 +50,21 @@ public class MiningController implements Controller {
 	}
 	
 	@Override
-	public void execute(){
+	public void execute(){ //추상화 수준이 안맞음
 		mining = new Mining(peer.getBlockchain());
 		cr1 = utilFactory.getCircleRotate(c1,true,270,10);
 		cr2 = utilFactory.getCircleRotate(c2,true,180, 5);
 		cr2.setCircleImage("/image/rotateCoin.png");
+		setButtonAction();
 	}
 	
-	private void setNewPage(NewPage newPage) {
-		this.newPage = newPage;
+	private void setButtonAction() {
+		miningButton.setOnAction(ActionEvent->{
+			miningButtonAction();
+		});
 	}
 	
-	private Stage getStage() {
-		return (Stage)miningButton.getScene().getWindow();
-	}
-	
-	//채굴버튼
-	@Override
-	public void mainButtonAction() throws IOException {
+	private void miningButtonAction() {
 		changeMiningUI();
 		doMineBlock();
 	}
@@ -131,10 +128,16 @@ public class MiningController implements Controller {
 		cr2.stop();
 	}
 	
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
+	
+	private Stage getStage() {
+		return (Stage)miningButton.getScene().getWindow();
+	}
+	
 	
 	@Override
 	public void setObject(Object object) {}
-	@Override
-	public void subButtonAction() throws IOException {}
 	
 }

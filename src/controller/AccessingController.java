@@ -235,10 +235,4 @@ public class AccessingController implements Controller {
 		});
 	}
 	
-	
-	@Override
-	public void mainButtonAction() {}
-	@Override
-	public void subButtonAction() {}
-	
 }

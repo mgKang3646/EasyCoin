@@ -43,16 +43,22 @@ public class LoginController implements Controller  {
 		this.dao = new Dao();
 	}
 	
-	// 관심사 : 회원가입 페이지로 넘어가기
 	@Override
-	public void subButtonAction() {
-		setNewPage(utilFactory.getNewScene(getStage()));
-		newPage.makePage("/view/join.fxml");
+	public void execute() {
+		setButtonAction();
 	}
 	
-	// 관심사 : 로그인하기
-	@Override
-	public void mainButtonAction() {
+	private void setButtonAction() {
+		loginButton.setOnAction(ActionEvent -> {
+			loginButtonAction();
+		});
+		
+		joinButton.setOnAction(ActionEvent -> {
+			joinButtonAction();
+		});
+	}
+	
+	private void loginButtonAction() {
 		if(isPemFile()) {
 			getPrivateKeyFromPem(file);	
 			createPeerInDB();
@@ -60,12 +66,9 @@ public class LoginController implements Controller  {
 		}
 	}
 	
-	private void setNewPage(NewPage newPage) {
-		this.newPage = newPage;
-	}
-	
-	private Stage getStage() {
-		return (Stage)loginButton.getScene().getWindow();
+	private void joinButtonAction() {
+		setNewPage(utilFactory.getNewScene(getStage()));
+		newPage.makePage("/view/join.fxml");
 	}
 	
 	// 관심사 : 파일 탐색기 열어서 원하는 개인키 PEM 파일 경로 확보하기
@@ -115,10 +118,14 @@ public class LoginController implements Controller  {
 		return fc.showOpenDialog(getStage());
 	}
 	
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
 	
+	private Stage getStage() {
+		return (Stage)loginButton.getScene().getWindow();
+	}
 	
-	@Override
-	public void execute() {}
 	@Override
 	public void setPeer(Peer peer) {}
 	@Override

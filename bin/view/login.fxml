@@ -19,12 +19,12 @@
             <Font size="36.0" />
          </font>
       </Label>
-      <Button fx:id="loginButton" layoutX="323.0" layoutY="125.0" mnemonicParsing="false" onAction="#mainButtonAction" prefHeight="46.0" prefWidth="160.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="로그인" textFill="WHITE">
+      <Button fx:id="loginButton" layoutX="323.0" layoutY="125.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="160.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="로그인" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font>
       </Button>
-      <Button fx:id="joinButton" layoutX="323.0" layoutY="195.0" mnemonicParsing="false" onAction="#subButtonAction" prefHeight="47.0" prefWidth="160.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="회원가입" textFill="WHITE">
+      <Button fx:id="joinButton" layoutX="323.0" layoutY="195.0" mnemonicParsing="false"  prefHeight="47.0" prefWidth="160.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="회원가입" textFill="WHITE">
          <font>
             <Font size="24.0" />
          </font>

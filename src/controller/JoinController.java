@@ -40,24 +40,20 @@ public class JoinController implements Controller  {
 	
 	@Override
 	public void execute() {
+		setButtonAction();
 	}
 	
-	private void setNewPage(NewPage newPage) {
-		this.newPage = newPage;
+	public void setButtonAction() {
+		joinButton.setOnAction(ActionEvent -> {
+			joinButtonAction();
+		});
+		
+		goLoginPageButton.setOnAction(ActionEvent -> {
+			goLoginPageButton();
+		});
 	}
 	
-	private Stage getStage() {
-		return (Stage)joinButton.getScene().getWindow();
-	}
-
-	@Override		// 관심사 : 로그인 페이지로 돌아가기
-	public void subButtonAction() throws IOException {
-		setNewPage(utilFactory.getNewScene(getStage()));
-		newPage.makePage("/view/login.fxml");
-	}
-	
-	@Override
-	public void mainButtonAction() throws IOException  {
+	public void joinButtonAction()  {
 		if(!isEmptyUserName()) {
 			doJoinProcess(duplicateCheck());
 		}
@@ -66,6 +62,11 @@ public class JoinController implements Controller  {
 		}
 	}
 	
+	public void goLoginPageButton() {
+		setNewPage(utilFactory.getNewScene(getStage()));
+		newPage.makePage("/view/login.fxml");
+	}
+
 	// 관심사 : userName 공백체크
 	private boolean isEmptyUserName() {
 		this.userName = userNameText.getText();
@@ -74,7 +75,7 @@ public class JoinController implements Controller  {
 	}
 	
 	// 관심사 : 회원가입 작업진행
-	public void doJoinProcess(int duplicateResult) throws IOException {
+	public void doJoinProcess(int duplicateResult) {
 		if(duplicateResult > 0) { // 중복이 안된 경우
 			makePemFile(); // Pem파일생성
 			addPeerInDB(); // 회원정보 DB저장
@@ -97,7 +98,7 @@ public class JoinController implements Controller  {
 	}
 	
 	// 관심사 : 회원정보 DB에 저장하기
-	private void addPeerInDB() throws IOException {
+	private void addPeerInDB()  {
 		int result = dao.join(getLocalhost(), this.userName);
 		if(result > 0) { // 회원정보 DB 저장 성공한 경우
 			changePage();	
@@ -106,7 +107,7 @@ public class JoinController implements Controller  {
 	}
 	
 	// 관심사 : 페이지 전환하기
-	private void changePage() throws IOException {
+	private void changePage()  {
 		Stage stage = getStage();
 		setNewPage(utilFactory.getNewScene(stage));
 		newPage.makePage("/view/login.fxml");
@@ -124,12 +125,19 @@ public class JoinController implements Controller  {
 		userNameCheck.setText(msg);
 		userNameCheck.setVisible(true);
 	}
+	
+	private void setNewPage(NewPage newPage) {
+		this.newPage = newPage;
+	}
+	
+	private Stage getStage() {
+		return (Stage)joinButton.getScene().getWindow();
+	}
 
 	@Override
 	public void setPeer(Peer peer) {}
 	@Override
 	public void setObject(Object object) {}
-	
 }	
 
 

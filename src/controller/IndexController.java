@@ -114,11 +114,4 @@ public class IndexController implements Controller  {
 
 	private void doUpgrade(){
 	}
-
-	@Override
-	public void mainButtonAction() throws IOException {}
-	@Override
-	public void subButtonAction() throws IOException {}
-
-	
 }

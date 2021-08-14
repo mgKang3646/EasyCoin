@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,9 +26,16 @@ public class PopupController implements Controller {
 	@Override
 	public void execute()  {
 		setLabelText();
+		setButtonAction();
 	}
-	@Override
-	public void mainButtonAction() {
+	
+	private void setButtonAction() {
+		popupButton.setOnAction(ActionEvent -> {
+			popupButtonAction();
+		});
+	}
+	
+	public void popupButtonAction() {
 		getStage().close();
 	}
 	
@@ -39,8 +47,6 @@ public class PopupController implements Controller {
 		popupLabel.setText(msg);
 	}
 
-	@Override
-	public void subButtonAction() {}
 	@Override
 	public void setPeer(Peer peer) {}
 

@@ -58,8 +58,8 @@ public class MyPageController implements Controller  {
 	private Stage getStage() {
 		return (Stage)miningButton.getScene().getWindow();
 	}
-	@Override
-	public void mainButtonAction() throws IOException {
+	
+	public void goIndexPage(){
 		setNewPage(utilFactory.getNewScene(getStage(),peer));
 		newPage.makePage("/view/index.fxml",childPage);
 	}
@@ -69,17 +69,13 @@ public class MyPageController implements Controller  {
 	}
 	private void setButtonAction(Button button, String name) {
 		button.setOnAction(ActionEvent->{
-			try {
-				childPage = name;
-				mainButtonAction();
-			} catch (IOException e) {}
+			childPage = name;
+			goIndexPage();
 		});
 	}
 
 	
 	@Override
 	public void setObject(Object object) {}
-	@Override
-	public void subButtonAction() throws IOException {}
 	
 }
