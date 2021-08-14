@@ -7,8 +7,8 @@ import factory.UtilFactory;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import util.NewPage;
-//해야될 일 : NewPage 리팩토링 MiningPage 리팩토링 + mainButtonAction 없애고 setButtonAction 관심사 구분하기
-// 블록체인 화면 NewContent 구현할 방법 찾기
+//해야될 일 : MiningPage 리팩토링 + mainButtonAction 없애고 setButtonAction 관심사 구분하기
+// NewContent 리팩토링
 
 public class Main extends Application {
 	
