@@ -35,6 +35,11 @@ public class ServerListener extends Thread {
 		} catch (Exception e) {
 		}
 	}
+	
+	public void send(String msg) {
+		socketThreads.forEach(socketThread -> socketThread.send(msg)) ;
+	}
+	
 	@Override
 	public String toString() {
 		return "localhost:"+this.serverSocket.getLocalPort();

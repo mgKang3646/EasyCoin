@@ -1,6 +1,5 @@
 package controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -8,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import model.Block;
 import model.Peer;
 
@@ -21,10 +21,15 @@ public class BlockController implements Controller {
 	
 	private Peer peer;
 	private Block block;
+	private Stage stage;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
-
+	
+	@Override
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
 	@Override
 	public void setPeer(Peer peer) {
 		this.peer = peer;

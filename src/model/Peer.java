@@ -6,6 +6,7 @@ import java.security.PublicKey;
 public class Peer {
 	private PrivateKey privateKey;
 	private PublicKey publicKey;
+	private ServerListener serverListener;
 	private String userName;
 	private String localhost;
 	private BlockChain blockchain;
@@ -29,6 +30,9 @@ public class Peer {
 	public PrivateKey getPrivateKey() {
 		return privateKey;
 	}
+	public ServerListener getServerListener() {
+		return serverListener;
+	}
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
@@ -41,6 +45,8 @@ public class Peer {
 	public void setPrivateKey(PrivateKey privateKey) {
 		this.privateKey = privateKey;
 	}
-	
+	public void setServerListener(ServerListener serverListener) {
+		this.serverListener = serverListener;
+	}
 	
 }

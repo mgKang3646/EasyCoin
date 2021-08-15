@@ -1,5 +1,7 @@
 package model;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 public class Block {
 	private int num;
 	private int nonce;
@@ -37,8 +39,8 @@ public class Block {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
-	
-	public String getDataForHash() {
-		return previousBlockHash + timestamp + nonce;
+	public void generateHash() {
+		hash = DigestUtils.sha256Hex(nonce + timestamp + previousBlockHash);
 	}
+
 }

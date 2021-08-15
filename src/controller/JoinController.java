@@ -1,13 +1,12 @@
 package controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import database.Dao;
 import encrypt.GeneratingKey;
 import encrypt.Pem;
-import factory.UtilFactory;
+import factory.NewPageFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,7 +15,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Peer;
-import util.NewPage;
 
 public class JoinController implements Controller  {
 	
@@ -27,20 +25,24 @@ public class JoinController implements Controller  {
 	@FXML private ImageView goLoginPageButtonImageView;
 	@FXML private Text userNameCheck;
 	
-	private NewPage newPage;
-	private UtilFactory utilFactory;
+	private Stage stage;
+	private NewPageFactory newPageFactory;
 	private Dao dao;
 	private String userName;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		this.utilFactory = new UtilFactory();
-		this.dao = new Dao();
+		newPageFactory = new NewPageFactory();
+		dao = new Dao();
 	}
-	
+	@Override 
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
 	@Override
 	public void execute() {
 		setButtonAction();
+		newPageFactory.setStage(stage);
 	}
 	
 	public void setButtonAction() {
@@ -63,8 +65,7 @@ public class JoinController implements Controller  {
 	}
 	
 	public void goLoginPageButton() {
-		setNewPage(utilFactory.getNewScene(getStage()));
-		newPage.makePage("/view/login.fxml");
+		newPageFactory.moveLoginPage();
 	}
 
 	// 관심사 : userName 공백체크
@@ -108,12 +109,9 @@ public class JoinController implements Controller  {
 	
 	// 관심사 : 페이지 전환하기
 	private void changePage()  {
-		Stage stage = getStage();
-		setNewPage(utilFactory.getNewScene(stage));
-		newPage.makePage("/view/login.fxml");
-		setNewPage(utilFactory.getNewStage(stage));
-		newPage.makePage("/view/popup.fxml","회원가입이 완료되었습니다.");
-		newPage.show();
+		String msg = "회원가입이 완료되었습니다.";
+		newPageFactory.moveLoginPage();
+		newPageFactory.createPopupPage(msg);
 	}
 	
 	// 관심사 : Peer의 주소생성
@@ -126,14 +124,6 @@ public class JoinController implements Controller  {
 		userNameCheck.setVisible(true);
 	}
 	
-	private void setNewPage(NewPage newPage) {
-		this.newPage = newPage;
-	}
-	
-	private Stage getStage() {
-		return (Stage)joinButton.getScene().getWindow();
-	}
-
 	@Override
 	public void setPeer(Peer peer) {}
 	@Override

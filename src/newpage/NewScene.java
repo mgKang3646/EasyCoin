@@ -1,8 +1,4 @@
-package util;
-
-
-import controller.Controller;
-import factory.FxmlFactory;
+package newpage;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.Peer;
@@ -10,20 +6,19 @@ import model.Peer;
 public class NewScene implements NewPage {
 	private Stage stage;
 	private Scene scene;
-	private Controller controller;
 	private Peer peer;
 	private Object object;
-	private FxmlFactory fxmlFactory;
+	private FxmlObjects fxmlObjects;
 	
 	public NewScene(Stage stage) {
 		this.stage = stage;
-		fxmlFactory = new FxmlFactory();
+		this.fxmlObjects = new FxmlObjects();
 	}
 	
 	public NewScene(Stage stage, Peer peer) {
 		this.stage = stage;
 		this.peer = peer;
-		fxmlFactory = new FxmlFactory();
+		this.fxmlObjects = new FxmlObjects();
 	}
 	
 	public void makePage(String url) {
@@ -48,7 +43,7 @@ public class NewScene implements NewPage {
 	}
 
 	private void setFxmlFactory(String url) {
-		fxmlFactory.generateFxmlObjets(url);
+		fxmlObjects.generateFxmlObjets(url);
 	}
 	
 	private void setObject(Object obj) {
@@ -56,14 +51,11 @@ public class NewScene implements NewPage {
 	}
 	
 	private void setScene() {
-		this.scene = fxmlFactory.getScene();
+		this.scene = fxmlObjects.getScene();
 	}
 
 	private void setController() {
-		controller = fxmlFactory.getController();
-		controller.setPeer(peer);
-		controller.setObject(object);
-		controller.execute();
+		fxmlObjects.setController(stage, peer, object);
 	}
 	
 	private void changeScene() {

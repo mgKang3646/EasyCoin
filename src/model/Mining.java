@@ -11,9 +11,8 @@ public class Mining {
 	private BlockChain blockchain;
 	private Block minedBlock;
 	private boolean miningFlag;
-	
 	private String hashString;
-	private String currentTime;
+	private String timestamp;
 	private String previousHash;
 	private int blockNum;
 	private int nonce;
@@ -25,21 +24,32 @@ public class Mining {
 	public void setMiningFlag(boolean value) {
 		this.miningFlag = value;
 	}
-	
-	public boolean getMiningFlag() {
-		return this.miningFlag;
+	// 다시 채굴하는 경우 Null로 초기화 해주어야 함
+	public boolean istmpBlockExisted() {
+		if(blockchain.getTmpBlock() == null) {
+			return false;
+		}else {
+			return true;
+		}
 	}
 	
-	public void mineBlock() {
+	public Block mineBlock() {
 		while(miningFlag) {
 			setBlockComponents();
 			System.out.println(hashString);
 			if(isBlockHash()){
 				createBlock();
-				addBlockInBlockChain();
+				return minedBlock;
+				//addBlockInBlockChain();
+				//setMiningFlag(false);
+			}
+			
+			if(istmpBlockExisted()) {
 				setMiningFlag(false);
 			}
 		}
+		
+		return null;
 	}
 	
 	private void createBlock() {
@@ -48,7 +58,7 @@ public class Mining {
 		minedBlock.setHash(hashString);
 		minedBlock.setPreviousBlockHash(previousHash);
 		minedBlock.setNonce(nonce);
-		minedBlock.setTimestamp(currentTime);
+		minedBlock.setTimestamp(timestamp);
 	}
 	
 	private void addBlockInBlockChain() {
@@ -59,8 +69,8 @@ public class Mining {
 		nonce++;	
 		blockNum = blockchain.getBlockNum();
 		previousHash = blockchain.getPreviousHash();
-		currentTime = Long.toString(System.currentTimeMillis());
-		hashString = DigestUtils.sha256Hex(previousHash+nonce+currentTime);
+		timestamp = Long.toString(System.currentTimeMillis());
+		hashString = DigestUtils.sha256Hex(nonce + timestamp + previousHash);
 	}
 	
 	private boolean isBlockHash() {

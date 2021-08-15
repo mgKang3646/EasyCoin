@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import database.Dao;
+import factory.JsonFactory;
+import factory.NewPageFactory;
 import factory.SocketThreadFactory;
 import factory.UtilFactory;
 import javafx.application.Platform;
@@ -17,11 +19,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import json.JsonSend;
 import model.Peer;
 import model.ServerListener;
 import model.SocketThread;
-import util.JsonSend;
-import util.NewPage;
 import util.SocketUtil;
 
 public class AccessingController implements Controller {
@@ -35,11 +36,12 @@ public class AccessingController implements Controller {
 	private Peer peer;
 	private Stage parentStage;
 	private ServerListener serverListener;
-	private NewPage newPage;
+	private NewPageFactory newPageFactory;
 	private UtilFactory utilFactory;
 	private SocketThreadFactory socketThreadFactory;
 	private SocketUtil socketUtil;
 	private double progress;
+	private JsonFactory jsonFactory;
 	private JsonSend jsonSend;
 	private ArrayList<Peer> peers;
 	
@@ -51,35 +53,34 @@ public class AccessingController implements Controller {
 		initializeComponents();
 	}
 	private void createObjects() {
+		jsonFactory = new JsonFactory();
 		utilFactory = new UtilFactory();
+		newPageFactory = new NewPageFactory();
 		socketThreadFactory = new SocketThreadFactory();
 		dao = new Dao();
 		socketUtil = utilFactory.getSocketUtil();
-		jsonSend = utilFactory.getJsonSend();
+		jsonSend = jsonFactory.getJsonSend();
 	}
 	
 	public void initializeComponents() {
 		progressBar.setStyle("-fx-accent : #58FA82;");
 		progressTextArea.setEditable(false);
 	}
-	
+	@Override
+	public void setStage(Stage stage) {
+		this.parentStage = stage;
+	}
 	@Override
 	public void setPeer(Peer peer) {	
 		this.peer = peer;
 	}
-	
 	@Override
-	public void setObject(Object object) {
-		parentStage = (Stage)object;
-	}
+	public void setObject(Object object) {}
 	
 	@Override
 	public void execute() {
 		runAccessingThread();
-	}
-	
-	private void setNewPage(NewPage newPage) {
-		this.newPage = newPage;
+		newPageFactory.setStage(parentStage);
 	}
 	
 	private Stage getStage() {
@@ -154,8 +155,10 @@ public class AccessingController implements Controller {
 	
 	// 관심사 : 서버리스너 생성
 	private void makeServerListener(String portNum) throws IOException {
-			this.serverListener = new ServerListener(portNum);
-			this.serverListener.setPeer(peer);
+			serverListener = new ServerListener(portNum);
+			// 관심사 : 관계설정 ( 분리 필요 )
+			serverListener.setPeer(peer);
+			peer.setServerListener(serverListener);
 	}
 	
 	// 관심사 : Socket 연결 시작하기
@@ -186,7 +189,7 @@ public class AccessingController implements Controller {
 	private void createPeerThread(Socket socket) throws IOException {
 			SocketThread socketThread = socketThreadFactory.getPeerThread(socket,peer);
 			socketThread.start();
-			socketThread.send(jsonSend.requestPeerThread(serverListener.toString()));// 관심사가 다름 분리해야 됨
+			socketThread.send(jsonSend.jsonConnectMessage(serverListener.toString()));// 관심사가 다름 분리해야 됨
 	}
 	
 	// 관심사 : 추가된 progress 리턴
@@ -216,16 +219,14 @@ public class AccessingController implements Controller {
 	
 	private void moveToMypage() {
 		Platform.runLater(()->{
-			setNewPage(utilFactory.getNewScene(parentStage,peer));
-			newPage.makePage("/view/mypage.fxml");
+			newPageFactory.moveMyPage(peer);
 		});
 	}
 	
 	private void openErrorPopup() {
 		Platform.runLater(()->{
-			setNewPage(utilFactory.getNewStage(getStage()));
-			newPage.makePage("/view/popup.fxml","이미 접속 중인 개인키입니다.");
-			newPage.show();
+			String msg = "이미 접속 중인 개인키입니다.";
+			newPageFactory.createPopupPage(msg);
 		});
 	}
 	
@@ -234,5 +235,6 @@ public class AccessingController implements Controller {
 			getStage().close();
 		});
 	}
+	
 	
 }

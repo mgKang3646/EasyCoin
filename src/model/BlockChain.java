@@ -7,6 +7,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 public class BlockChain {
 	
 	private ArrayList<Block> blocks;
+	private Block tmpBlock;
+	private boolean istmpBlockVerified;
 
 	public BlockChain() {
 		blocks = new ArrayList<Block>(); 
@@ -38,7 +40,17 @@ public class BlockChain {
 		return blocks;
 	}
 	
+	public void setTmpBlock(Block block) {
+		tmpBlock = block;
+	}
 	
+	public Block getTmpBlock() {
+		return tmpBlock;
+	}
+	
+	public void setTmpBlockVerified(boolean result) {
+		istmpBlockVerified = result;
+	}
 	
 	public Block createGenesisBlock() {
 		Block genesisBlock = new Block();
@@ -47,7 +59,7 @@ public class BlockChain {
 		genesisBlock.setNonce(0);
 		genesisBlock.setTimestamp("00000000");
 		genesisBlock.setNum(0);
-		genesisBlock.setHash(DigestUtils.sha256Hex(genesisBlock.getDataForHash()));
+		genesisBlock.generateHash();
 		
 		return genesisBlock;
 	}

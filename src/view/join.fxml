@@ -40,12 +40,12 @@
                   </TextField>
                </children>
             </HBox>
-            <Button fx:id="joinButton" layoutX="222.0" layoutY="269.0" mnemonicParsing="false" onAction="#mainButtonAction" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="회원 가입" textFill="WHITE">
+            <Button fx:id="joinButton" layoutX="222.0" layoutY="269.0" mnemonicParsing="false" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="회원 가입" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="30.0" />
                </font>
             </Button>
-            <Button fx:id="goLoginPageButton" layoutY="338.0" mnemonicParsing="false" onAction="#subButtonAction" style="-fx-background-color: transparent;">
+            <Button fx:id="goLoginPageButton" layoutY="338.0" mnemonicParsing="false" style="-fx-background-color: transparent;">
                <graphic>
                   <ImageView fx:id="goLoginPageButtonImageView" fitHeight="37.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>

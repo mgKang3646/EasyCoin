@@ -1,4 +1,4 @@
-package factory;
+package newpage;
 
 import java.io.IOException;
 
@@ -6,9 +6,10 @@ import controller.Controller;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
+import model.Peer;
 
-public class FxmlFactory {
-	
+public class FxmlObjects {
 	private FXMLLoader loader;
 	private Scene scene;
 	private Parent parent;
@@ -37,9 +38,10 @@ public class FxmlFactory {
 		return parent;
 	}
 	
-	public Controller getController() {
-		return controller;
+	public void setController(Stage stage , Peer peer, Object object) {
+		controller.setPeer(peer);
+		controller.setObject(object);
+		controller.setStage(stage);
+		controller.execute();	
 	}
-
-	
 }

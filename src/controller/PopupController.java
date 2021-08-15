@@ -16,9 +16,14 @@ public class PopupController implements Controller {
 	private @FXML Label popupLabel;
 	private @FXML Button popupButton;
 	private String msg;
+	private Stage parentStage;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {}
+	@Override
+	public void setStage(Stage stage) {
+		parentStage = stage;
+	}
 	@Override
 	public void setObject(Object object) {
 		msg = (String)object;

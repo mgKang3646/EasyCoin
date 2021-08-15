@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 import database.Dao;
 import encrypt.KeyFromPem;
-import factory.UtilFactory;
+import factory.NewPageFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -17,7 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Peer;
-import util.NewPage;
 
 public class LoginController implements Controller  {
 	
@@ -26,26 +25,31 @@ public class LoginController implements Controller  {
 	@FXML private TextField privateKeyText;
 	@FXML private ImageView mainImageView;
 	
-	private NewPage newPage;
+	private Stage stage;
 	private FileChooser fc;
-	private UtilFactory utilFactory;
+	private NewPageFactory newPageFactory;
 	private KeyFromPem keyFromPem;
 	private Dao dao;
 	private Peer peer;
 	private PrivateKey privateKey;
 	private File file;
+	
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		this.utilFactory = new UtilFactory();
+		this.newPageFactory = new NewPageFactory();
 		this.fc = new FileChooser();
 		this.keyFromPem = new KeyFromPem();
 		this.dao = new Dao();
 	}
-	
+	@Override
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
 	@Override
 	public void execute() {
 		setButtonAction();
+		newPageFactory.setStage(stage);
 	}
 	
 	private void setButtonAction() {
@@ -67,8 +71,7 @@ public class LoginController implements Controller  {
 	}
 	
 	private void joinButtonAction() {
-		setNewPage(utilFactory.getNewScene(getStage()));
-		newPage.makePage("/view/join.fxml");
+		newPageFactory.moveJoinPage();
 	}
 	
 	// 관심사 : 파일 탐색기 열어서 원하는 개인키 PEM 파일 경로 확보하기
@@ -101,13 +104,10 @@ public class LoginController implements Controller  {
 	// 관심사 : 개인키 확보 여부에 따른 페이지전환
 	private void applyPage() {
 		if(privateKey != null) {
-			setNewPage(utilFactory.getNewStage(getStage(),peer));
-			newPage.makePage("/view/accessing.fxml",getStage());
-			newPage.show();
+			newPageFactory.createAccessingPage(peer);
 		}else {
-			setNewPage(utilFactory.getNewStage(getStage()));
-			newPage.makePage("/view/popup.fxml","잘못된 개인키 형식입니다.");
-			newPage.show();
+			String msg = "잘못된 개인키 형식입니다.";
+			newPageFactory.createPopupPage(msg);
 		}
 	}
 	// 관심사 : Pem파일 경로 확보하기
@@ -115,16 +115,9 @@ public class LoginController implements Controller  {
 		String message = "로그인 할 개인키 PEM 파일을 선택하세요.";
 		fc.setTitle(message);
 		fc.setInitialDirectory(new File("./pem"));
-		return fc.showOpenDialog(getStage());
+		return fc.showOpenDialog(stage);
 	}
 	
-	private void setNewPage(NewPage newPage) {
-		this.newPage = newPage;
-	}
-	
-	private Stage getStage() {
-		return (Stage)loginButton.getScene().getWindow();
-	}
 	
 	@Override
 	public void setPeer(Peer peer) {}

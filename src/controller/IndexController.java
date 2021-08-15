@@ -1,13 +1,11 @@
 package controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import factory.NewPageFactory;
 import factory.UtilFactory;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -16,7 +14,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.Peer;
-import util.NewPage;
 
 public class IndexController implements Controller  {
 	
@@ -31,17 +28,21 @@ public class IndexController implements Controller  {
 	@FXML private ImageView upgradeButtonImageView;
 	@FXML private AnchorPane EasyCoin;	
 	
+	private Stage stage;
 	private Peer peer;
 	private String childPage;
-	private UtilFactory utilFactory;
-	private NewPage newPage;
+	private NewPageFactory newPageFactory;
 	private Image upgradeButtonImage;
 
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		utilFactory = new UtilFactory();
-	}		
+		newPageFactory = new NewPageFactory();
+	}	
+	@Override
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
 	@Override
 	public void setPeer(Peer peer) {
 		this.peer = peer;
@@ -52,6 +53,7 @@ public class IndexController implements Controller  {
 	}
 	@Override
 	public void execute() {
+		newPageFactory.setStage(stage);
 		setUserName();
 		switchContent();
 		setButtonAction(blockchainButton,"blockchain");
@@ -60,15 +62,7 @@ public class IndexController implements Controller  {
 		//setButtonAction(wireButton,"wire");
 		//업그레이드 버튼 추가되어야 함
 	}
-	
-	private void setNewPage(NewPage newPage) {
-		this.newPage = newPage;
-	}
-	
-	private Stage getStage() {
-		return (Stage)content.getScene().getWindow();
-	}
-	
+
 	private void switchContent() {
 		switch(childPage) {
 			case "blockchain" : blockchainHandler(); break;
@@ -95,13 +89,11 @@ public class IndexController implements Controller  {
 	}
 	
 	private void miningHandler() {
-		setNewPage(utilFactory.getNewContent(content,peer));
-		newPage.makePage("/view/mining.fxml");
+		newPageFactory.addMiningPage(content, peer);
 	}
 	
 	private void blockchainHandler()  {
-		setNewPage(utilFactory.getNewContent(content,peer));
-		newPage.makePage("BlockChain");
+		newPageFactory.addBlockChainPage(content, peer);
 	}
 	
 	private void stateConnectionHandler()  {

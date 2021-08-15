@@ -1,34 +1,34 @@
-package util;
+package newpage;
 
 import java.util.ArrayList;
-
-import controller.Controller;
-import factory.FxmlFactory;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import model.Block;
 import model.Peer;
 
 public class NewContent implements NewPage {
-	private FxmlFactory fxmlFactory;
+	private Stage stage;
+	private FxmlObjects fxmlObjects;
 	private HBox content;
 	private Peer peer;
 	private Object object;
 	private Parent parent;
-	private Controller controller;
 	private ArrayList<Block> blocks;
 
 	
-	public NewContent(HBox content) {
+	public NewContent(Stage stage, HBox content) {
+		this.stage = stage;
 		this.content = content;
-		fxmlFactory = new FxmlFactory();
+		fxmlObjects = new FxmlObjects();
 	}
 	
-	public NewContent(HBox content,Peer peer) {
+	public NewContent(Stage stage, HBox content,Peer peer) {
+		this.stage = stage;
 		this.peer = peer;
 		this.content = content;
 		this.blocks = peer.getBlockchain().getBlocks();
-		this.fxmlFactory = new FxmlFactory();
+		this.fxmlObjects = new FxmlObjects();
 	}
 	
 	public void makePage(String url) {
@@ -80,18 +80,6 @@ public class NewContent implements NewPage {
 		}
 	}
 	
-	private void setFxmlFactory(String url) {
-		fxmlFactory.generateFxmlObjets(url);
-	}
-	
-	private void setObject(Object object) {
-		this.object = object;
-	}
-	
-	private void setParent() {
-		parent = fxmlFactory.getParent();
-	}
-	
 	private void clearContent() {
 		content.getChildren().clear();
 	}
@@ -99,11 +87,20 @@ public class NewContent implements NewPage {
 		content.getChildren().add(parent);
 	}
 	
+	private void setFxmlFactory(String url) {
+		fxmlObjects.generateFxmlObjets(url);
+	}
+	
 	private void setController() {
-		controller = fxmlFactory.getController();
-		controller.setPeer(peer);
-		controller.setObject(object);
-		controller.execute();
+		fxmlObjects.setController(stage, peer, object);
+	}
+	
+	private void setParent() {
+		parent = fxmlObjects.getParent();
+	}
+	
+	private void setObject(Object object) {
+		this.object = object;
 	}
 	
 	public void show() {}

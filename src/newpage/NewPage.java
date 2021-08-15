@@ -1,4 +1,4 @@
-package util;
+package newpage;
 
 public interface NewPage {
 	public void makePage(String url);
