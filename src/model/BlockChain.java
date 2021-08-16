@@ -7,11 +7,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 public class BlockChain {
 	
 	private ArrayList<Block> blocks;
-	private Block tmpBlock;
-	private boolean istmpBlockVerified;
-
+	private BlockVerify blockVerify;
+	
 	public BlockChain() {
-		blocks = new ArrayList<Block>(); 
+		blocks = new ArrayList<Block>();
+		blockVerify = new BlockVerify();
 		blocks.add(createGenesisBlock());
 	}
 	
@@ -21,6 +21,10 @@ public class BlockChain {
 	
 	public void addBlock(Block block) {
 		blocks.add(block);
+	}
+	
+	public void addTmpBlock() {
+		blocks.add(blockVerify.getTmpBlock());
 	}
 	
 	public String getPreviousHash() {
@@ -35,26 +39,20 @@ public class BlockChain {
 		return blocks.get(blocks.size()-1);
 	}
 	
+	public BlockVerify getBlockVerify() {
+		return blockVerify;
+	}
+	
 	public ArrayList<Block> resetBlocks() {
 		blocks = new ArrayList<Block>();
 		return blocks;
 	}
 	
-	public void setTmpBlock(Block block) {
-		tmpBlock = block;
-	}
 	
-	public Block getTmpBlock() {
-		return tmpBlock;
-	}
 	
-	public void setTmpBlockVerified(boolean result) {
-		istmpBlockVerified = result;
-	}
 	
 	public Block createGenesisBlock() {
 		Block genesisBlock = new Block();
-		
 		genesisBlock.setPreviousBlockHash("0000000000000000000000000000000000000000000000000000000000000000");
 		genesisBlock.setNonce(0);
 		genesisBlock.setTimestamp("00000000");

@@ -1,80 +1,96 @@
 package model;
 
-import java.util.HashMap;
-
-import org.apache.commons.codec.digest.DigestUtils;
+import factory.JsonFactory;
+import json.JsonSend;
 
 public class Mining {
 	
 	public String hashDifficulty = "00000";
 	
+	private BlockVerify blockVerify;
 	private BlockChain blockchain;
+	private PeerList peerList;
 	private Block minedBlock;
+	private JsonFactory jsonFactory;
+	private JsonSend jsonSend;
 	private boolean miningFlag;
 	private String hashString;
-	private String timestamp;
-	private String previousHash;
-	private int blockNum;
 	private int nonce;
 	
-	public Mining(BlockChain blockchain) {
-		this.blockchain = blockchain;
+	public Mining(Peer peer) {
+		this.blockchain = peer.getBlockchain();
+		this.blockVerify = blockchain.getBlockVerify();
+		this.peerList = peer.getPeerList();
+		this.minedBlock = new Block();
+		this.jsonFactory = new JsonFactory();
+		this.jsonSend = jsonFactory.getJsonSend();
 	}
 	
 	public void setMiningFlag(boolean value) {
 		this.miningFlag = value;
 	}
-	// 다시 채굴하는 경우 Null로 초기화 해주어야 함
 	public boolean istmpBlockExisted() {
-		if(blockchain.getTmpBlock() == null) {
-			return false;
-		}else {
-			return true;
-		}
+		return blockVerify.isTmpBlockExisted(); 
 	}
 	
-	public Block mineBlock() {
+	public MiningState mineBlock() {
 		while(miningFlag) {
 			setBlockComponents();
-			System.out.println(hashString);
+			System.out.println(minedBlock.getHash());
 			if(isBlockHash()){
-				createBlock();
-				return minedBlock;
-				//addBlockInBlockChain();
-				//setMiningFlag(false);
+				broadCastMinedBlock();
+				blockVerify.setTotal(peerList.getSize());
+				blockVerify.setTmpBlock(minedBlock);
+				blockVerify.handleVerifyResult(true);	
+				if(isVerify()) {
+					blockchain.addTmpBlock();
+					return MiningState.SUCCESSMINING;
+				}else {
+					return MiningState.FAILEDVERIFY;
+				}
 			}
 			
 			if(istmpBlockExisted()) {
-				setMiningFlag(false);
+				if(isVerify()) {
+					blockchain.addTmpBlock();
+					return MiningState.SUCCESSVERIFY;
+				}else {
+					return MiningState.FAILEDVERIFY;
+				}
 			}
 		}
-		
-		return null;
+		return MiningState.NONE;
 	}
 	
-	private void createBlock() {
-		minedBlock = new Block();
-		minedBlock.setNum(blockNum);
-		minedBlock.setHash(hashString);
-		minedBlock.setPreviousBlockHash(previousHash);
-		minedBlock.setNonce(nonce);
-		minedBlock.setTimestamp(timestamp);
+	private boolean isVerify() {
+		waitVerifyResult();
+		return blockVerify.isTmpBlockValid();
 	}
 	
-	private void addBlockInBlockChain() {
-		blockchain.addBlock(minedBlock);
+	private void waitVerifyResult() {
+		while(blockVerify.isVerifying()) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void setBlockComponents(){
-		nonce++;	
-		blockNum = blockchain.getBlockNum();
-		previousHash = blockchain.getPreviousHash();
-		timestamp = Long.toString(System.currentTimeMillis());
-		hashString = DigestUtils.sha256Hex(nonce + timestamp + previousHash);
+		minedBlock.setNum(blockchain.getBlockNum());
+		minedBlock.setPreviousBlockHash( blockchain.getPreviousHash());
+		minedBlock.setNonce(++nonce);
+		minedBlock.setTimestamp( Long.toString(System.currentTimeMillis()));
+		minedBlock.generateHash();
 	}
 	
 	private boolean isBlockHash() {
-		return hashString.substring(0,hashDifficulty.length()).equals(hashDifficulty);
+		return minedBlock.getHash().substring(0,hashDifficulty.length()).equals(hashDifficulty);
+	}
+	
+	private void broadCastMinedBlock() {
+		jsonSend.jsonBlockVerifyMessage(minedBlock);
 	}
 	
 	

@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import model.MiningState;
 import model.Peer;
 
 public class MiningResultController implements Controller {
@@ -20,7 +21,7 @@ public class MiningResultController implements Controller {
 	private Stage stage;
 	private Peer peer;
 	private NewPageFactory newPageFactory;
-	private String miningResult;
+	private MiningState miningResult;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -36,7 +37,7 @@ public class MiningResultController implements Controller {
 	}
 	@Override
 	public void setObject(Object object) {
-		miningResult = (String)object;
+		miningResult = (MiningState)object;
 	}
 	
 	@Override
@@ -47,18 +48,25 @@ public class MiningResultController implements Controller {
 	
 	private void judgeResult() {
 		switch(miningResult) {
-			case "successMining" : doSuccessMining(); break;
-			case "successVerify" : doSuccessVerify(); break;
-			case "failedVerify" : doFailVerify(); break;
+			case SUCCESSMINING : doSuccessMining(); break;
+			case SUCCESSVERIFY : doSuccessVerify(); break;
+			case FAILEDVERIFY : doFailVerify(); break;
+			case NONE : break;
 			default : break;
 		}
 	}
 	
 	private void doSuccessMining() {
-			verifiedLabel.setText("블록 채굴 성공");
-			newPageFactory.addMiningResultPage(content, peer);
+		verifiedLabel.setText("블록 채굴 성공");
+		newPageFactory.addMiningResultPage(content, peer);
 	}	
 	
-	private void doSuccessVerify(){}
-	private void doFailVerify(){}
+	private void doSuccessVerify(){
+		verifiedLabel.setText("블록 검증 성공");
+		newPageFactory.addMiningResultPage(content, peer);
+	}
+	private void doFailVerify(){
+		verifiedLabel.setText("블록 검증 실패");
+		newPageFactory.addMiningResultPage(content, peer);
+	}
 }

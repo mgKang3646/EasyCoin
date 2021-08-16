@@ -11,8 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import model.Block;
 import model.Mining;
+import model.MiningState;
 import model.Peer;
 import util.CircleRotate;
 
@@ -33,8 +33,7 @@ public class MiningController implements Controller {
 	private Peer peer;
 	private Mining mining;
 	private boolean isMining;
-	private Block minedBlock;
-	
+	private MiningState miningResult;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -50,11 +49,10 @@ public class MiningController implements Controller {
 		this.peer = peer;
 	}
 	
-	
 	@Override
 	public void execute(){ //추상화 수준이 안맞음
 		newPageFactory.setStage(stage);
-		mining = new Mining(peer.getBlockchain());
+		mining = new Mining(peer);
 		cr1 = utilFactory.getCircleRotate(c1,true,270,10);
 		cr2 = utilFactory.getCircleRotate(c2,true,180, 5);
 		cr2.setCircleImage("/image/rotateCoin.png");
@@ -101,19 +99,25 @@ public class MiningController implements Controller {
 	private void startMining() {
 		isMining = true;
 		mining.setMiningFlag(true);
-		minedBlock = mining.mineBlock();
+		miningResult = mining.mineBlock();
 	}
-	 // 채굴이 종료되어 끝나는 것과 채굴버튼을 눌러 정지시킬 때를 구분해야 한다. 
+	
 	private void finishMining() {
 		isMining = false;
 		Platform.runLater(()->{
 			stopUI();
-			viewMiningResult();
+			viewResult();
 		});
 	}
 	
-	private void viewMiningResult() {
-		newPageFactory.createMiningResult(peer, "successMining");
+	private void viewResult() {
+		switch(miningResult) {
+			case SUCCESSMINING : newPageFactory.createMiningResult(peer, MiningState.SUCCESSMINING);break;
+			case SUCCESSVERIFY : newPageFactory.createMiningResult(peer, MiningState.SUCCESSVERIFY);break;
+			case FAILEDVERIFY : newPageFactory.createMiningResult(peer, MiningState.FAILEDVERIFY);break;
+			case NONE : break;
+			default : break;
+		}
 	}
 	
 	private void startUI() {
@@ -126,10 +130,6 @@ public class MiningController implements Controller {
 		miningButton.setText("채굴 시작");
 		cr1.stop();
 		cr2.stop();
-	}
-	
-	private void sendMinedBlock() {
-		
 	}
 	
 	@Override

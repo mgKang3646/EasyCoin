@@ -21,6 +21,7 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import json.JsonSend;
 import model.Peer;
+import model.PeerList;
 import model.ServerListener;
 import model.SocketThread;
 import util.SocketUtil;
@@ -34,6 +35,8 @@ public class AccessingController implements Controller {
 	
 	private Dao dao;
 	private Peer peer;
+	ArrayList<Peer> peers;
+	private PeerList peerList ;
 	private Stage parentStage;
 	private ServerListener serverListener;
 	private NewPageFactory newPageFactory;
@@ -43,7 +46,6 @@ public class AccessingController implements Controller {
 	private double progress;
 	private JsonFactory jsonFactory;
 	private JsonSend jsonSend;
-	private ArrayList<Peer> peers;
 	
 
 	
@@ -57,9 +59,6 @@ public class AccessingController implements Controller {
 		utilFactory = new UtilFactory();
 		newPageFactory = new NewPageFactory();
 		socketThreadFactory = new SocketThreadFactory();
-		dao = new Dao();
-		socketUtil = utilFactory.getSocketUtil();
-		jsonSend = jsonFactory.getJsonSend();
 	}
 	
 	public void initializeComponents() {
@@ -80,7 +79,11 @@ public class AccessingController implements Controller {
 	@Override
 	public void execute() {
 		runAccessingThread();
+		dao = new Dao();
 		newPageFactory.setStage(parentStage);
+		socketUtil = utilFactory.getSocketUtil();
+		jsonSend = jsonFactory.getJsonSend();
+		peerList = peer.getPeerList();
 	}
 	
 	private Stage getStage() {
@@ -136,12 +139,12 @@ public class AccessingController implements Controller {
 	
 	// 관심사 : DB에 저장된 Peer들 정보 갖고오기
 	private void setPeersFromDB() {
-		this.peers = dao.getPeers(peer.getUserName());
+		peers = dao.getPeers(peer.getUserName());
 	}
 	
 	// 관심사 : 다른 Peer의 서버리스너와 연결하기 + 관심사 : UI 처리하기 ( 한 가지 메소드 안에 두 가지 관심사 )
 	private void connectToServerListenerOfAnotherPeers() throws IOException {
-			for(Peer peerValue : this.peers) {
+			for(Peer peerValue : peers) {
 				doConnect(peerValue);
 			}	
 	}
@@ -164,9 +167,10 @@ public class AccessingController implements Controller {
 	// 관심사 : Socket 연결 시작하기
 	private void doConnect(Peer peerValue) throws IOException {
 			if(connectServerListener(getSocketAddress(peerValue))) {
-				processUI(getConnectionMsg(peerValue,true), getProgress(getConnectionPercent(this.peers.size()))); // 관심사 : UI 처리
+				processUI(getConnectionMsg(peerValue,true), getProgress(getConnectionPercent(peers.size()))); // 관심사 : UI 처리
+				peerList.addPeer(peerValue);
 			}else {
-				processUI(getConnectionMsg(peerValue,false), getProgress(getConnectionPercent(this.peers.size()))); // 관심사 : UI 처리
+				processUI(getConnectionMsg(peerValue,false), getProgress(getConnectionPercent(peers.size()))); // 관심사 : UI 처리
 			}
 	}
 	
@@ -189,7 +193,7 @@ public class AccessingController implements Controller {
 	private void createPeerThread(Socket socket) throws IOException {
 			SocketThread socketThread = socketThreadFactory.getPeerThread(socket,peer);
 			socketThread.start();
-			socketThread.send(jsonSend.jsonConnectMessage(serverListener.toString()));// 관심사가 다름 분리해야 됨
+			socketThread.send(jsonSend.jsonConnectMessage(serverListener.toString(),peer.getUserName()));// 관심사가 다름 분리해야 됨
 	}
 	
 	// 관심사 : 추가된 progress 리턴

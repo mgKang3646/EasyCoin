@@ -2,6 +2,7 @@ package factory;
 
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import model.MiningState;
 import model.Peer;
 import newpage.NewContent;
 import newpage.NewPage;
@@ -36,7 +37,7 @@ public class NewPageFactory {
 		newPage.show();
 	}
 	
-	public void createMiningResult(Peer peer, String miningResult) {
+	public void createMiningResult(Peer peer, MiningState miningResult) {
 		newPage = getNewStage(peer);
 		newPage.makePage("/view/miningResult.fxml",miningResult);
 		newPage.show();

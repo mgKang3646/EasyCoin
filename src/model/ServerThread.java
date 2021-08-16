@@ -43,7 +43,7 @@ public class ServerThread extends SocketThread {
 	public void run() {
 		try {
 			while(true) {
-					jsonReceive.processJsonQuery(jsonReceive.getJsonObject(bufferedReader));
+					jsonReceive.read(bufferedReader);
 			}
 		}catch(Exception e) { 
 				try {

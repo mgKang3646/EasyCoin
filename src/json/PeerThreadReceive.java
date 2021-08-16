@@ -5,49 +5,55 @@ import java.io.BufferedReader;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-import model.Block;
-import model.BlockChain;
+import factory.JsonFactory;
+import model.BlockVerify;
 import model.Peer;
+import model.PeerList;
 
 public class PeerThreadReceive implements JsonReceive{
 	private Peer peer;
-	private BlockChain blockchain;
+	private BlockVerify blockVerify;
+	private PeerList peerList;
+	private JsonObject jsonObject;
+	private JsonFactory jsonFactory;
+	private JsonSend jsonSend;
 	
 
 	public PeerThreadReceive(Peer peer) {
 		this.peer = peer;
-		this.blockchain = peer.getBlockchain();
+		this.blockVerify = peer.getBlockchain().getBlockVerify();
+		this.peerList = peer.getPeerList();
+		this.jsonFactory = new JsonFactory();
+		this.jsonSend = jsonFactory.getJsonSend();
 	}
 	
-	public JsonObject getJsonObject(BufferedReader br) {
-		return Json.createReader(br).readObject();
+	public void read(BufferedReader bufferedReader) {
+		setJsonObject(bufferedReader);
+		processJsonQuery();
+	}
+	
+	private void setJsonObject(BufferedReader bufferedReader) {
+		jsonObject = Json.createReader(bufferedReader).readObject();
 	}
 
-	public void processJsonQuery(JsonObject object) {
-		String key = object.getString("identifier");
+	private void processJsonQuery() {
+		String key = jsonObject.getString("identifier");
 		
 		switch(key) {
-			case "minedBlock" : verifyBlock(object);// 1. 검증 2. 검증결과보내기 3. 다른 Peer 검증결과 확보 4. 과반이 넘으면 검증완료.
+			case "minedBlock" : verifyBlock();// 1. 검증 2. 검증결과보내기 3. 다른 Peer 검증결과 확보 4. 과반이 넘으면 검증완료.
+			case "verifiedResult" : getVerifyResult();
 			default : break;
 		}
 	}
 	
-	private void verifyBlock(JsonObject object) {
-		Block tmpBlock = new Block();
-		String inputHash = object.getString("hash");
-
-		tmpBlock.setNonce(object.getInt("nonce"));
-		tmpBlock.setTimestamp(object.getString("timestamp"));
-		tmpBlock.setPreviousBlockHash(object.getString("previousHash"));
-		tmpBlock.generateHash();
-		
-		// 다시 채굴하는 경우 Null로 초기화 해주어야 함
-		if(inputHash.equals(tmpBlock.getHash())) {
-			blockchain.setTmpBlock(tmpBlock);
-			blockchain.setTmpBlockVerified(true);
-		}else {
-			blockchain.setTmpBlock(tmpBlock);
-			blockchain.setTmpBlockVerified(false);
-		}
+	private void verifyBlock() {
+		blockVerify.doVerify(jsonObject);
+		jsonSend.jsonVerifiedResultMessage(blockVerify.isTmpBlockValid());
+	}
+	
+	private void getVerifyResult() {
+		boolean verifyResult = jsonObject.getBoolean("verifyResult");
+		blockVerify.setTotal(peerList.getSize());
+		blockVerify.handleVerifyResult(verifyResult);
 	}
 }

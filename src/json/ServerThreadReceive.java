@@ -1,35 +1,43 @@
 package json;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+
 import factory.SocketThreadFactory;
 import model.Peer;
+import model.PeerList;
 import model.SocketThread;
 
 public class ServerThreadReceive implements JsonReceive{
 	private Peer peer;
+	private PeerList peerList;
+	private JsonObject jsonObject;
 	private SocketThreadFactory socketThreadFactory;
 
 	public ServerThreadReceive(Peer peer) {
 		this.peer = peer;
+		this.peerList = peer.getPeerList();
 		socketThreadFactory = new SocketThreadFactory();	
 	}
 	
-	public JsonObject getJsonObject(BufferedReader br) {
-		return Json.createReader(br).readObject();
+	public void read(BufferedReader bufferedReader) {
+		setJsonObject(bufferedReader);
+		processJsonQuery();
+	}
+	
+	private void setJsonObject(BufferedReader bufferedReader) {
+		jsonObject = Json.createReader(bufferedReader).readObject();
 	}
 
-	public void processJsonQuery(JsonObject object) {
+	private void processJsonQuery() {
 		try {
-			String key = object.getString("identifier");
+			String key = jsonObject.getString("identifier");
 			switch(key) {
-				case "connect" : makePeerThread(object); break;
+				case "connect" : makePeerThread(); break;
 				default : break;
 			}
 		} catch (Exception e) {
@@ -37,12 +45,12 @@ public class ServerThreadReceive implements JsonReceive{
 		} 
 	}
 	
-	private void makePeerThread(JsonObject object) throws Exception {	
-		String localhost = object.getString("localhost");
-		String[] address = localhost.split(":");
-		Socket newSocket = new Socket(InetAddress.getByName(address[0]),Integer.valueOf(address[1])); // 소켓 생성과 동시에 연결 진행
-		SocketThread socketThread = socketThreadFactory.getPeerThread(newSocket, peer);
-		socketThread.start();
+	//관심사 분리 필요
+	private void makePeerThread() throws Exception {	
+		String localhost = jsonObject.getString("localhost");
+		String userName = jsonObject.getString("userName");
+		peerList.addNewPeer(localhost,userName);
+		socketThreadFactory.makePeerThread(localhost, peer).run();
 	}
 	
 }

@@ -10,13 +10,12 @@ import model.Block;
 
 public class JsonSend {
 	
-	public String jsonConnectMessage(String localhost) { 
-		
+	public String jsonConnectMessage(String localhost,String userName) { 
 		JsonObjectBuilder job = Json.createObjectBuilder();
 		job.add("identifier", "connect");
 		job.add("localhost",localhost);
+		job.add("userName", userName);
 		return changeJsonToString(job.build());
-		
 	}
 	
 	public String jsonBlockVerifyMessage(Block block) {
@@ -26,6 +25,13 @@ public class JsonSend {
 		job.add("timestamp", block.getTimestamp());
 		job.add("previousHash", block.getPreviousBlockHash());
 		job.add("hash", block.getHash());
+		return changeJsonToString(job.build());
+	}
+	
+	public String jsonVerifiedResultMessage(boolean result) {
+		JsonObjectBuilder job = Json.createObjectBuilder();
+		job.add("identifier", "verifiedResult");
+		job.add("verifyResult", result);
 		return changeJsonToString(job.build());
 	}
 	

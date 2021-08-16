@@ -42,7 +42,7 @@ public class PeerThread extends SocketThread {
 	public void run()  {
 		try {
 			while(true) {
-				jsonReceive.getJsonObject(bufferedReader);
+				jsonReceive.read(bufferedReader);
 			}
 		}catch(Exception e) {
 			try {
