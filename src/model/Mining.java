@@ -7,6 +7,8 @@ public class Mining {
 	
 	public String hashDifficulty = "00000";
 	
+	private Peer peer;
+	private ServerListener serverListener;
 	private BlockVerify blockVerify;
 	private BlockChain blockchain;
 	private PeerList peerList;
@@ -18,6 +20,8 @@ public class Mining {
 	private int nonce;
 	
 	public Mining(Peer peer) {
+		this.peer = peer;
+		this.serverListener = peer.getServerListener();
 		this.blockchain = peer.getBlockchain();
 		this.blockVerify = blockchain.getBlockVerify();
 		this.peerList = peer.getPeerList();
@@ -53,6 +57,7 @@ public class Mining {
 			if(istmpBlockExisted()) {
 				if(isVerify()) {
 					blockchain.addTmpBlock();
+					System.out.println("검증성공");
 					return MiningState.SUCCESSVERIFY;
 				}else {
 					return MiningState.FAILEDVERIFY;
@@ -70,6 +75,7 @@ public class Mining {
 	private void waitVerifyResult() {
 		while(blockVerify.isVerifying()) {
 			try {
+				System.out.println("반복");
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -90,8 +96,11 @@ public class Mining {
 	}
 	
 	private void broadCastMinedBlock() {
-		jsonSend.jsonBlockVerifyMessage(minedBlock);
+		String msg = jsonSend.jsonBlockVerifyMessage(minedBlock);
+		serverListener.send(msg);
 	}
+	
+	
 	
 	
 	

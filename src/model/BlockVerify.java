@@ -40,7 +40,7 @@ public class BlockVerify {
 	}
 	
 	
-	private void addVerifyResult(boolean result) {
+	public void addVerifyResult(boolean result) {
 		if(result) verifiedNum++;
 	}
 	
@@ -97,11 +97,13 @@ public class BlockVerify {
 		}else {
 			setIsTmpBlockValid(false);
 		}
+		setIsVerifying(false); // 검증 끝 관심사 분리 요망
 	}
 	
 	private void generateTmpBlock(JsonObject object) {
 		inputHash = object.getString("hash");
 		tmpBlock = new Block();
+		tmpBlock.setNum(object.getInt("blockNum"));
 		tmpBlock.setNonce(object.getInt("nonce"));
 		tmpBlock.setTimestamp(object.getString("timestamp"));
 		tmpBlock.setPreviousBlockHash(object.getString("previousHash")); // 본인이 갖고 있는 마지막블록의 이전해쉬여야함.

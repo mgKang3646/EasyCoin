@@ -21,6 +21,7 @@ public class JsonSend {
 	public String jsonBlockVerifyMessage(Block block) {
 		JsonObjectBuilder job = Json.createObjectBuilder();
 		job.add("identifier", "minedBlock");
+		job.add("blockNum", block.getNum());
 		job.add("nonce", block.getNonce());
 		job.add("timestamp", block.getTimestamp());
 		job.add("previousHash", block.getPreviousBlockHash());
@@ -30,7 +31,7 @@ public class JsonSend {
 	
 	public String jsonVerifiedResultMessage(boolean result) {
 		JsonObjectBuilder job = Json.createObjectBuilder();
-		job.add("identifier", "verifiedResult");
+		job.add("identifier", "verifyResult");
 		job.add("verifyResult", result);
 		return changeJsonToString(job.build());
 	}
