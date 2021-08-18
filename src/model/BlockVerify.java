@@ -72,19 +72,15 @@ public class BlockVerify {
 		}
 	}
 	
-	private void calculateVerifyRate() {
+	private void calculateVerifyRate()  {
 		Thread thread = new Thread() {
 			public void run() {
-				try {
-					Thread.sleep(5000);
-					checkTmpBlockVaild();
-					setIsVerifying(false);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				sleepThread(5000);
+				checkTmpBlockVaild();
+				setIsVerifying(false);
 			}
 		};
-		thread.run();
+		thread.start();
 	}
 	
 	private void checkTmpBlockVaild() {

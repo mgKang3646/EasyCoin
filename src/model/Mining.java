@@ -71,6 +71,7 @@ public class Mining {
 	}
 	
 	private void waitVerifyResult() {
+		System.out.println("blockVery.isVerifying : " + blockVerify.isVerifying());
 		while(blockVerify.isVerifying()) {
 			try {
 				System.out.println("검증 결과 대기");
