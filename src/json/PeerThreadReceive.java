@@ -50,8 +50,6 @@ public class PeerThreadReceive implements JsonReceive{
 		}
 	}
 	
-	// 블록 검즘
-	// 검증 대기
 	private void verifyBlock() {
 		blockVerify.verifyBeforeMined(jsonObject);
 		broadCasting();

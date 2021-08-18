@@ -6,7 +6,7 @@ public class BlockVerify {
 	
 	private Peer peer;
 	private Block tmpBlock;
-	
+	private BlockMaker blockMaker;
 	private int verifiedNum;
 	private String inputHash;
 	private boolean isTmpBlockValid;
@@ -17,12 +17,15 @@ public class BlockVerify {
 	public BlockVerify(Peer peer) {
 		this.peer = peer;
 		this.isFirst = true;
+		this.blockMaker = new BlockMaker();
 	}
 	
 	public void verifyBeforeMined(JsonObject jsonObject) {
 		setIsVerifying(true);
 		addVerifyResult(true); // Ã¤±¼ÀÚ Áõ°¡
-		verify(jsonObject);
+		setInputHash(jsonObject);
+		generateTmpBlock(jsonObject);
+		verifyHash();
 		handleVerifyResult(verifyResult);
 	}
 	
@@ -37,10 +40,13 @@ public class BlockVerify {
 		waitVerify();
 	}
 	
-	private void verify(JsonObject object) {
-		setInputHash(object);
-		generateTmpBlock(object);
-		verifyHash();
+	public void initialize() {
+		tmpBlock = new Block();
+		inputHash = null;
+		verifiedNum = 0;
+		isTmpBlockValid = false;
+		isFirst = true;
+		isVerifying = false;
 	}
 	
 	private void setInputHash(JsonObject jsonObject) {
@@ -48,8 +54,7 @@ public class BlockVerify {
 	}
 	
 	private void generateTmpBlock(JsonObject jsonObject) {
-		tmpBlock = new Block();
-		tmpBlock.setTmpBlock(jsonObject, peer.getBlockchain().getLastBlock().getHash());
+		tmpBlock = blockMaker.makeTmpBlock(jsonObject, peer.getBlockchain().getPreviousHash());
 	}
 	
 	private void verifyHash() {
@@ -81,6 +86,14 @@ public class BlockVerify {
 			}
 		};
 		thread.start();
+	}
+	
+	private void sleepThread(int time) {
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void checkTmpBlockVaild() {
@@ -128,22 +141,9 @@ public class BlockVerify {
 		return peer.getPeerList().getSize()+1;
 	}
 	
-	private void initialize() {
-		tmpBlock = new Block();
-		inputHash = null;
-		verifiedNum = 0;
-		isTmpBlockValid = false;
-		isFirst = true;
-		isVerifying = false;
-	}
 	
-	private void sleepThread(int time) {
-		try {
-			Thread.sleep(time);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
+	
+	
 	
 	
 	

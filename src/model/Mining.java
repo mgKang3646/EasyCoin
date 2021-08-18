@@ -11,6 +11,7 @@ public class Mining {
 	private ServerListener serverListener;
 	private BlockVerify blockVerify;
 	private BlockChain blockchain;
+	private BlockMaker blockMaker;
 	private PeerList peerList;
 	private Block minedBlock;
 	private JsonFactory jsonFactory;
@@ -25,8 +26,8 @@ public class Mining {
 		this.blockchain = peer.getBlockchain();
 		this.blockVerify = blockchain.getBlockVerify();
 		this.peerList = peer.getPeerList();
-		this.minedBlock = new Block();
 		this.jsonFactory = new JsonFactory();
+		this.blockMaker = new BlockMaker();
 		this.jsonSend = jsonFactory.getJsonSend();
 	}
 	
@@ -39,7 +40,7 @@ public class Mining {
 	
 	public MiningState mineBlock() {
 		while(miningFlag) {
-			setBlockComponents();
+			setMinedBlock();
 			System.out.println(minedBlock.getHash());
 			if(isBlockHash()){
 				broadCastMinedBlock(); 
@@ -55,7 +56,6 @@ public class Mining {
 			if(istmpBlockExisted()) {
 				if(isVerify()) {
 					blockchain.addTmpBlock();
-					System.out.println("검증성공");
 					return MiningState.SUCCESSVERIFY;
 				}else {
 					return MiningState.FAILEDVERIFY;
@@ -71,7 +71,6 @@ public class Mining {
 	}
 	
 	private void waitVerifyResult() {
-		System.out.println("blockVery.isVerifying : " + blockVerify.isVerifying());
 		while(blockVerify.isVerifying()) {
 			try {
 				System.out.println("검증 결과 대기");
@@ -82,12 +81,8 @@ public class Mining {
 		}
 	}
 	
-	private void setBlockComponents(){
-		minedBlock.setNum(blockchain.getBlockNum());
-		minedBlock.setPreviousBlockHash( blockchain.getPreviousHash());
-		minedBlock.setNonce(++nonce);
-		minedBlock.setTimestamp( Long.toString(System.currentTimeMillis()));
-		minedBlock.generateHash();
+	private void setMinedBlock(){
+		this.minedBlock = blockMaker.makeMinedBlock(blockchain, ++nonce, Long.toString(System.currentTimeMillis()));
 	}
 	
 	private boolean isBlockHash() {

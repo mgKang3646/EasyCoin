@@ -6,9 +6,7 @@ import java.security.Security;
 import factory.NewPageFactory;
 import javafx.application.Application;
 import javafx.stage.Stage;
-//해야될 일 : Mining 각 Peer간 검증 단계 구현중
-// 구현한 것 : blockChain 객체러 tmpBlock을 이용하여 동기화 구현 
-// 구현해야할 것 : 검증결과 송신 후 검증결과 취합후 블록 채굴과정 구현
+//해야될 일 : Mining 클래스 리팩토링, blockVerify initialize 로직 구현
 
 public class Main extends Application {
 	

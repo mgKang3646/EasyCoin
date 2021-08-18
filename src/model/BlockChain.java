@@ -9,11 +9,13 @@ public class BlockChain {
 	private Peer peer;
 	private ArrayList<Block> blocks;
 	private BlockVerify blockVerify;
+	private BlockMaker blockMaker;
 	
 	public BlockChain(Peer peer) {
 		this.peer = peer;
 		blocks = new ArrayList<Block>();
 		blockVerify = new BlockVerify(peer);
+		blockMaker = new BlockMaker();
 		blocks.add(createGenesisBlock());
 	}
 	
@@ -51,8 +53,7 @@ public class BlockChain {
 	}
 	
 	public Block createGenesisBlock() {
-		Block genesisBlock = new Block();
-		genesisBlock.setGenesisBlock();
+		Block genesisBlock = blockMaker.makeGenesisBlock();
 		return genesisBlock;
 	}
 

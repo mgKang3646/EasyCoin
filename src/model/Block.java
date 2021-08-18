@@ -54,11 +54,7 @@ public class Block {
 	}
 	
 	public void setTmpBlock(JsonObject jsonObject, String previousHash) {
-		setNum(jsonObject.getInt("blockNum"));
-		setNonce(jsonObject.getInt("nonce"));
-		setTimestamp(jsonObject.getString("timestamp"));
-		setPreviousBlockHash(previousHash); // 본인이 갖고 있는 마지막블록의 이전해쉬여야함.
-		generateHash();
+		
 	}
 
 }
