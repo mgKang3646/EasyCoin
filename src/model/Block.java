@@ -1,5 +1,7 @@
 package model;
 
+import javax.json.JsonObject;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class Block {
@@ -41,6 +43,22 @@ public class Block {
 	}
 	public void generateHash() {
 		hash = DigestUtils.sha256Hex(nonce + timestamp + previousBlockHash);
+	}
+	
+	public void setGenesisBlock() {
+		setPreviousBlockHash("0000000000000000000000000000000000000000000000000000000000000000");
+		setNonce(0);
+		setTimestamp("00000000");
+		setNum(0);
+		generateHash();
+	}
+	
+	public void setTmpBlock(JsonObject jsonObject, String previousHash) {
+		setNum(jsonObject.getInt("blockNum"));
+		setNonce(jsonObject.getInt("nonce"));
+		setTimestamp(jsonObject.getString("timestamp"));
+		setPreviousBlockHash(previousHash); // 본인이 갖고 있는 마지막블록의 이전해쉬여야함.
+		generateHash();
 	}
 
 }

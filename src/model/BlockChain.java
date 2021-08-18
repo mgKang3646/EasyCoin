@@ -6,12 +6,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 public class BlockChain {
 	
+	private Peer peer;
 	private ArrayList<Block> blocks;
 	private BlockVerify blockVerify;
 	
-	public BlockChain() {
+	public BlockChain(Peer peer) {
+		this.peer = peer;
 		blocks = new ArrayList<Block>();
-		blockVerify = new BlockVerify();
+		blockVerify = new BlockVerify(peer);
 		blocks.add(createGenesisBlock());
 	}
 	
@@ -48,17 +50,9 @@ public class BlockChain {
 		return blocks;
 	}
 	
-	
-	
-	
 	public Block createGenesisBlock() {
 		Block genesisBlock = new Block();
-		genesisBlock.setPreviousBlockHash("0000000000000000000000000000000000000000000000000000000000000000");
-		genesisBlock.setNonce(0);
-		genesisBlock.setTimestamp("00000000");
-		genesisBlock.setNum(0);
-		genesisBlock.generateHash();
-		
+		genesisBlock.setGenesisBlock();
 		return genesisBlock;
 	}
 

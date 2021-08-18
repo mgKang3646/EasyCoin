@@ -50,22 +50,21 @@ public class PeerThreadReceive implements JsonReceive{
 		}
 	}
 	
+	// 블록 검즘
+	// 검증 대기
 	private void verifyBlock() {
-		blockVerify.doVerify(jsonObject);
-		String msg = jsonSend.jsonVerifiedResultMessage(blockVerify.isTmpBlockValid());
-		broadCasting(msg);
-		blockVerify.setTotal(peerList.getSize());
-		blockVerify.addVerifyResult(true); // 채굴블록용 증가
-		blockVerify.handleVerifyResult(blockVerify.isTmpBlockValid());
+		blockVerify.verifyBeforeMined(jsonObject);
+		broadCasting();
 	}
 	
 	private void getVerifyResult() {
 		boolean verifyResult = jsonObject.getBoolean("verifyResult");
-		blockVerify.setTotal(peerList.getSize());
 		blockVerify.handleVerifyResult(verifyResult);
 	}
 	
-	private void broadCasting(String msg) {
+	// Receive는 받는 클래스인데 보내는 메소드가 있음 분리필요
+	private void broadCasting() {
+		String msg = jsonSend.jsonVerifiedResultMessage(blockVerify.getVerifyResult());
 		serverListener.send(msg);
 	}
 }

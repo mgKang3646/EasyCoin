@@ -42,10 +42,8 @@ public class Mining {
 			setBlockComponents();
 			System.out.println(minedBlock.getHash());
 			if(isBlockHash()){
-				broadCastMinedBlock();
-				blockVerify.setTotal(peerList.getSize());
-				blockVerify.setTmpBlock(minedBlock);
-				blockVerify.handleVerifyResult(true);	
+				broadCastMinedBlock(); 
+				blockVerify.verifyAfterMined(minedBlock);
 				if(isVerify()) {
 					blockchain.addTmpBlock();
 					return MiningState.SUCCESSMINING;
@@ -75,8 +73,8 @@ public class Mining {
 	private void waitVerifyResult() {
 		while(blockVerify.isVerifying()) {
 			try {
-				System.out.println("반복");
-				Thread.sleep(500);
+				System.out.println("검증 결과 대기");
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -95,6 +93,7 @@ public class Mining {
 		return minedBlock.getHash().substring(0,hashDifficulty.length()).equals(hashDifficulty);
 	}
 	
+	// 채굴 클래스이지 보내는 클래스가 아님 분리 필요
 	private void broadCastMinedBlock() {
 		String msg = jsonSend.jsonBlockVerifyMessage(minedBlock);
 		serverListener.send(msg);

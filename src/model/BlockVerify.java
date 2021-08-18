@@ -3,77 +3,73 @@ package model;
 import javax.json.JsonObject;
 
 public class BlockVerify {
-
+	
+	private Peer peer;
 	private Block tmpBlock;
+	
+	private int verifiedNum;
 	private String inputHash;
 	private boolean isTmpBlockValid;
-	private boolean isNotFirst;
+	private boolean isFirst;
 	private boolean isVerifying;
-	private int verifiedNum;
-	private double total;
+	private boolean verifyResult;
 	
-	
-	public void setTmpBlock(Block tmpBlock) {
-		this.tmpBlock = tmpBlock;
+	public BlockVerify(Peer peer) {
+		this.peer = peer;
+		this.isFirst = true;
 	}
 	
-	public void setTotal(int total) {
-		this.total = total + 1;
+	public void verifyBeforeMined(JsonObject jsonObject) {
+		setIsVerifying(true);
+		addVerifyResult(true); // 채굴자 증가
+		verify(jsonObject);
+		handleVerifyResult(verifyResult);
 	}
 	
-	public void setIsTmpBlockValid(boolean result) {
-		isTmpBlockValid = result;
-	}
-	
-	public void setIsVerifying(boolean result) {
-		isVerifying = result;
+	public void verifyAfterMined(Block tmpBlock) {
+		setIsVerifying(true);
+		setTmpBlock(tmpBlock);
+		handleVerifyResult(true);
 	}
 	
 	public void handleVerifyResult(boolean result) {
-		if(isNotFirst) {
-			addVerifyResult(result);
-		}else {
-			isNotFirst = true;
-			addVerifyResult(result);
-			calculateVerifyRate();
+		addVerifyResult(result);
+		waitVerify();
+	}
+	
+	private void verify(JsonObject object) {
+		setInputHash(object);
+		generateTmpBlock(object);
+		verifyHash();
+	}
+	
+	private void setInputHash(JsonObject jsonObject) {
+		inputHash = jsonObject.getString("hash");
+	}
+	
+	private void generateTmpBlock(JsonObject jsonObject) {
+		tmpBlock = new Block();
+		tmpBlock.setTmpBlock(jsonObject, peer.getBlockchain().getLastBlock().getHash());
+	}
+	
+	private void verifyHash() {
+		if(inputHash.equals(tmpBlock.getHash())) {
+			verifyResult = true;
+		}
+		else {
+			verifyResult = false;
 		}
 	}
 	
-	
-	public void addVerifyResult(boolean result) {
+	private void addVerifyResult(boolean result) {
 		if(result) verifiedNum++;
 	}
 	
-	public Block getTmpBlock() {
-		return tmpBlock;
-	}
-	
-	public boolean isTmpBlockValid() {
-		return isTmpBlockValid;
-	}
-	
-	
-	public boolean isTmpBlockExisted() {
-		if(tmpBlock != null) {
-			return true;
-		}else {
-			return false;
+	private void waitVerify() {
+		if(isFirst) {
+			isFirst = false;
+			calculateVerifyRate();
 		}
-	}
-	
-	public boolean isVerifying() {
-		return isVerifying;
-	}
-	
-	public void doVerify(JsonObject object) {
-		setIsVerifying(true);
-		generateTmpBlock(object);
-		verify();
-	}
-	
-	private void verify() {
-		if(inputHash.equals(tmpBlock.getHash())) isTmpBlockValid = true;
-		else isTmpBlockValid = false;
 	}
 	
 	private void calculateVerifyRate() {
@@ -82,6 +78,7 @@ public class BlockVerify {
 				try {
 					Thread.sleep(5000);
 					checkTmpBlockVaild();
+					setIsVerifying(false);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -91,23 +88,48 @@ public class BlockVerify {
 	}
 	
 	private void checkTmpBlockVaild() {
-		System.out.println( "verifiedNum : " + verifiedNum +" total : " +total + " rate : " + verifiedNum/total);
-		if( verifiedNum / total >= 0.51 ) {
-			setIsTmpBlockValid(true);
+		System.out.println( "verifiedNum : " + verifiedNum +" total : " +getTotal() + " rate : " + verifiedNum/getTotal());
+		if( verifiedNum / getTotal() >= 0.51 ) {
+			isTmpBlockValid = true;
 		}else {
-			setIsTmpBlockValid(false);
+			isTmpBlockValid = false;
 		}
-		setIsVerifying(false); // 검증 끝 관심사 분리 요망
 	}
 	
-	private void generateTmpBlock(JsonObject object) {
-		inputHash = object.getString("hash");
-		tmpBlock = new Block();
-		tmpBlock.setNum(object.getInt("blockNum"));
-		tmpBlock.setNonce(object.getInt("nonce"));
-		tmpBlock.setTimestamp(object.getString("timestamp"));
-		tmpBlock.setPreviousBlockHash(object.getString("previousHash")); // 본인이 갖고 있는 마지막블록의 이전해쉬여야함.
-		tmpBlock.generateHash();
+	private void setIsVerifying(boolean value) {
+		isVerifying = value;
+	}
+	
+	public boolean getVerifyResult() {
+		return verifyResult;
+	}
+	
+	public Block getTmpBlock() {
+		return tmpBlock;
+	}
+	
+	public void setTmpBlock(Block tmpBlock) {
+		this.tmpBlock = tmpBlock;
+	}
+	
+	public boolean isVerifying() {
+		return isVerifying;
+	}
+		
+	public boolean isTmpBlockValid() {
+		return isTmpBlockValid;
+	}
+	
+	public boolean isTmpBlockExisted() {
+		if(tmpBlock != null) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public double getTotal() {
+		return peer.getPeerList().getSize()+1;
 	}
 	
 	private void initialize() {
@@ -115,9 +137,18 @@ public class BlockVerify {
 		inputHash = null;
 		verifiedNum = 0;
 		isTmpBlockValid = false;
-		isNotFirst = false;
+		isFirst = true;
 		isVerifying = false;
 	}
+	
+	private void sleepThread(int time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	
 	

@@ -14,7 +14,7 @@ public class Peer {
 	private PeerList peerList;
 	
 	public Peer() {
-		this.blockchain = new BlockChain(); 
+		this.blockchain = new BlockChain(this); 
 		this.peerList = new PeerList();
 	}
 
