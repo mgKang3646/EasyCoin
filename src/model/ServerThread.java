@@ -7,9 +7,7 @@ import java.net.Socket;
 
 import factory.IOFactory;
 import factory.JsonFactory;
-import factory.UtilFactory;
 import json.JsonReceive;
-import json.JsonSend;
 
 
 public class ServerThread extends SocketThread {
@@ -19,22 +17,14 @@ public class ServerThread extends SocketThread {
 	private BufferedReader bufferedReader;
 	private PrintWriter printWriter;
 	private JsonFactory jsonFactory;
-	private UtilFactory utilFactory;
 	private IOFactory ioFactory;
 	private JsonReceive jsonReceive;
-	private JsonSend jsonSend;
 	
 	public ServerThread(Socket socket, Peer peer)throws IOException{
 		this.socket = socket;
 		this.peer = peer;
 		ioFactory = new IOFactory();
-		utilFactory = new UtilFactory();
 		jsonFactory = new JsonFactory();
-		initializeObjects();
-	}
-	
-	public void initializeObjects() throws IOException {
-		jsonSend = jsonFactory.getJsonSend();
 		jsonReceive = jsonFactory.getServerThreadReceive(peer);
 		printWriter = ioFactory.getPrintWriter(socket);
 		bufferedReader = ioFactory.getBufferedReader(socket);
@@ -61,7 +51,5 @@ public class ServerThread extends SocketThread {
 	
 	public void send(String msg) {
 		printWriter.println(msg);
-	}
-	
-	
+	}		
 }

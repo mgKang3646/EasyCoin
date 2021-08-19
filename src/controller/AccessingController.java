@@ -35,7 +35,7 @@ public class AccessingController implements Controller {
 	
 	private Dao dao;
 	private Peer peer;
-	ArrayList<Peer> peers;
+	private ArrayList<Peer> peers;
 	private PeerList peerList ;
 	private Stage parentStage;
 	private ServerListener serverListener;
@@ -43,9 +43,11 @@ public class AccessingController implements Controller {
 	private UtilFactory utilFactory;
 	private SocketThreadFactory socketThreadFactory;
 	private SocketUtil socketUtil;
-	private double progress;
 	private JsonFactory jsonFactory;
 	private JsonSend jsonSend;
+	private SocketThread socketThread;
+	private double progress;
+
 	
 
 	
@@ -82,7 +84,6 @@ public class AccessingController implements Controller {
 		dao = new Dao();
 		newPageFactory.setStage(parentStage);
 		socketUtil = utilFactory.getSocketUtil();
-		jsonSend = jsonFactory.getJsonSend();
 		peerList = peer.getPeerList();
 	}
 	
@@ -184,6 +185,7 @@ public class AccessingController implements Controller {
 		Socket socket = socketUtil.getSocket();
 		if(socketUtil.connectToSocketAddress(socketAddress,socket)) {
 			createPeerThread(socket);
+			sendConnectMessage();
 			return true;
 		}
 		return false;
@@ -191,9 +193,13 @@ public class AccessingController implements Controller {
 	
 	// 관심사 : PeerThread 생성
 	private void createPeerThread(Socket socket) throws IOException {
-			SocketThread socketThread = socketThreadFactory.getPeerThread(socket,peer);
-			socketThread.start();
-			socketThread.send(jsonSend.jsonConnectMessage(serverListener.toString(),peer.getUserName()));// 관심사가 다름 분리해야 됨
+		socketThread = socketThreadFactory.getPeerThread(socket,peer);
+		socketThread.start();
+	}
+	
+	private void sendConnectMessage() {
+		jsonSend = jsonFactory.getJsonSend(socketThread);
+		jsonSend.sendConnectMessage(serverListener.toString(), peer.getUserName());
 	}
 	
 	// 관심사 : 추가된 progress 리턴

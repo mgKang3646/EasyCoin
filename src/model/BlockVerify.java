@@ -2,17 +2,19 @@ package model;
 
 import javax.json.JsonObject;
 
+
 public class BlockVerify {
 	
 	private Peer peer;
 	private Block tmpBlock;
 	private BlockMaker blockMaker;
-	private int verifiedNum;
 	private String inputHash;
 	private boolean isTmpBlockValid;
 	private boolean isFirst;
 	private boolean isVerifying;
 	private boolean verifyResult;
+	private int verifiedNum;
+
 	
 	public BlockVerify(Peer peer) {
 		this.peer = peer;

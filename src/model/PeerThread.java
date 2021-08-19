@@ -16,9 +16,7 @@ public class PeerThread extends SocketThread {
 	private Socket socket = null;
 	private Peer peer;
 	private JsonFactory jsonFactory;
-	private UtilFactory utilFactory;
 	private IOFactory ioFactory;
-	private JsonSend jsonSend;
 	private JsonReceive jsonReceive;
 	private PrintWriter printWriter;
 	private BufferedReader bufferedReader;
@@ -26,18 +24,13 @@ public class PeerThread extends SocketThread {
 	public PeerThread(Socket socket, Peer peer) throws IOException{
 		this.socket = socket;
 		this.peer = peer;
-		utilFactory = new UtilFactory();
 		ioFactory = new IOFactory();
 		jsonFactory = new JsonFactory();
-		initializeObjects();
-	}
-	
-	public void initializeObjects() throws IOException {
-		jsonSend = jsonFactory.getJsonSend();
 		jsonReceive = jsonFactory.getPeerThreadReceive(peer);
 		printWriter = ioFactory.getPrintWriter(socket);
 		bufferedReader = ioFactory.getBufferedReader(socket);
 	}
+	
 	@Override
 	public void run()  {
 		try {

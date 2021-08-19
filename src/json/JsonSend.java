@@ -1,45 +1,41 @@
 package json;
 
-import java.io.StringWriter;
-
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import model.Block;
+import model.ServerListener;
+import model.SocketThread;
 
 public class JsonSend {
 	
-	public String jsonConnectMessage(String localhost,String userName) { 
-		JsonObjectBuilder job = Json.createObjectBuilder();
-		job.add("identifier", "connect");
-		job.add("localhost",localhost);
-		job.add("userName", userName);
-		return changeJsonToString(job.build());
+	private JsonMessage jsonMessage;
+	private SocketThread socketThread;
+	private ServerListener serverListener;
+	
+	public JsonSend(SocketThread socketThread) {
+		this.jsonMessage = new JsonMessage();
+		this.socketThread = socketThread;
 	}
 	
-	public String jsonBlockVerifyMessage(Block block) {
-		JsonObjectBuilder job = Json.createObjectBuilder();
-		job.add("identifier", "minedBlock");
-		job.add("blockNum", block.getNum());
-		job.add("nonce", block.getNonce());
-		job.add("timestamp", block.getTimestamp());
-		job.add("previousHash", block.getPreviousBlockHash());
-		job.add("hash", block.getHash());
-		return changeJsonToString(job.build());
+	public JsonSend(ServerListener serverListener) {
+		this.jsonMessage = new JsonMessage();
+		this.serverListener = serverListener;
 	}
 	
-	public String jsonVerifiedResultMessage(boolean result) {
-		JsonObjectBuilder job = Json.createObjectBuilder();
-		job.add("identifier", "verifyResult");
-		job.add("verifyResult", result);
-		return changeJsonToString(job.build());
+	public void sendConnectMessage(String localhost, String userName) {
+		String msg = jsonMessage.jsonConnectMessage(localhost, userName);
+		socketThread.send(msg);
 	}
 	
-	private String changeJsonToString(JsonObject obj) {
-		StringWriter sw = new StringWriter();
-		Json.createWriter(sw).writeObject(obj);
-		return sw.toString();
+	public void sendBlockMinedMessage(Block block) {
+		String msg = jsonMessage.jsonBlockMinedMessage(block);
+		serverListener.send(msg);
+	}
+	
+	public void sendVerifiedResultMessage(boolean result) {
+		String msg = jsonMessage.jsonVerifiedResultMessage(result);
+		serverListener.send(msg);
 	}
 
 }
