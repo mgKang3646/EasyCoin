@@ -48,10 +48,9 @@ public class MiningResultController implements Controller {
 	
 	private void judgeResult() {
 		switch(miningResult) {
-			case SUCCESSMINING : doSuccessMining(); break;
-			case SUCCESSVERIFY : doSuccessVerify(); break;
+			case MININGVERIFIED : doSuccessMining(); break;
+			case OTHERMININGVERIFIED : doSuccessVerify(); break;
 			case FAILEDVERIFY : doFailVerify(); break;
-			case NONE : break;
 			default : break;
 		}
 	}

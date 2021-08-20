@@ -8,23 +8,18 @@ public class Mining {
 	public String hashDifficulty = "0000";
 	
 	private Peer peer;
-	private ServerListener serverListener;
+	private MiningState miningState;
 	private BlockVerify blockVerify;
 	private BlockChain blockchain;
 	private BlockMaker blockMaker;
 	private Block minedBlock;
-	private JsonFactory jsonFactory;
-	private JsonSend jsonSend;
 	private boolean miningFlag;
 	private int nonce;
 	
 	public Mining(Peer peer) {
 		this.peer = peer;
-		this.serverListener = peer.getServerListener();
 		this.blockchain = peer.getBlockchain();
 		this.blockVerify = blockchain.getBlockVerify();
-		this.jsonFactory = new JsonFactory();
-		this.jsonSend = jsonFactory.getJsonSend(serverListener);
 		this.blockMaker = new BlockMaker();
 	}
 	
@@ -39,16 +34,18 @@ public class Mining {
 		while(miningFlag) {
 			setMinedBlock();
 			printHashString();
-			if(isBlockHash()){
-				jsonSend.sendBlockMinedMessage(minedBlock); 
-				blockVerify.verifyAfterMined(minedBlock);
-				return getResultAfterMined();
+			if(isBlockHash()) {
+				miningState = MiningState.MININGSUCCESS;
+				miningState.setBlock(minedBlock);
+				return miningState;
 			}
 			if(istmpBlockExisted()) {
-				return getResultBeforeMined();
+				miningState = MiningState.OTHERMININGSUCCESS;
+				return miningState;
 			}
 		}
-		return MiningState.NONE;
+		miningState = MiningState.HALT;
+		return miningState;
 	}
 	
 	private void setMinedBlock(){
@@ -61,39 +58,5 @@ public class Mining {
 	
 	private boolean isBlockHash() {
 		return minedBlock.getHash().substring(0,hashDifficulty.length()).equals(hashDifficulty);
-	}
-	
-	private MiningState getResultAfterMined() {
-		if(isVerify()) {
-			blockchain.addTmpBlock();
-			return MiningState.SUCCESSMINING;
-		}else {
-			return MiningState.FAILEDVERIFY;
-		}	
-	}
-
-	private MiningState getResultBeforeMined() {
-		if(isVerify()) {
-			blockchain.addTmpBlock();
-			 return MiningState.SUCCESSVERIFY;
-		}else {
-			 return MiningState.FAILEDVERIFY;
-		}	
-	}
-	
-	private boolean isVerify() {
-		waitVerifyResult();
-		return blockVerify.isTmpBlockValid();
-	}
-	
-	private void waitVerifyResult() {
-		while(blockVerify.isVerifying()) {
-			try {
-				System.out.println("검증 결과 대기");
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 }

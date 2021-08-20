@@ -43,12 +43,13 @@ public class BlockVerify {
 	}
 	
 	public void initialize() {
-		tmpBlock = new Block();
+		tmpBlock = null;
 		inputHash = null;
 		verifiedNum = 0;
 		isTmpBlockValid = false;
 		isFirst = true;
 		isVerifying = false;
+		verifyResult = false;
 	}
 	
 	private void setInputHash(JsonObject jsonObject) {

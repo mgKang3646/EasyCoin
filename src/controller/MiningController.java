@@ -3,6 +3,7 @@ package controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import factory.JsonFactory;
 import factory.NewPageFactory;
 import factory.UtilFactory;
 import javafx.application.Platform;
@@ -11,8 +12,12 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import json.JsonSend;
+import model.BlockChain;
 import model.Mining;
+import model.MiningCenter;
 import model.MiningState;
+import model.MiningVerify;
 import model.Peer;
 import util.CircleRotate;
 
@@ -25,15 +30,14 @@ public class MiningController implements Controller {
 	@FXML private Circle c1;
 	@FXML private Circle c2;
 	
+	private MiningCenter miningCenter;
 	private NewPageFactory newPageFactory;
 	private UtilFactory utilFactory;
 	private Stage stage;
 	private CircleRotate cr1;
 	private CircleRotate cr2;
 	private Peer peer;
-	private Mining mining;
 	private boolean isMining;
-	private MiningState miningResult;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -52,7 +56,7 @@ public class MiningController implements Controller {
 	@Override
 	public void execute(){ //추상화 수준이 안맞음
 		newPageFactory.setStage(stage);
-		mining = new Mining(peer);
+		miningCenter = new MiningCenter(peer);
 		cr1 = utilFactory.getCircleRotate(c1,true,270,10);
 		cr2 = utilFactory.getCircleRotate(c2,true,180, 5);
 		cr2.setCircleImage("/image/rotateCoin.png");
@@ -66,70 +70,58 @@ public class MiningController implements Controller {
 	}
 	
 	private void miningButtonAction() {
-		changeMiningUI();
-		doMineBlock();
-	}
-	
-	private void changeMiningUI() {
-		if(isMining) {
-			stopUI();
-		}else {
-			startUI();
-		}
-	}
-
-	private void doMineBlock() {
-		if(isMining) {
-			mining.setMiningFlag(false);
-		}else {
-			runMiningThread();
-		}
-	}
-	
-	private void runMiningThread() {
-		Thread miningThread = new Thread() {
-			public void run() {
-				startMining();
-				finishMining();
-			}
-		};
-		miningThread.start();
+		if(!isMining) startMining();
+		else stopMining();
 	}
 	
 	private void startMining() {
-		isMining = true;
-		mining.setMiningFlag(true);
-		miningResult = mining.mineBlock();
+		setIsMining(true);
+		miningCenter.setMiningController(this);
+		miningCenter.start();
 	}
 	
-	private void finishMining() {
-		isMining = false;
+	private void stopMining() {
+		setIsMining(false);
+		miningCenter.stop();
+	}
+	
+	private void setIsMining(boolean result) {
+		isMining = result;
+	}
+	
+	public void startUI() {
 		Platform.runLater(()->{
-			stopUI();
-			viewResult();
+			miningButton.setText("채굴 중...");
+			cr1.start();
+			cr2.start();
 		});
 	}
 	
-	private void viewResult() {
-		switch(miningResult) {
-			case SUCCESSMINING : newPageFactory.createMiningResult(peer, MiningState.SUCCESSMINING);break;
-			case SUCCESSVERIFY : newPageFactory.createMiningResult(peer, MiningState.SUCCESSVERIFY);break;
+	public void verifyUI() {
+		Platform.runLater(()->{
+			miningButton.setText("검증 중...");
+			miningButton.setDisable(true);
+		});
+	}
+	
+	public void stopUI() {
+		Platform.runLater(()->{
+			miningButton.setText("채굴 시작");
+			miningButton.setDisable(false);
+			cr1.stop();
+			cr2.stop();
+		});
+	}
+	
+	public void viewResult() {
+		Platform.runLater(()->{
+			switch(miningCenter.getVerifyResult()) {
+			case MININGVERIFIED : newPageFactory.createMiningResult(peer, MiningState.MININGVERIFIED);break;
+			case OTHERMININGVERIFIED : newPageFactory.createMiningResult(peer, MiningState.OTHERMININGVERIFIED);break;
 			case FAILEDVERIFY : newPageFactory.createMiningResult(peer, MiningState.FAILEDVERIFY);break;
-			case NONE : break;
 			default : break;
 		}
-	}
-	
-	private void startUI() {
-		miningButton.setText("채굴 중...");
-		cr1.start();
-		cr2.start();
-	}
-	
-	private void stopUI() {
-		miningButton.setText("채굴 시작");
-		cr1.stop();
-		cr2.stop();
+		});
 	}
 	
 	@Override
