@@ -13,7 +13,11 @@ import newpage.NewStage;
 public class NewPageFactory {
 	
 	private NewPage newPage;
-	private Stage stage;
+	private static Stage stage;
+	
+	public static Stage getStage() {
+		return stage;
+	}
 	
 	public void setStage(Stage stage) {
 		this.stage = stage;

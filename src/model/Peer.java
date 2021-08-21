@@ -2,7 +2,8 @@ package model;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.ArrayList;
+
+import controller.Controller;
 
 public class Peer {
 	private PrivateKey privateKey;
@@ -54,5 +55,4 @@ public class Peer {
 	public void setServerListener(ServerListener serverListener) {
 		this.serverListener = serverListener;
 	}
-	
 }

@@ -1,33 +1,29 @@
 package json;
 
 import java.io.BufferedReader;
-
 import javax.json.Json;
 import javax.json.JsonObject;
-
 import factory.JsonFactory;
+import model.Block;
+import model.BlockChain;
+import model.BlockMaker;
 import model.BlockVerify;
 import model.Peer;
-import model.PeerList;
-import model.ServerListener;
 
 public class PeerThreadReceive implements JsonReceive{
 	private Peer peer;
-	private ServerListener serverListener;
 	private BlockVerify blockVerify;
-	private PeerList peerList;
 	private JsonObject jsonObject;
-	private JsonFactory jsonFactory;
-	private JsonSend jsonSend;
+	private Block tmpBlock;
+	private BlockChain blockchain;
+	private BlockMaker blockMaker;
 	
 
 	public PeerThreadReceive(Peer peer) {
 		this.peer = peer;
-		this.serverListener = peer.getServerListener();
 		this.blockVerify = peer.getBlockchain().getBlockVerify();
-		this.peerList = peer.getPeerList();
-		this.jsonFactory = new JsonFactory();
-		this.jsonSend = jsonFactory.getJsonSend(peer.getServerListener());
+		this.blockMaker = new BlockMaker();
+		this.blockchain = peer.getBlockchain();
 	}
 	
 	public void read(BufferedReader bufferedReader) {
@@ -51,12 +47,18 @@ public class PeerThreadReceive implements JsonReceive{
 	}
 	
 	private void verifyBlock() {
-		blockVerify.verifyBeforeMined(jsonObject);
-		jsonSend.sendVerifiedResultMessage(blockVerify.getVerifyResult());
+		tmpBlock = blockMaker.makeTmpBlock(jsonObject, blockchain.getPreviousHash());
+		tmpBlock.verifyBlock(jsonObject.getString("hash"));
+		blockVerify.setTmpBlock(tmpBlock);
+		blockVerify.setIsMinedBlock(false);
+		blockVerify.doPoll(true); // 채굴자
+		blockVerify.doPoll(tmpBlock.isValid()); // 검증자
+		blockVerify.waitOtherPeerPoll();
+		blockVerify.broadCastingVerifiedResult();
 	}
 	
 	private void handleVerifyResult() {
-		boolean verifyResult = jsonObject.getBoolean("verifyResult");
-		blockVerify.handleVerifyResult(verifyResult);
+		blockVerify.doPoll(jsonObject.getBoolean("verifyResult"));
+		blockVerify.waitOtherPeerPoll();
 	}
 }

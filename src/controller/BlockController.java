@@ -27,10 +27,6 @@ public class BlockController implements Controller {
 	public void initialize(URL arg0, ResourceBundle arg1) {}
 	
 	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-	@Override
 	public void setPeer(Peer peer) {
 		this.peer = peer;
 	}
@@ -52,4 +48,8 @@ public class BlockController implements Controller {
 		hashText.setEditable(false);
 		timestampText.setEditable(false);
 	}
+
+	@Override
+	public void setStage(Stage stage) {}
+
 }

@@ -37,6 +37,7 @@ public class MyPageController implements Controller  {
 	public void setPeer(Peer peer) {
 		this.peer = peer;
 	}
+	
 	@Override
 	public void execute() {
 		newPageFactory.setStage(stage);
@@ -64,5 +65,6 @@ public class MyPageController implements Controller  {
 	
 	@Override
 	public void setObject(Object object) {}
+	
 	
 }

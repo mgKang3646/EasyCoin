@@ -128,6 +128,7 @@ public class JoinController implements Controller  {
 	public void setPeer(Peer peer) {}
 	@Override
 	public void setObject(Object object) {}
+	
 }	
 
 

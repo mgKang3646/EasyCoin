@@ -112,19 +112,10 @@ public class MiningController implements Controller {
 			cr2.stop();
 		});
 	}
-	
-	public void viewResult() {
-		Platform.runLater(()->{
-			switch(miningCenter.getVerifyResult()) {
-			case MININGVERIFIED : newPageFactory.createMiningResult(peer, MiningState.MININGVERIFIED);break;
-			case OTHERMININGVERIFIED : newPageFactory.createMiningResult(peer, MiningState.OTHERMININGVERIFIED);break;
-			case FAILEDVERIFY : newPageFactory.createMiningResult(peer, MiningState.FAILEDVERIFY);break;
-			default : break;
-		}
-		});
-	}
+
 	
 	@Override
 	public void setObject(Object object) {}
+	
 	
 }

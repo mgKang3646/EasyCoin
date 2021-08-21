@@ -48,9 +48,9 @@ public class MiningResultController implements Controller {
 	
 	private void judgeResult() {
 		switch(miningResult) {
-			case MININGVERIFIED : doSuccessMining(); break;
-			case OTHERMININGVERIFIED : doSuccessVerify(); break;
-			case FAILEDVERIFY : doFailVerify(); break;
+			case MININGGRANTED : doSuccessMining(); break;
+			case OTHERMININGGRANTED : doSuccessVerify(); break;
+			case FAILEDGRANTED : doFailVerify(); break;
 			default : break;
 		}
 	}
@@ -68,4 +68,5 @@ public class MiningResultController implements Controller {
 		verifiedLabel.setText("블록 검증 실패");
 		newPageFactory.addMiningResultPage(content, peer);
 	}
+
 }

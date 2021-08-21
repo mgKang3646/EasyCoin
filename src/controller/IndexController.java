@@ -51,6 +51,7 @@ public class IndexController implements Controller  {
 	public void setObject(Object object) {
 		childPage = (String)object;
 	}
+
 	@Override
 	public void execute() {
 		newPageFactory.setStage(stage);
@@ -106,4 +107,5 @@ public class IndexController implements Controller  {
 
 	private void doUpgrade(){
 	}
+	
 }

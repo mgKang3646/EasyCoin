@@ -51,7 +51,7 @@ public class BlockChain {
 		blocks = new ArrayList<Block>();
 		return blocks;
 	}
-	
+
 	public Block createGenesisBlock() {
 		Block genesisBlock = blockMaker.makeGenesisBlock();
 		return genesisBlock;

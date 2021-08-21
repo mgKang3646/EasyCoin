@@ -3,46 +3,21 @@ package model;
 public class MiningVerify {
 
 	private BlockVerify blockVerify;
-	private MiningState result;
-	
 	public MiningVerify(BlockVerify blockVerify) {
 		this.blockVerify = blockVerify;
 	}
 	
-	public MiningState doVerify(Block minedBlock) {
-		blockVerify.initialize();
-		blockVerify.verifyAfterMined(minedBlock);
-		return getMinedBlockVerifyResult();
+	public void doVerify(Block tmpBlock) {
+		if(!blockVerify.isVerifying()) {
+			blockVerify.setTmpBlock(tmpBlock);
+			blockVerify.setIsMinedBlock(true);
+			blockVerify.broadCastingMinedBlock();
+			blockVerify.doPoll(true);
+			blockVerify.waitOtherPeerPoll();
+		}
 	}
 	
-	public MiningState doVerify() {
-		return getOtherMinedBlockVerifyResult();
-	}
-	
-	private MiningState getMinedBlockVerifyResult() {
-		if(isVerify()) {
-			setMiningState(MiningState.MININGVERIFIED);
-		}else {
-			setMiningState(MiningState.FAILEDVERIFY);
-		}	
-		return result;
-	}
-	
-	private MiningState getOtherMinedBlockVerifyResult() {
-		if(isVerify()) {
-			setMiningState(MiningState.OTHERMININGVERIFIED);
-		}else {
-			setMiningState(MiningState.FAILEDVERIFY);
-		}	
-		return result;
-	}
-	
-	private boolean isVerify() {
-		waitVerifyResult();
-		return blockVerify.isTmpBlockValid();
-	}
-	
-	private void waitVerifyResult() {
+	public void waitVerifying() {
 		while(blockVerify.isVerifying()) {
 			try {
 				System.out.println("검증 결과 대기");
@@ -51,10 +26,5 @@ public class MiningVerify {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	private void setMiningState(MiningState miningState) {
-		result = miningState;
-		result.setBlock(blockVerify.getTmpBlock());
 	}
 }

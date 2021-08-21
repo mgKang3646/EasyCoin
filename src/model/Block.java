@@ -10,6 +10,7 @@ public class Block {
 	private String timestamp;
 	private	String previousBlockHash;
 	private String hash;
+	private boolean isValid;
 	
 	public int getNum() {
 		return num;
@@ -41,20 +42,17 @@ public class Block {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
+	public boolean isValid() {
+		return isValid;
+	}
 	public void generateHash() {
 		hash = DigestUtils.sha256Hex(nonce + timestamp + previousBlockHash);
 	}
-	
-	public void setGenesisBlock() {
-		setPreviousBlockHash("0000000000000000000000000000000000000000000000000000000000000000");
-		setNonce(0);
-		setTimestamp("00000000");
-		setNum(0);
-		generateHash();
+	public void verifyBlock(String inputHash) {
+		if(inputHash.equals(getHash())) isValid = true;
+		else isValid = false;
 	}
-	
-	public void setTmpBlock(JsonObject jsonObject, String previousHash) {
-		
-	}
-
 }

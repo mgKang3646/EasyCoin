@@ -1,51 +1,55 @@
 package model;
 
-import factory.JsonFactory;
-import json.JsonSend;
-
 public class Mining {
 	
-	public String hashDifficulty = "0000";
+	public String hashDifficulty = "00000";
 	
 	private Peer peer;
-	private MiningState miningState;
-	private BlockVerify blockVerify;
 	private BlockChain blockchain;
 	private BlockMaker blockMaker;
 	private Block minedBlock;
 	private boolean miningFlag;
+	private boolean isMined;
 	private int nonce;
 	
 	public Mining(Peer peer) {
 		this.peer = peer;
 		this.blockchain = peer.getBlockchain();
-		this.blockVerify = blockchain.getBlockVerify();
 		this.blockMaker = new BlockMaker();
+		
+	}
+	
+	public Block getMinedBlock() {
+		return minedBlock;
+	}
+	
+	public boolean isMined() {
+		return isMined;
+	}
+	
+	public void setIsMined(boolean value) {
+		isMined = value;
 	}
 	
 	public void setMiningFlag(boolean value) {
-		this.miningFlag = value;
-	}
-	public boolean istmpBlockExisted() {
-		return blockVerify.isTmpBlockExisted(); 
+		miningFlag = value;
 	}
 	
-	public MiningState mineBlock() {
-		while(miningFlag) {
-			setMinedBlock();
-			printHashString();
-			if(isBlockHash()) {
-				miningState = MiningState.MININGSUCCESS;
-				miningState.setBlock(minedBlock);
-				return miningState;
+	public void startMining() {
+		Thread miningThread = new Thread() {
+			public void run() {
+				while(miningFlag) {
+					setMinedBlock();
+					printHashString();
+					if(isBlockHash()) {
+						setIsMined(true);
+						Thread.yield();
+						break;
+					}
+				}
 			}
-			if(istmpBlockExisted()) {
-				miningState = MiningState.OTHERMININGSUCCESS;
-				return miningState;
-			}
-		}
-		miningState = MiningState.HALT;
-		return miningState;
+		};
+		miningThread.start();
 	}
 	
 	private void setMinedBlock(){

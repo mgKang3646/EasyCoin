@@ -48,9 +48,6 @@ public class AccessingController implements Controller {
 	private SocketThread socketThread;
 	private double progress;
 
-	
-
-	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		createObjects();

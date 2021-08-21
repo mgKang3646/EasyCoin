@@ -28,6 +28,7 @@ public class PopupController implements Controller {
 	public void setObject(Object object) {
 		msg = (String)object;
 	}
+	
 	@Override
 	public void execute()  {
 		setLabelText();
