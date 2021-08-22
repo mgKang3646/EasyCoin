@@ -7,7 +7,7 @@ import factory.NewPageFactory;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-
+// 검증시 다른 Peer Button 불기능 + Upgrade 기능 DB 블록저장 + 채굴 후 다시 채굴할 때 버튼을 두 번 클릭해야 함
 public class Main extends Application {
 	
 	@Override

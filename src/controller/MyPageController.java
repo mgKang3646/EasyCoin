@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.Peer;
+import newpage.FxmlObjects;
 
 public class MyPageController implements Controller  {
 	
@@ -24,6 +25,7 @@ public class MyPageController implements Controller  {
 	private Peer peer;
 	private String childPage;
 	private NewPageFactory newPageFactory;
+	private FxmlObjects miningFxmlObjects;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -37,13 +39,16 @@ public class MyPageController implements Controller  {
 	public void setPeer(Peer peer) {
 		this.peer = peer;
 	}
-	
+	@Override
+	public void setObject(Object object) {
+		this.miningFxmlObjects = (FxmlObjects)object;
+	}
 	@Override
 	public void execute() {
 		newPageFactory.setStage(stage);
 		setUserName();
+		setMiningButtonAction();
 		setButtonAction(blockchainButton,"blockchain");
-		setButtonAction(miningButton,"mining");
 		setButtonAction(wireButton,"wire");
 		setButtonAction(stateConnectionButton,"stateConnection");
 	}
@@ -61,10 +66,18 @@ public class MyPageController implements Controller  {
 			goIndexPage();
 		});
 	}
+	
+	private void setMiningButtonAction() {
+		miningButton.setOnAction(ActionEvent->{
+			newPageFactory.moveIndexPageForMining(peer, miningFxmlObjects);
+		});
+	}
+	
+	private void createMiningFXML() {
+		
+	}
 
 	
-	@Override
-	public void setObject(Object object) {}
 	
 	
 }

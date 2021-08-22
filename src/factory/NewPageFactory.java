@@ -4,6 +4,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.MiningState;
 import model.Peer;
+import newpage.FxmlObjects;
 import newpage.NewContent;
 import newpage.NewPage;
 import newpage.NewScene;
@@ -57,9 +58,9 @@ public class NewPageFactory {
 		newPage.makePage("/view/login.fxml");
 	}
 	
-	public void moveMyPage(Peer peer) {
+	public void moveMyPage(Peer peer, FxmlObjects miningFxmlObjects) {
 		newPage = getNewScene(peer);
-		newPage.makePage("/view/mypage.fxml");
+		newPage.makePage("/view/mypage.fxml",miningFxmlObjects);
 	}
 	
 	public void moveIndexPage(Peer peer,String childPage) {
@@ -67,9 +68,14 @@ public class NewPageFactory {
 		newPage.makePage("/view/index.fxml",childPage);
 	}
 	
-	public void addMiningPage(HBox content, Peer peer) {
+	public void moveIndexPageForMining(Peer peer,FxmlObjects miningFxmlObjects) {
+		newPage = getNewScene(peer);
+		newPage.makePage("/view/index.fxml",miningFxmlObjects);
+	}
+	
+	public void addMiningPage(HBox content, Peer peer,FxmlObjects miningFxmlObjects) {
 		newPage = getNewContent(content,peer);
-		newPage.makePage("/view/mining.fxml");
+		newPage.makePage("/view/mining.fxml", miningFxmlObjects);
 	}
 	
 	public void addBlockChainPage(HBox content, Peer peer) {

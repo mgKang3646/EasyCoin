@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import factory.NewPageFactory;
-import factory.UtilFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -14,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.Peer;
+import newpage.FxmlObjects;
 
 public class IndexController implements Controller  {
 	
@@ -33,6 +33,7 @@ public class IndexController implements Controller  {
 	private String childPage;
 	private NewPageFactory newPageFactory;
 	private Image upgradeButtonImage;
+	private FxmlObjects miningFxmlObjects;
 
 	
 	@Override
@@ -49,7 +50,13 @@ public class IndexController implements Controller  {
 	}
 	@Override
 	public void setObject(Object object) {
-		childPage = (String)object;
+		if( object instanceof String) {
+			childPage = (String)object;
+		}else if( object instanceof FxmlObjects) {
+			childPage = "mining";
+			miningFxmlObjects = (FxmlObjects)object;
+		}
+		
 	}
 
 	@Override
@@ -90,7 +97,7 @@ public class IndexController implements Controller  {
 	}
 	
 	private void miningHandler() {
-		newPageFactory.addMiningPage(content, peer);
+		newPageFactory.addMiningPage(content, peer, miningFxmlObjects);
 	}
 	
 	private void blockchainHandler()  {

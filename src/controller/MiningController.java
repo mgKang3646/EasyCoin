@@ -3,7 +3,6 @@ package controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import factory.JsonFactory;
 import factory.NewPageFactory;
 import factory.UtilFactory;
 import javafx.application.Platform;
@@ -12,13 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import json.JsonSend;
-import model.BlockChain;
-import model.Mining;
 import model.MiningCenter;
-import model.MiningState;
-import model.MiningVerify;
 import model.Peer;
+import newpage.FxmlObjects;
 import util.CircleRotate;
 
 
@@ -43,6 +38,11 @@ public class MiningController implements Controller {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		newPageFactory = new NewPageFactory();
 		utilFactory = new UtilFactory();
+		miningCenter = new MiningCenter();
+		cr1 = utilFactory.getCircleRotate(c1,true,270,10);
+		cr2 = utilFactory.getCircleRotate(c2,true,180, 5);
+		cr2.setCircleImage("/image/rotateCoin.png");
+		setButtonAction();
 	}
 	@Override
 	public void setStage(Stage stage) {
@@ -56,11 +56,6 @@ public class MiningController implements Controller {
 	@Override
 	public void execute(){ //추상화 수준이 안맞음
 		newPageFactory.setStage(stage);
-		miningCenter = new MiningCenter(peer);
-		cr1 = utilFactory.getCircleRotate(c1,true,270,10);
-		cr2 = utilFactory.getCircleRotate(c2,true,180, 5);
-		cr2.setCircleImage("/image/rotateCoin.png");
-		setButtonAction();
 	}
 	
 	private void setButtonAction() {
@@ -76,6 +71,8 @@ public class MiningController implements Controller {
 	
 	private void startMining() {
 		setIsMining(true);
+		miningCenter.setPeer(peer);
+		miningCenter.initializeObjects();
 		miningCenter.setMiningController(this);
 		miningCenter.start();
 	}
@@ -97,13 +94,6 @@ public class MiningController implements Controller {
 		});
 	}
 	
-	public void verifyUI() {
-		Platform.runLater(()->{
-			miningButton.setText("검증 중...");
-			miningButton.setDisable(true);
-		});
-	}
-	
 	public void stopUI() {
 		Platform.runLater(()->{
 			miningButton.setText("채굴 시작");
@@ -112,7 +102,21 @@ public class MiningController implements Controller {
 			cr2.stop();
 		});
 	}
-
+	
+	public void verifyUI() {
+		Platform.runLater(()->{
+			miningButton.setText("검증 중...");
+			miningButton.setDisable(true);
+		});
+	}
+	
+	public void basicUI() {
+		Platform.runLater(()->{
+			miningButton.setText("채굴 시작");
+			miningButton.setDisable(false);
+		});
+	}
+	
 	
 	@Override
 	public void setObject(Object object) {}

@@ -42,12 +42,16 @@ public class NewContent implements NewPage {
 	private void makePageProcess(String url) {
 		if(isBlockChainUrl(url)) {
 			makeBlockChainPage("/view/block.fxml");
-		}else {
-			makeGeneralPage(url);
+		}
+		else if(url.equals("/view/mining.fxml")) {
+			makeMiningPage(url);
+		}
+		else {
+			makeOtherPage(url);
 		}
 	}
 	
-	private void makeGeneralPage(String url) {
+	private void makeOtherPage(String url) {
 		clearContent();
 		setFxmlObjects(url);
 		addIntoContent();
@@ -58,8 +62,20 @@ public class NewContent implements NewPage {
 		addBlockChainIntoContent(url);
 	}
 	
+	private void makeMiningPage(String url) {
+		clearContent();
+		setMiningFxmlObjects();
+		addIntoContent();
+	}
+	
 	private void setFxmlObjects(String url) {
 		setFxmlFactory(url);
+		setParent();
+		setController();
+	}
+	
+	private void setMiningFxmlObjects() {
+		fxmlObjects = (FxmlObjects)object;
 		setParent();
 		setController();
 	}
