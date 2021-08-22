@@ -1,10 +1,11 @@
 package factory;
 
+import controller.MiningController;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.MiningState;
 import model.Peer;
-import newpage.FxmlObjects;
+import newpage.FxmlLoader;
 import newpage.NewContent;
 import newpage.NewPage;
 import newpage.NewScene;
@@ -15,11 +16,16 @@ public class NewPageFactory {
 	
 	private NewPage newPage;
 	private static Stage stage;
+	private static MiningController miningController;
 	
 	public static Stage getStage() {
 		return stage;
 	}
 	
+	public static FxmlLoader getMiningFxmlObjects() {
+		return miningFxmlObjects;
+	}
+
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
@@ -58,7 +64,8 @@ public class NewPageFactory {
 		newPage.makePage("/view/login.fxml");
 	}
 	
-	public void moveMyPage(Peer peer, FxmlObjects miningFxmlObjects) {
+	public void moveMyPage(Peer peer, FxmlLoader miningFxmlObjects) {
+		this.miningFxmlObjects = miningFxmlObjects;
 		newPage = getNewScene(peer);
 		newPage.makePage("/view/mypage.fxml",miningFxmlObjects);
 	}
@@ -68,12 +75,12 @@ public class NewPageFactory {
 		newPage.makePage("/view/index.fxml",childPage);
 	}
 	
-	public void moveIndexPageForMining(Peer peer,FxmlObjects miningFxmlObjects) {
+	public void moveIndexPageForMining(Peer peer,FxmlLoader miningFxmlObjects) {
 		newPage = getNewScene(peer);
 		newPage.makePage("/view/index.fxml",miningFxmlObjects);
 	}
 	
-	public void addMiningPage(HBox content, Peer peer,FxmlObjects miningFxmlObjects) {
+	public void addMiningPage(HBox content, Peer peer,FxmlLoader miningFxmlObjects) {
 		newPage = getNewContent(content,peer);
 		newPage.makePage("/view/mining.fxml", miningFxmlObjects);
 	}

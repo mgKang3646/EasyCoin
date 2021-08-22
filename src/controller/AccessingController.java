@@ -24,7 +24,7 @@ import model.Peer;
 import model.PeerList;
 import model.ServerListener;
 import model.SocketThread;
-import newpage.FxmlObjects;
+import newpage.FxmlLoader;
 import util.SocketUtil;
 
 public class AccessingController implements Controller {
@@ -227,7 +227,7 @@ public class AccessingController implements Controller {
 	
 	private void moveToMypage() {
 		Platform.runLater(()->{
-			FxmlObjects fxmlObjects = new FxmlObjects();
+			FxmlLoader fxmlObjects = new FxmlLoader();
 			fxmlObjects.generateFxmlObjets("/view/mining.fxml");
 			newPageFactory.moveMyPage(peer,fxmlObjects);
 		});

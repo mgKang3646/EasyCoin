@@ -8,17 +8,17 @@ public class NewScene implements NewPage {
 	private Scene scene;
 	private Peer peer;
 	private Object object;
-	private FxmlObjects fxmlObjects;
+	private FxmlLoader fxmlObjects;
 	
 	public NewScene(Stage stage) {
 		this.stage = stage;
-		this.fxmlObjects = new FxmlObjects();
+		this.fxmlObjects = new FxmlLoader();
 	}
 	
 	public NewScene(Stage stage, Peer peer) {
 		this.stage = stage;
 		this.peer = peer;
-		this.fxmlObjects = new FxmlObjects();
+		this.fxmlObjects = new FxmlLoader();
 	}
 	
 	public void makePage(String url) {

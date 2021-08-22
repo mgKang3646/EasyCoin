@@ -1,5 +1,6 @@
 package model;
 
+import controller.MiningController;
 import factory.JsonFactory;
 import factory.NewPageFactory;
 import javafx.application.Platform;
@@ -17,6 +18,7 @@ public class BlockVerify {
 	private JsonSend jsonSend;
 	private int grantedNum;
 	private NewPageFactory newPageFactory;
+	private MiningController miningController;
 
 	
 	public BlockVerify(Peer peer) {
@@ -53,10 +55,13 @@ public class BlockVerify {
 	private void startPoll()  {
 		Thread thread = new Thread() {
 			public void run() {
+				miningController = (MiningController)newPageFactory.getMiningFxmlObjects().getController();
+				miningController.verifyUI();
 				sleepThread(5000);
 				setTmpBlockGranted();
 				if(isTmpBlockGranted) peer.getBlockchain().addTmpBlock();
 				setVerifying(false);
+				miningController.basicUI();
 				viewResult();
 			}
 		};

@@ -11,11 +11,8 @@ public class MiningCenter {
 	private BlockVerify blockVerify;
 	private boolean isStop;
 
-	public void setPeer(Peer peer) {
+	public void initializeObjects(Peer peer) {
 		this.peer = peer;
-	}
-	
-	public void initializeObjects() {
 		this.mining = new Mining(peer);
 		this.blockVerify = peer.getBlockchain().getBlockVerify();
 		this.miningVerify = new MiningVerify(blockVerify);

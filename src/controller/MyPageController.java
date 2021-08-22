@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.Peer;
-import newpage.FxmlObjects;
+import newpage.FxmlLoader;
 
 public class MyPageController implements Controller  {
 	
@@ -25,7 +25,7 @@ public class MyPageController implements Controller  {
 	private Peer peer;
 	private String childPage;
 	private NewPageFactory newPageFactory;
-	private FxmlObjects miningFxmlObjects;
+	private FxmlLoader miningFxmlObjects;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -41,7 +41,7 @@ public class MyPageController implements Controller  {
 	}
 	@Override
 	public void setObject(Object object) {
-		this.miningFxmlObjects = (FxmlObjects)object;
+		this.miningFxmlObjects = (FxmlLoader)object;
 	}
 	@Override
 	public void execute() {
@@ -72,12 +72,4 @@ public class MyPageController implements Controller  {
 			newPageFactory.moveIndexPageForMining(peer, miningFxmlObjects);
 		});
 	}
-	
-	private void createMiningFXML() {
-		
-	}
-
-	
-	
-	
 }

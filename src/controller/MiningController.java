@@ -13,7 +13,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import model.MiningCenter;
 import model.Peer;
-import newpage.FxmlObjects;
+import newpage.FxmlLoader;
 import util.CircleRotate;
 
 
@@ -71,8 +71,7 @@ public class MiningController implements Controller {
 	
 	private void startMining() {
 		setIsMining(true);
-		miningCenter.setPeer(peer);
-		miningCenter.initializeObjects();
+		miningCenter.initializeObjects(peer);
 		miningCenter.setMiningController(this);
 		miningCenter.start();
 	}

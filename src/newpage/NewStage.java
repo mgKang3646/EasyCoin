@@ -10,19 +10,19 @@ public class NewStage implements NewPage{
 	private Scene scene;
 	private Peer peer;
 	private Object object;
-	private FxmlObjects fxmlObjects;
+	private FxmlLoader fxmlObjects;
 	
 	public NewStage(Stage parentStage) {
 		stage = new Stage();
 		this.parentStage = parentStage;
-		fxmlObjects = new FxmlObjects();
+		fxmlObjects = new FxmlLoader();
 	}
 	
 	public NewStage(Stage parentStage, Peer peer) {
 		stage = new Stage();
 		this.parentStage = parentStage;
 		this.peer = peer;
-		fxmlObjects = new FxmlObjects();
+		fxmlObjects = new FxmlLoader();
 	}
 	
 	public void makePage(String url) {

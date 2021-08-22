@@ -13,7 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.Peer;
-import newpage.FxmlObjects;
+import newpage.FxmlLoader;
 
 public class IndexController implements Controller  {
 	
@@ -33,7 +33,7 @@ public class IndexController implements Controller  {
 	private String childPage;
 	private NewPageFactory newPageFactory;
 	private Image upgradeButtonImage;
-	private FxmlObjects miningFxmlObjects;
+	private FxmlLoader miningFxmlObjects;
 
 	
 	@Override
@@ -52,9 +52,9 @@ public class IndexController implements Controller  {
 	public void setObject(Object object) {
 		if( object instanceof String) {
 			childPage = (String)object;
-		}else if( object instanceof FxmlObjects) {
+		}else if( object instanceof FxmlLoader) {
 			childPage = "mining";
-			miningFxmlObjects = (FxmlObjects)object;
+			miningFxmlObjects = (FxmlLoader)object;
 		}
 		
 	}

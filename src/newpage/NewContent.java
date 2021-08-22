@@ -9,7 +9,7 @@ import model.Peer;
 
 public class NewContent implements NewPage {
 	private Stage stage;
-	private FxmlObjects fxmlObjects;
+	private FxmlLoader fxmlObjects;
 	private HBox content;
 	private Peer peer;
 	private Object object;
@@ -20,7 +20,7 @@ public class NewContent implements NewPage {
 	public NewContent(Stage stage, HBox content) {
 		this.stage = stage;
 		this.content = content;
-		fxmlObjects = new FxmlObjects();
+		fxmlObjects = new FxmlLoader();
 	}
 	
 	public NewContent(Stage stage, HBox content,Peer peer) {
@@ -28,7 +28,7 @@ public class NewContent implements NewPage {
 		this.peer = peer;
 		this.content = content;
 		this.blocks = peer.getBlockchain().getBlocks();
-		this.fxmlObjects = new FxmlObjects();
+		this.fxmlObjects = new FxmlLoader();
 	}
 	
 	public void makePage(String url) {
@@ -44,7 +44,7 @@ public class NewContent implements NewPage {
 			makeBlockChainPage("/view/block.fxml");
 		}
 		else if(url.equals("/view/mining.fxml")) {
-			makeMiningPage(url);
+			makeMiningPage();
 		}
 		else {
 			makeOtherPage(url);
@@ -62,7 +62,7 @@ public class NewContent implements NewPage {
 		addBlockChainIntoContent(url);
 	}
 	
-	private void makeMiningPage(String url) {
+	private void makeMiningPage() {
 		clearContent();
 		setMiningFxmlObjects();
 		addIntoContent();
@@ -75,7 +75,7 @@ public class NewContent implements NewPage {
 	}
 	
 	private void setMiningFxmlObjects() {
-		fxmlObjects = (FxmlObjects)object;
+		fxmlObjects = (FxmlLoader)object;
 		setParent();
 		setController();
 	}
