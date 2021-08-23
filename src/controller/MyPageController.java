@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.Peer;
-import newpage.FxmlLoader;
+import newview.FxmlLoader;
 
 public class MyPageController implements Controller  {
 	

@@ -3,25 +3,25 @@ package model;
 import java.util.ArrayList;
 
 public class PeerList {
-	private ArrayList<Peer> peerList;
+	private ArrayList<OtherPeer> peerList;
 	
 	public PeerList() {
-		peerList = new ArrayList<Peer>();
+		peerList = new ArrayList<OtherPeer>();
 	}
 	
-	public ArrayList<Peer> getPeerList(){
+	public ArrayList<OtherPeer> getPeerList(){
 		return peerList;
 	}
 	
-	public void addPeer(Peer peer) {
-		peerList.add(peer);
+	public void add(OtherPeer otherPeer) {
+		peerList.add(otherPeer);
 	}
 	
 	public void addNewPeer(String localhost, String userName) {
-		Peer newPeer = new Peer();
+		OtherPeer newPeer = new OtherPeer();
 		newPeer.setLocalhost(localhost);
 		newPeer.setUserName(userName);
-		addPeer(newPeer);
+		add(newPeer);
 	}
 	
 	public int getSize() {

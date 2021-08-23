@@ -1,11 +1,12 @@
-package newpage;
+package newview;
+
+import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;
 
-public class FxmlLoader extends URL{
+public class FxmlLoader extends ViewURL{
 	
 	private static FXMLLoader AccessingLoader;
-	private static FXMLLoader BlockLoader;
 	private static FXMLLoader IndexLoader;
 	private static FXMLLoader JoinLoader;
 	private static FXMLLoader LoginLoader;
@@ -16,7 +17,6 @@ public class FxmlLoader extends URL{
 	
 	public void generateFXMLLoader() {
 		AccessingLoader =  getLoader(accessingURL);
-		BlockLoader = getLoader(blockURL);
 		IndexLoader = getLoader(indexURL);
 		JoinLoader = getLoader(joinURL);
 		LoginLoader = getLoader(loginURL);
@@ -29,7 +29,6 @@ public class FxmlLoader extends URL{
 	public static FXMLLoader getFXMLLoader(String url) {
 		switch(url){
 			case accessingURL : return AccessingLoader;
-			case blockURL : return BlockLoader;
 			case indexURL : return IndexLoader;
 			case joinURL : return JoinLoader;
 			case loginURL : return LoginLoader;
@@ -42,7 +41,25 @@ public class FxmlLoader extends URL{
 	}
 	
 	private FXMLLoader getLoader(String url) {
-		return new FXMLLoader(getClass().getResource(url));
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(url));
+			loader.load();
+			return loader;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public FXMLLoader getBlockLoader() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(blockURL));
+			loader.load();
+			return loader;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

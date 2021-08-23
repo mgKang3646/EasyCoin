@@ -10,8 +10,7 @@ import model.Peer;
 
 public class Dao {
 	
-	// 관심사 : UserName 중복 체크
-	public int checkDuplicateUserName(String userName) {
+	public boolean isUserNameExisted(String userName) {
 		try {
 			// 관심사 : 커넥션 객체 생성
 			ConnectionMaker connectionMaker = new ConnectionMaker();
@@ -26,21 +25,18 @@ public class Dao {
 			// 관심사 : userName 중복 체크
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.next()) {
-				return 0; // 중복된 userName이 존재
+				return true; // 중복된 userName이 존재
 			}else {
-				return 1; // 중복이 안 됨.
+				return false; // 중복이 안 됨.
 			}
 		} catch (SQLException e) {
 			System.out.println("UserName 중복 체크 SQL문 실행 중 오류 발생");
-			return -1; // SQL문 실행 중 문제 발생
+			return false; // SQL문 실행 중 문제 발생
 		}	
 	}
 	
 	// 관심사 : 회원가입 정보 DB 저장
-	public int join(String localhost, String userName){
-		
-		int result=0;
-		
+	public boolean join(String localhost, String userName){
 		try {
 			ConnectionMaker connectionMaker = new ConnectionMaker();
 			Connection conn = connectionMaker.getConnection();
@@ -51,19 +47,18 @@ public class Dao {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, localhost);
 			pstmt.setString(2, userName);
+			if(pstmt.executeUpdate() > 0 ) return true;
+			else return false;
 			
-			result = pstmt.executeUpdate();
-			
-			return result;
 		} catch (SQLException e) {
 			System.out.println("회원가입 정보 DB 저장 중 SQL 실행 오류 발생");
-			return result;
+			return false;
 		}
 	}
 	
 	// 관심사 : Peer 데이터 갖고 오기
-	public Peer getPeer(String userName) {
-		Peer peer = new Peer();
+	public PeerDto getPeer(String userName) {
+		PeerDto dto = new PeerDto();
 		
 		try {
 			ConnectionMaker connectionMaker = new ConnectionMaker();
@@ -81,11 +76,10 @@ public class Dao {
 				String username = rs.getString("username");
 				String localhost = rs.getString("localhost");
 				
-				peer.setUserName(username);
-				peer.setLocalhost(localhost);
+				dto.setUserName(username);
+				dto.setLocalhost(localhost);
 			}
-			
-			return peer;
+			return dto;
 			
 		} catch (SQLException e) {
 			System.out.println("로그인 시, Peer 객체 정보 추출 중 SQL 실행 오류 발생");

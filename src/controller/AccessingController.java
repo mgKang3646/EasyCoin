@@ -24,7 +24,7 @@ import model.Peer;
 import model.PeerList;
 import model.ServerListener;
 import model.SocketThread;
-import newpage.FxmlLoader;
+import newview.FxmlLoader;
 import util.SocketUtil;
 
 public class AccessingController implements Controller {

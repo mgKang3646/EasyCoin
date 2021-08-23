@@ -4,14 +4,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import model.Block;
-import model.Peer;
+import newview.NewView;
 
-public class BlockController implements Controller {
+public class BlockController implements Initializable {
 	@FXML private TextField nonceText;
 	@FXML private TextField previousHashText;
 	@FXML private TextField hashText;
@@ -19,22 +19,13 @@ public class BlockController implements Controller {
 	@FXML private TextField timestampText;
 	@FXML private Label blockNumLabel;
 	
-	private Peer peer;
 	private Block block;
-	private Stage stage;
 
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {}
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		this.block = (Block)NewView.getControllerObject();
+		execute();
+	}
 	
-	@Override
-	public void setPeer(Peer peer) {
-		this.peer = peer;
-	}
-	@Override
-	public void setObject(Object object) {
-		this.block = (Block)object;
-	}
-	@Override
 	public void execute()  {
 		blockNumLabel.setText("Block #"+block.getNum());
 		nonceText.setText(block.getNonce()+"");
@@ -48,8 +39,4 @@ public class BlockController implements Controller {
 		hashText.setEditable(false);
 		timestampText.setEditable(false);
 	}
-
-	@Override
-	public void setStage(Stage stage) {}
-
 }

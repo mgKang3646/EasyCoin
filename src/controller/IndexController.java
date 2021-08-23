@@ -2,20 +2,18 @@ package controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import factory.NewPageFactory;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 import model.Peer;
-import newpage.FxmlLoader;
+import newview.NewView;
+import newview.ViewURL;
 
-public class IndexController implements Controller  {
+public class IndexController implements Initializable  {
 	
 	@FXML private Button miningButton;
 	@FXML private HBox content;
@@ -28,51 +26,23 @@ public class IndexController implements Controller  {
 	@FXML private ImageView upgradeButtonImageView;
 	@FXML private AnchorPane EasyCoin;	
 	
-	private Stage stage;
-	private Peer peer;
-	private String childPage;
-	private NewPageFactory newPageFactory;
-	private Image upgradeButtonImage;
-	private FxmlLoader miningFxmlObjects;
-
+	private NewView newView;
+	private String contentPage;
 	
-	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		newPageFactory = new NewPageFactory();
-	}	
-	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-	@Override
-	public void setPeer(Peer peer) {
-		this.peer = peer;
-	}
-	@Override
-	public void setObject(Object object) {
-		if( object instanceof String) {
-			childPage = (String)object;
-		}else if( object instanceof FxmlLoader) {
-			childPage = "mining";
-			miningFxmlObjects = (FxmlLoader)object;
-		}
-		
-	}
-
-	@Override
-	public void execute() {
-		newPageFactory.setStage(stage);
-		setUserName();
+		newView = new NewView();
+		contentPage = (String)NewView.getControllerObject();
+		setIdText();
+		setButton();
 		switchContent();
-		setButtonAction(blockchainButton,"blockchain");
-		setButtonAction(miningButton,"mining");
-		setButtonAction(stateConnectionButton,"stateConnection");
-		//setButtonAction(wireButton,"wire");
-		//업그레이드 버튼 추가되어야 함
+	}	
+	
+	private void setIdText() {
+		idText.setText(Peer.myPeer.getUserName());
 	}
 
 	private void switchContent() {
-		switch(childPage) {
+		switch(contentPage) {
 			case "blockchain" : blockchainHandler(); break;
 			case "mining" : miningHandler(); break;
 			case "stateConnection" : stateConnectionHandler(); break;
@@ -80,28 +50,27 @@ public class IndexController implements Controller  {
 			default : break;
 		}
 	}
-
-	public void setChildPage(String childPage) {
-		this.childPage = childPage;
+	
+	private void setButton() {
+		setButtonAction(blockchainButton,"blockchain");
+		setButtonAction(miningButton,"mining");
+		setButtonAction(stateConnectionButton,"stateConnection");
+		//setButtonAction(wireButton,"wire");
 	}
 
 	private void setButtonAction(Button button, String name) {
 		button.setOnAction(ActionEvent->{
-				childPage = name;
-				switchContent();
+			contentPage = name;
+			switchContent();
 		});
 	}
 	
-	private void setUserName() {
-		idText.setText(peer.getUserName());
-	}
-	
 	private void miningHandler() {
-		newPageFactory.addMiningPage(content, peer, miningFxmlObjects);
+		newView.addNewContent(ViewURL.miningURL,content);
 	}
 	
 	private void blockchainHandler()  {
-		newPageFactory.addBlockChainPage(content, peer);
+		newView.addNewContent("BlockChain", content);
 	}
 	
 	private void stateConnectionHandler()  {

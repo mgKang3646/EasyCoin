@@ -23,7 +23,6 @@ public class KeyFromPem {
 	}
 
 	public PrivateKey readPrivateKeyFromPemFile(String privateKeyName) throws IOException, NoSuchAlgorithmException  {
-		
 		try { 
 			String tmpPem = makeStringFromPem(privateKeyName); //  Pem파일 String 객체로 만들기
 			String userName = findUserName(tmpPem); // userName 확보하기

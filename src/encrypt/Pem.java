@@ -17,7 +17,7 @@ public class Pem {
 	private File file;
 	private String userName;
 	
-	public Pem(String userName) {
+	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 	

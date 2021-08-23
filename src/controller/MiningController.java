@@ -13,7 +13,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import model.MiningCenter;
 import model.Peer;
-import newpage.FxmlLoader;
+import newview.FxmlLoader;
 import util.CircleRotate;
 
 
@@ -44,14 +44,7 @@ public class MiningController implements Controller {
 		cr2.setCircleImage("/image/rotateCoin.png");
 		setButtonAction();
 	}
-	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-	@Override
-	public void setPeer(Peer peer) {
-		this.peer = peer;
-	}
+	
 	
 	@Override
 	public void execute(){ //추상화 수준이 안맞음
@@ -115,10 +108,4 @@ public class MiningController implements Controller {
 			miningButton.setDisable(false);
 		});
 	}
-	
-	
-	@Override
-	public void setObject(Object object) {}
-	
-	
 }

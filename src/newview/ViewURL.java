@@ -1,6 +1,6 @@
-package newpage;
+package newview;
 
-public class URL {
+public class ViewURL {
 	public static final String accessingURL = "/view/accessing.fxml";
 	public static final String blockURL = "/view/block.fxml";
 	public static final String indexURL = "/view/index.fxml";

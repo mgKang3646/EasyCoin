@@ -21,7 +21,7 @@ public class BlockVerify {
 	private MiningController miningController;
 
 	
-	public BlockVerify(Peer peer) {
+	public BlockVerify() {
 		this.peer = peer;
 		this.jsonFactory = new JsonFactory();
 		this.newPageFactory = new NewPageFactory();

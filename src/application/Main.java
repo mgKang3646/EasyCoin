@@ -3,9 +3,11 @@ package application;
 import java.io.IOException;
 import java.security.Security;
 
-import factory.NewPageFactory;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import newview.FxmlStage;
+import newview.NewView;
+import newview.ViewURL;
 //스테이지 Controller 말고 미리 저장시켜 놓기
 // 검증시 다른 Peer Button 불기능 ( 싱글톤 ??? )
 //+ Upgrade 기능 DB 블록저장 + 채굴 후 다시 채굴할 때 버튼을 두 번 클릭해야 함
@@ -13,9 +15,9 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		NewPageFactory newPageFactory = new NewPageFactory();
-		newPageFactory.setStage(primaryStage);
-		newPageFactory.createStartPage();
+		FxmlStage.setPrimaryStage(primaryStage);
+		NewView newView = new NewView();
+		newView.openView(ViewURL.loginURL);
 	}
 	
 	public static void main(String[] args) {
