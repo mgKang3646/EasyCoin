@@ -37,7 +37,6 @@ public class MiningResultController implements Controller {
 		switch(miningResult) {
 			case MININGGRANTED : doSuccessMining(); break;
 			case OTHERMININGGRANTED : doSuccessVerify(); break;
-			case FAILEDGRANTED : doFailVerify(); break;
 			default : break;
 		}
 	}
@@ -51,8 +50,5 @@ public class MiningResultController implements Controller {
 		verifiedLabel.setText("블록 검증 성공");
 		newView.addNewContent(content, ViewURL.blockURL, BlockChain.blockList.getLastBlock());
 	}
-	private void doFailVerify(){
-		String msg = "블럭검증에 실패했습니다";
-		newView.getNewWindow(ViewURL.popupURL,msg);
-	}
+	
 }

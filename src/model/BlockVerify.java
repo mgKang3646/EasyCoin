@@ -90,7 +90,8 @@ public class BlockVerify {
 				if(isMinedBlock) newView.getNewWindow(ViewURL.miningResultURL,MiningState.MININGGRANTED);
 				else newView.getNewWindow(ViewURL.miningResultURL,MiningState.OTHERMININGGRANTED);
 			}else {
-				 newView.getNewWindow(ViewURL.miningResultURL,MiningState.FAILEDGRANTED);
+				String msg = "블럭검증에 실패했습니다";
+				newView.getNewWindow(ViewURL.popupURL,msg);
 			}
 			initialize(); // 관심사 분리 요망
 		});
