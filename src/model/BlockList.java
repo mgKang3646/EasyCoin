@@ -8,6 +8,8 @@ public class BlockList {
 	
 	public BlockList() {
 		blocks = new ArrayList<Block>();
+		BlockMaker blockMaker = new BlockMaker();
+		addBlock(blockMaker.makeGenesisBlock());
 	}
 	
 	public ArrayList<Block> getBlocks() { 

@@ -44,7 +44,7 @@ public class FxmlStage {
 		newStage.setY(getHeight());
 		newStage.setTitle("EasyCoin");
 		newStage.setResizable(false);
-		newStage.setScene(fxmlScene.getFXMLScene(url));
+		newStage.setScene(FxmlScene.getFXMLScene(url));
 	}
 	
 	private double getWidth() {

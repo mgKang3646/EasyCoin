@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 
 public class FxmlLoader extends ViewURL{
 	
-	private static FXMLLoader AccessingLoader;
+	private static FXMLLoader NetWorkingLoader;
 	private static FXMLLoader IndexLoader;
 	private static FXMLLoader JoinLoader;
 	private static FXMLLoader LoginLoader;
@@ -14,9 +14,10 @@ public class FxmlLoader extends ViewURL{
 	private static FXMLLoader MiningResultLoader;
 	private static FXMLLoader MypageLoader;
 	private static FXMLLoader PopupLoader;
+	private static FXMLLoader BlockLoader;
+	private static FXMLLoader ConnectionTableLoader;
 	
 	public void generateFXMLLoader() {
-		AccessingLoader =  getLoader(accessingURL);
 		IndexLoader = getLoader(indexURL);
 		JoinLoader = getLoader(joinURL);
 		LoginLoader = getLoader(loginURL);
@@ -24,11 +25,15 @@ public class FxmlLoader extends ViewURL{
 		MiningResultLoader = getLoader(miningResultURL);
 		MypageLoader = getLoader(mypageURL);
 		PopupLoader = getLoader(popupURL);
+		BlockLoader = getLoader(blockURL);
+		NetWorkingLoader =  getLoader(networkingURL);
+		ConnectionTableLoader = getLoader(connectionTableURL);
+		
 	}
 	
 	public static FXMLLoader getFXMLLoader(String url) {
 		switch(url){
-			case accessingURL : return AccessingLoader;
+			case networkingURL : return NetWorkingLoader;
 			case indexURL : return IndexLoader;
 			case joinURL : return JoinLoader;
 			case loginURL : return LoginLoader;
@@ -36,6 +41,8 @@ public class FxmlLoader extends ViewURL{
 			case miningResultURL : return MiningResultLoader;
 			case mypageURL : return MypageLoader;
 			case popupURL : return PopupLoader;
+			case blockURL : return BlockLoader;
+			case connectionTableURL : return ConnectionTableLoader;
 			default : return null;
 		}
 	}

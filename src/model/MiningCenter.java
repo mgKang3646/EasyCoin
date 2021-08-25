@@ -1,31 +1,26 @@
 package model;
 
 import controller.MiningController;
+import newview.FxmlLoader;
+import newview.ViewURL;
 
 public class MiningCenter {
 
-	private Peer peer;
 	private Mining mining;
 	private MiningVerify miningVerify;
 	private MiningController miningController;
 	private BlockVerify blockVerify;
 	private boolean isStop;
-
-	public void initializeObjects(Peer peer) {
-		this.peer = peer;
-		this.mining = new Mining(peer);
-		this.blockVerify = peer.getBlockchain().getBlockVerify();
-		this.miningVerify = new MiningVerify(blockVerify);
-	}
 	
-	public void setMiningController(MiningController miningController) {
-		this.miningController = miningController;
+	public MiningCenter() {
+		mining = new Mining();
+		miningVerify = new MiningVerify();
 	}
 	
 	public void stop() {
 		mining.setMiningFlag(false);
-		setIsStop(true);
 		miningController.stopUI();
+		setIsStop(true);
 		Thread.yield();
 	}
 	
@@ -41,6 +36,8 @@ public class MiningCenter {
 	}
 	
 	private void startRoutine() {
+		blockVerify = BlockChain.getBlockverify();
+		miningController = FxmlLoader.getFXMLLoader(ViewURL.miningURL).getController();
 		miningController.startUI();
 		mining.startMining();
 		initialize();

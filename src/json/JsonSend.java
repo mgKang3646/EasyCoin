@@ -1,21 +1,18 @@
 package json;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-
 import model.Block;
+import model.PeerThread;
 import model.ServerListener;
-import model.SocketThread;
 
 public class JsonSend {
 	
 	private JsonMessage jsonMessage;
-	private SocketThread socketThread;
+	private PeerThread peerThread;
 	private ServerListener serverListener;
 	
-	public JsonSend(SocketThread socketThread) {
+	public JsonSend(PeerThread peerThread) {
 		this.jsonMessage = new JsonMessage();
-		this.socketThread = socketThread;
+		this.peerThread = peerThread;
 	}
 	
 	public JsonSend(ServerListener serverListener) {
@@ -25,7 +22,7 @@ public class JsonSend {
 	
 	public void sendConnectMessage(String localhost, String userName) {
 		String msg = jsonMessage.jsonConnectMessage(localhost, userName);
-		socketThread.send(msg);
+		peerThread.send(msg);
 	}
 	
 	public void sendBlockMinedMessage(Block block) {

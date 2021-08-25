@@ -2,21 +2,16 @@ package model;
 
 public class Mining {
 	
-	public String hashDifficulty = "00000";
+	public String hashDifficulty = "0000";
 	
-	private Peer peer;
-	private BlockChain blockchain;
 	private BlockMaker blockMaker;
 	private Block minedBlock;
 	private boolean miningFlag;
 	private boolean isMined;
 	private int nonce;
 	
-	public Mining(Peer peer) {
-		this.peer = peer;
-		this.blockchain = peer.getBlockchain();
-		this.blockMaker = new BlockMaker();
-		
+	public Mining() {
+		blockMaker = new BlockMaker();
 	}
 	
 	public Block getMinedBlock() {
@@ -53,7 +48,7 @@ public class Mining {
 	}
 	
 	private void setMinedBlock(){
-		this.minedBlock = blockMaker.makeMinedBlock(blockchain, ++nonce, Long.toString(System.currentTimeMillis()));
+		this.minedBlock = blockMaker.makeMinedBlock(++nonce, Long.toString(System.currentTimeMillis()));
 	}
 	
 	private void printHashString() {

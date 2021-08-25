@@ -15,7 +15,7 @@ import model.Join;
 import newview.NewView;
 import newview.ViewURL;
 
-public class JoinController implements Initializable  {
+public class JoinController implements Controller  {
 	
 	@FXML private Button joinButton;
 	@FXML private TextField userNameText;
@@ -27,9 +27,16 @@ public class JoinController implements Initializable  {
 	private NewView newView;
 	private Join join;
 	
+	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		newView = new NewView();
 		join = new Join();
+	}
+	@Override
+	public void throwObject(Object object) {}
+
+	@Override
+	public void execute() {
 		setButtonAction();
 	}
 
@@ -73,8 +80,7 @@ public class JoinController implements Initializable  {
 	private void changePage()  {
 		String msg = "회원가입이 완료되었습니다.";
 		newView.getNewScene(ViewURL.loginURL);
-		newView.setControllerObject(msg);
-		newView.getNewWindow(ViewURL.popupURL);
+		newView.getNewWindow(ViewURL.popupURL,msg);
 	}
 }	
 

@@ -2,22 +2,18 @@ package controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import factory.NewPageFactory;
 import factory.UtilFactory;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 import model.MiningCenter;
-import model.Peer;
-import newview.FxmlLoader;
 import util.CircleRotate;
 
 
-public class MiningController implements Controller {
+public class MiningController implements Controller{
 	
 	
 	@FXML private Button miningButton;
@@ -26,29 +22,26 @@ public class MiningController implements Controller {
 	@FXML private Circle c2;
 	
 	private MiningCenter miningCenter;
-	private NewPageFactory newPageFactory;
 	private UtilFactory utilFactory;
-	private Stage stage;
 	private CircleRotate cr1;
 	private CircleRotate cr2;
-	private Peer peer;
 	private boolean isMining;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		newPageFactory = new NewPageFactory();
 		utilFactory = new UtilFactory();
 		miningCenter = new MiningCenter();
+	}
+	
+	@Override
+	public void throwObject(Object object) {}
+
+	@Override
+	public void execute() {
 		cr1 = utilFactory.getCircleRotate(c1,true,270,10);
 		cr2 = utilFactory.getCircleRotate(c2,true,180, 5);
 		cr2.setCircleImage("/image/rotateCoin.png");
 		setButtonAction();
-	}
-	
-	
-	@Override
-	public void execute(){ //추상화 수준이 안맞음
-		newPageFactory.setStage(stage);
 	}
 	
 	private void setButtonAction() {
@@ -64,8 +57,6 @@ public class MiningController implements Controller {
 	
 	private void startMining() {
 		setIsMining(true);
-		miningCenter.initializeObjects(peer);
-		miningCenter.setMiningController(this);
 		miningCenter.start();
 	}
 	

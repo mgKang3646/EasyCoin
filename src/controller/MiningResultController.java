@@ -2,15 +2,15 @@ package controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import factory.NewPageFactory;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
+import model.BlockChain;
 import model.MiningState;
-import model.Peer;
+import newview.NewView;
+import newview.ViewURL;
 
 public class MiningResultController implements Controller {
 	
@@ -18,34 +18,21 @@ public class MiningResultController implements Controller {
 	@FXML private HBox content;
 	@FXML private Rectangle rec;
 	
-	private Stage stage;
-	private Peer peer;
-	private NewPageFactory newPageFactory;
+	private NewView newView;
 	private MiningState miningResult;
-	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		newPageFactory = new NewPageFactory();	
+		newView = new NewView();
 	}
 	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
+	public void throwObject(Object object) {
+		miningResult = (MiningState)object;		
 	}
-	@Override
-	public void setPeer(Peer peer) {
-		this.peer = peer;
-	}
-	@Override
-	public void setObject(Object object) {
-		miningResult = (MiningState)object;
-	}
-	
 	@Override
 	public void execute() {
-		judgeResult();
-		newPageFactory.setStage(stage);
+		judgeResult();		
 	}
-	
+
 	private void judgeResult() {
 		switch(miningResult) {
 			case MININGGRANTED : doSuccessMining(); break;
@@ -57,16 +44,15 @@ public class MiningResultController implements Controller {
 	
 	private void doSuccessMining() {
 		verifiedLabel.setText("블록 채굴 성공");
-		newPageFactory.addMiningResultPage(content, peer);
+		newView.addNewContent(content, ViewURL.blockURL, BlockChain.blockList.getLastBlock());
 	}	
 	
 	private void doSuccessVerify(){
 		verifiedLabel.setText("블록 검증 성공");
-		newPageFactory.addMiningResultPage(content, peer);
+		newView.addNewContent(content, ViewURL.blockURL, BlockChain.blockList.getLastBlock());
 	}
 	private void doFailVerify(){
-		verifiedLabel.setText("블록 검증 실패");
-		newPageFactory.addMiningResultPage(content, peer);
+		String msg = "블럭검증에 실패했습니다";
+		newView.getNewWindow(ViewURL.popupURL,msg);
 	}
-
 }

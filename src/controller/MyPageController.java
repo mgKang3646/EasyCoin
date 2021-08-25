@@ -2,14 +2,14 @@ package controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import factory.NewPageFactory;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import model.Peer;
-import newview.FxmlLoader;
+import newview.NewView;
+import newview.ViewURL;
 
 public class MyPageController implements Controller  {
 	
@@ -17,59 +17,44 @@ public class MyPageController implements Controller  {
 	@FXML private Button blockchainButton;
 	@FXML private TextField idText;
 	@FXML private Button wireButton;
-	@FXML private Button stateConnectionButton;
+	@FXML private Button connectionTableButton;
 	@FXML private ImageView mainImageView;
 	@FXML private TextField balanceTextField;
 	
-	private Stage stage;
-	private Peer peer;
-	private String childPage;
-	private NewPageFactory newPageFactory;
-	private FxmlLoader miningFxmlObjects;
+	private String contentPage;
+	private NewView newView;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		newPageFactory = new NewPageFactory();
+		newView = new NewView();
 	}
 	@Override
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-	@Override
-	public void setPeer(Peer peer) {
-		this.peer = peer;
-	}
-	@Override
-	public void setObject(Object object) {
-		this.miningFxmlObjects = (FxmlLoader)object;
-	}
+	public void throwObject(Object object) {}
 	@Override
 	public void execute() {
-		newPageFactory.setStage(stage);
 		setUserName();
-		setMiningButtonAction();
+		setButton();
+	}
+	
+	private void setButton() {
 		setButtonAction(blockchainButton,"blockchain");
 		setButtonAction(wireButton,"wire");
-		setButtonAction(stateConnectionButton,"stateConnection");
+		setButtonAction(connectionTableButton,"connectionTable");
+		setButtonAction(miningButton,"mining");
 	}
 	
 	public void goIndexPage(){
-		newPageFactory.moveIndexPage(peer,childPage);
+		newView.getNewScene(ViewURL.indexURL, contentPage); 
 	}
 	
 	private void setUserName() {
-		idText.setText(peer.getUserName());
-	}
-	private void setButtonAction(Button button, String name) {
-		button.setOnAction(ActionEvent->{
-			childPage = name;
-			goIndexPage();
-		});
+		idText.setText(Peer.myPeer.getUserName());
 	}
 	
-	private void setMiningButtonAction() {
-		miningButton.setOnAction(ActionEvent->{
-			newPageFactory.moveIndexPageForMining(peer, miningFxmlObjects);
+	private void setButtonAction(Button button, String name) {
+		button.setOnAction(ActionEvent->{
+			contentPage = name;
+			goIndexPage();
 		});
 	}
 }

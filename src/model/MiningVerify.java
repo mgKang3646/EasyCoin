@@ -3,8 +3,8 @@ package model;
 public class MiningVerify {
 
 	private BlockVerify blockVerify;
-	public MiningVerify(BlockVerify blockVerify) {
-		this.blockVerify = blockVerify;
+	public MiningVerify() {
+		blockVerify = BlockChain.getBlockverify();
 	}
 	
 	public void doVerify(Block tmpBlock) {

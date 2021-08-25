@@ -4,34 +4,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-
-import factory.IOFactory;
 import factory.JsonFactory;
-import factory.UtilFactory;
 import json.JsonReceive;
-import json.JsonSend;
 
-public class PeerThread extends SocketThread {
+public class PeerThread extends Thread {
 
-	private Socket socket = null;
-	private Peer peer;
+	private Socket socket;
 	private JsonFactory jsonFactory;
-	private IOFactory ioFactory;
+	private P2PNet p2pNet;
 	private JsonReceive jsonReceive;
 	private PrintWriter printWriter;
 	private BufferedReader bufferedReader;
 
-	public PeerThread(Socket socket, Peer peer) throws IOException{
+	public PeerThread(Socket socket) {
 		this.socket = socket;
-		this.peer = peer;
-		ioFactory = new IOFactory();
+		this.p2pNet = new P2PNet();		
 		jsonFactory = new JsonFactory();
-		jsonReceive = jsonFactory.getPeerThreadReceive(peer);
-		printWriter = ioFactory.getPrintWriter(socket);
-		bufferedReader = ioFactory.getBufferedReader(socket);
+		jsonReceive = jsonFactory.getPeerThreadReceive();
+		printWriter = p2pNet.getPrintWriter(socket);
+		bufferedReader = p2pNet.getBufferedReader(socket);
 	}
 	
-	@Override
 	public void run()  {
 		try {
 			while(true) {
@@ -54,5 +47,4 @@ public class PeerThread extends SocketThread {
 	public void send(String msg){
 		printWriter.println(msg);
 	}
-	
 }

@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import model.Block;
 import newview.NewView;
 
-public class BlockController implements Initializable {
+public class BlockController implements Controller {
 	@FXML private TextField nonceText;
 	@FXML private TextField previousHashText;
 	@FXML private TextField hashText;
@@ -20,13 +20,15 @@ public class BlockController implements Initializable {
 	@FXML private Label blockNumLabel;
 	
 	private Block block;
-
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		this.block = (Block)NewView.getControllerObject();
-		execute();
-	}
 	
-	public void execute()  {
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {}
+	@Override
+	public void throwObject(Object object) {
+		this.block = (Block)object;
+	}
+	@Override
+	public void execute(){
 		blockNumLabel.setText("Block #"+block.getNum());
 		nonceText.setText(block.getNonce()+"");
 		previousHashText.setText(block.getPreviousBlockHash());

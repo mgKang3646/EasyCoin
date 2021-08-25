@@ -11,19 +11,14 @@ import model.BlockVerify;
 import model.Peer;
 
 public class PeerThreadReceive implements JsonReceive{
-	private Peer peer;
-	private BlockVerify blockVerify;
 	private JsonObject jsonObject;
 	private Block tmpBlock;
-	private BlockChain blockchain;
 	private BlockMaker blockMaker;
-	
+	private BlockVerify blockVerify;
 
-	public PeerThreadReceive(Peer peer) {
-		this.peer = peer;
-		this.blockVerify = peer.getBlockchain().getBlockVerify();
-		this.blockMaker = new BlockMaker();
-		this.blockchain = peer.getBlockchain();
+	public PeerThreadReceive() {
+		blockVerify = BlockChain.getBlockverify();
+		blockMaker = new BlockMaker();
 	}
 	
 	public void read(BufferedReader bufferedReader) {
@@ -47,7 +42,7 @@ public class PeerThreadReceive implements JsonReceive{
 	}
 	
 	private void verifyBlock() {
-		tmpBlock = blockMaker.makeTmpBlock(jsonObject, blockchain.getPreviousHash());
+		tmpBlock = blockMaker.makeTmpBlock(jsonObject);
 		tmpBlock.verifyBlock(jsonObject.getString("hash"));
 		blockVerify.setTmpBlock(tmpBlock);
 		blockVerify.setIsMinedBlock(false);

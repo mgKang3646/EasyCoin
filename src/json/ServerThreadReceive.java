@@ -1,29 +1,20 @@
 package json;
 
 import java.io.BufferedReader;
-import java.net.InetAddress;
-import java.net.Socket;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 
-import factory.SocketThreadFactory;
+import model.P2PNet;
 import model.Peer;
-import model.PeerList;
-import model.SocketThread;
 
 public class ServerThreadReceive implements JsonReceive{
-	private Peer peer;
-	private PeerList peerList;
 	private JsonObject jsonObject;
-	private SocketThreadFactory socketThreadFactory;
+	private P2PNet p2pNet;
 
-	public ServerThreadReceive(Peer peer) {
-		this.peer = peer;
-		this.peerList = peer.getPeerList();
-		socketThreadFactory = new SocketThreadFactory();	
+	public ServerThreadReceive() {
+		p2pNet = new P2PNet();
 	}
-	
 	public void read(BufferedReader bufferedReader) {
 		setJsonObject(bufferedReader);
 		processJsonQuery();
@@ -45,12 +36,10 @@ public class ServerThreadReceive implements JsonReceive{
 		} 
 	}
 	
-	//관심사 분리 필요
 	private void makePeerThread() throws Exception {	
 		String localhost = jsonObject.getString("localhost");
 		String userName = jsonObject.getString("userName");
-		peerList.addNewPeer(localhost,userName);
-		socketThreadFactory.makePeerThread(localhost, peer).run();
+		Peer.peerList.addNewPeer(localhost, userName);
+		p2pNet.makePeerThread(localhost).run();
 	}
-	
 }

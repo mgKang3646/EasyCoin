@@ -11,7 +11,7 @@ import model.Login;
 import newview.NewView;
 import newview.ViewURL;
 
-public class LoginController implements Initializable  {
+public class LoginController implements Controller  {
 	
 	@FXML private Button joinButton;
 	@FXML private Button loginButton;
@@ -21,10 +21,17 @@ public class LoginController implements Initializable  {
 	private Login login;
 	private NewView newView;
 	
-
+	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		login = new Login();
 		newView = new NewView();
+	}
+	
+	@Override
+	public void throwObject(Object object) {}
+
+	@Override
+	public void execute() {
 		setButtonAction();
 	}
 	
@@ -40,11 +47,10 @@ public class LoginController implements Initializable  {
 	private void loginButtonAction() {
 		login.doLogin();
 		if(login.isGetFile()) {
-			if(login.isGetPrivateKey()) newView.getNewScene(ViewURL.mypageURL);
+			if(login.isGetPrivateKey()) newView.getNewWindow(ViewURL.networkingURL);
 			else {
 				String msg = "잘못된 개인키 형식입니다.";
-				newView.setControllerObject(msg);
-				newView.getNewWindow(ViewURL.popupURL);
+				newView.getNewWindow(ViewURL.popupURL,msg);
 			}
 		}
 	}
@@ -52,4 +58,6 @@ public class LoginController implements Initializable  {
 	private void joinButtonAction() {
 		newView.getNewScene(ViewURL.joinURL);
 	}
+
+	
 }

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="328.0" maxWidth="421.0" minHeight="328.0" minWidth="421.0" prefHeight="328.0" prefWidth="421.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AccessingController">
+<AnchorPane maxHeight="328.0" maxWidth="421.0" minHeight="328.0" minWidth="421.0" prefHeight="328.0" prefWidth="421.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NetWorkingController">
    <children>
       <StackPane layoutX="-2.0" layoutY="-2.0" maxHeight="328.0" maxWidth="421.0" minHeight="328.0" minWidth="421.0" prefHeight="328.0" prefWidth="396.0" style="-fx-border-radius: 30; -fx-background-color: #131022; -fx-border-color: red;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>

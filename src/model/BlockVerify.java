@@ -2,30 +2,29 @@ package model;
 
 import controller.MiningController;
 import factory.JsonFactory;
-import factory.NewPageFactory;
 import javafx.application.Platform;
 import json.JsonSend;
+import newview.FxmlLoader;
+import newview.NewView;
+import newview.ViewURL;
 
 public class BlockVerify {
 	
-	private Peer peer;
 	private Block tmpBlock;
+	private JsonFactory jsonFactory;
+	private JsonSend jsonSend;
+	private NewView newView;
+	private int grantedNum;
 	private boolean isVerifying;
 	private boolean isFirst;
 	private boolean isTmpBlockGranted;
 	private boolean isMinedBlock;
-	private JsonFactory jsonFactory;
-	private JsonSend jsonSend;
-	private int grantedNum;
-	private NewPageFactory newPageFactory;
-	private MiningController miningController;
 
 	
 	public BlockVerify() {
-		this.peer = peer;
-		this.jsonFactory = new JsonFactory();
-		this.newPageFactory = new NewPageFactory();
-		this.isFirst = true;
+		jsonFactory = new JsonFactory();
+		isFirst = true;
+		newView = new NewView();
 	}
 	
 	public void setTmpBlock(Block tmpBlock) {
@@ -55,21 +54,19 @@ public class BlockVerify {
 	private void startPoll()  {
 		Thread thread = new Thread() {
 			public void run() {
-				miningController = (MiningController)newPageFactory.getMiningFxmlObjects().getController();
-				miningController.verifyUI();
+				MiningController mc = FxmlLoader.getFXMLLoader(ViewURL.miningURL).getController();
+				mc.verifyUI();
 				sleepThread(5000);
 				setTmpBlockGranted();
-				if(isTmpBlockGranted) peer.getBlockchain().addTmpBlock();
+				if(isTmpBlockGranted) BlockChain.getBlocklist().addBlock(tmpBlock);
 				setVerifying(false);
-				miningController.basicUI();
+				mc.basicUI();
 				viewResult();
 			}
 		};
 		thread.start();
 	}
 
-	
-	
 	private void sleepThread(int time) {
 		try {
 			Thread.sleep(5000);
@@ -90,10 +87,10 @@ public class BlockVerify {
 	private void viewResult() { 
 		Platform.runLater(()->{
 			if(isTmpBlockGranted) {
-				if(isMinedBlock) newPageFactory.createMiningResult(peer, MiningState.MININGGRANTED);
-				else newPageFactory.createMiningResult(peer, MiningState.OTHERMININGGRANTED);
+				if(isMinedBlock) newView.getNewWindow(ViewURL.miningResultURL,MiningState.MININGGRANTED);
+				else newView.getNewWindow(ViewURL.miningResultURL,MiningState.OTHERMININGGRANTED);
 			}else {
-				newPageFactory.createMiningResult(peer, MiningState.FAILEDGRANTED);
+				 newView.getNewWindow(ViewURL.miningResultURL,MiningState.FAILEDGRANTED);
 			}
 			initialize(); // 관심사 분리 요망
 		});
@@ -121,12 +118,12 @@ public class BlockVerify {
 	}
 	
 	public void broadCastingMinedBlock() {
-		jsonSend = jsonFactory.getJsonSend(peer.getServerListener());
+		jsonSend = jsonFactory.getJsonSend(P2PNet.getServerListener());
 		jsonSend.sendBlockMinedMessage(tmpBlock);
 	}
 	
 	public void broadCastingVerifiedResult() {
-		jsonSend = jsonFactory.getJsonSend(peer.getServerListener());
+		jsonSend = jsonFactory.getJsonSend(P2PNet.getServerListener());
 		jsonSend.sendVerifiedResultMessage(tmpBlock.isValid());
 	}
 	
@@ -135,7 +132,7 @@ public class BlockVerify {
 	}
 	
 	private double getTotal() {
-		return peer.getPeerList().getSize()+1;
+		return Peer.peerList.getSize()+1;
 	}
 	
 	private void printTmpBlockGrantedRate() {

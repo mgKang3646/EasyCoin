@@ -2,51 +2,39 @@ package model;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
-
-import factory.SocketThreadFactory;
 
 public class ServerListener extends Thread {
 
 	private ServerSocket serverSocket;
-	private Set<SocketThread> socketThreads;
-	private SocketThreadFactory socketThreadFactory;
-	private Peer peer;
+	private Set<ServerThread> serverThreads;
 	
-	public ServerListener(String port) throws IOException{
-		this.serverSocket = new ServerSocket(Integer.valueOf(port));
-		initializeObjects();
-	}
-	
-	private void initializeObjects() {
-		socketThreadFactory = new SocketThreadFactory();
-		socketThreads = new HashSet<SocketThread>();
-		
+	public ServerListener(ServerSocket serverSocket) {
+		this.serverSocket = serverSocket;
+		serverThreads = new HashSet<ServerThread>();	
 	}
 	
 	public void run() {
-		try {
-			while(true) {
-				SocketThread socketThread = socketThreadFactory.getServerThread(serverSocket.accept(),peer);
-				socketThread.start();
-				socketThreads.add(socketThread);
+		while(true) {
+			try {
+				ServerThread serverThread = new ServerThread(serverSocket.accept());
+				serverThread.start();
+				serverThreads.add(serverThread);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
 		}
 	}
 	
 	public void send(String msg) {
-		socketThreads.forEach(socketThread -> socketThread.send(msg)) ;
+		serverThreads.forEach(socketThread -> socketThread.send(msg)) ;
 	}
 	
 	@Override
 	public String toString() {
 		return "localhost:"+this.serverSocket.getLocalPort();
 	}
-	public void setPeer(Peer peer) {
-		this.peer = peer;
-	}
-	
-	
 }

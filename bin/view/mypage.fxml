@@ -110,7 +110,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="stateConnectionButton" alignment="BASELINE_LEFT" layoutX="49.0" layoutY="414.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="472.0" styleClass="button3" stylesheets="@../css/fullpackstyling.css" text="연결상태" textFill="#41951c">
+                  <Button fx:id="connectionTableButton" alignment="BASELINE_LEFT" layoutX="49.0" layoutY="414.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="472.0" styleClass="button3" stylesheets="@../css/fullpackstyling.css" text="연결상태" textFill="#41951c">
                      <font>
                         <Font size="24.0" />
                      </font>

@@ -1,7 +1,5 @@
 package model;
 
-import javax.json.JsonObject;
-
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class Block {

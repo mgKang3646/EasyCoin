@@ -13,7 +13,7 @@ import model.Peer;
 import newview.NewView;
 import newview.ViewURL;
 
-public class IndexController implements Initializable  {
+public class IndexController implements Controller  {
 	
 	@FXML private Button miningButton;
 	@FXML private HBox content;
@@ -22,20 +22,29 @@ public class IndexController implements Initializable  {
 	//@FXML private Button wireButton;
 	@FXML private Button upgradeButton;
 	@FXML private Button goMyPageButton;
-	@FXML private Button stateConnectionButton;
+	@FXML private Button connectionTableButton;
 	@FXML private ImageView upgradeButtonImageView;
 	@FXML private AnchorPane EasyCoin;	
 	
 	private NewView newView;
 	private String contentPage;
 	
+	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		newView = new NewView();
-		contentPage = (String)NewView.getControllerObject();
+		newView = new NewView();		
+	}	
+	
+	@Override
+	public void throwObject(Object object) {
+		contentPage = (String)object;
+	}
+	
+	@Override
+	public void execute() {
 		setIdText();
 		setButton();
 		switchContent();
-	}	
+	}
 	
 	private void setIdText() {
 		idText.setText(Peer.myPeer.getUserName());
@@ -45,7 +54,7 @@ public class IndexController implements Initializable  {
 		switch(contentPage) {
 			case "blockchain" : blockchainHandler(); break;
 			case "mining" : miningHandler(); break;
-			case "stateConnection" : stateConnectionHandler(); break;
+			case "connectionTable" : connectionTableHandler(); break;
 			case "wire" : wireHandler(); break;
 			default : break;
 		}
@@ -54,7 +63,7 @@ public class IndexController implements Initializable  {
 	private void setButton() {
 		setButtonAction(blockchainButton,"blockchain");
 		setButtonAction(miningButton,"mining");
-		setButtonAction(stateConnectionButton,"stateConnection");
+		setButtonAction(connectionTableButton,"connectionTable");
 		//setButtonAction(wireButton,"wire");
 	}
 
@@ -66,15 +75,15 @@ public class IndexController implements Initializable  {
 	}
 	
 	private void miningHandler() {
-		newView.addNewContent(ViewURL.miningURL,content);
+		newView.addNewContent(content, ViewURL.miningURL);
 	}
 	
 	private void blockchainHandler()  {
-		newView.addNewContent("BlockChain", content);
+		newView.addBlockChainContent(content);
 	}
 	
-	private void stateConnectionHandler()  {
-		System.out.println("연결관계 행들러 실행");
+	private void connectionTableHandler()  {
+		newView.addNewContent(content, ViewURL.connectionTableURL);
 	}
 	
 	private void wireHandler() {
@@ -83,5 +92,7 @@ public class IndexController implements Initializable  {
 
 	private void doUpgrade(){
 	}
+
+	
 	
 }

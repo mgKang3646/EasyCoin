@@ -4,30 +4,26 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-
-import factory.IOFactory;
 import factory.JsonFactory;
 import json.JsonReceive;
 
 
-public class ServerThread extends SocketThread {
+public class ServerThread extends Thread {
 
 	private Socket socket;
-	private Peer peer;
+	private P2PNet p2pNet;
 	private BufferedReader bufferedReader;
 	private PrintWriter printWriter;
 	private JsonFactory jsonFactory;
-	private IOFactory ioFactory;
 	private JsonReceive jsonReceive;
 	
-	public ServerThread(Socket socket, Peer peer)throws IOException{
+	public ServerThread(Socket socket) {
 		this.socket = socket;
-		this.peer = peer;
-		ioFactory = new IOFactory();
 		jsonFactory = new JsonFactory();
-		jsonReceive = jsonFactory.getServerThreadReceive(peer);
-		printWriter = ioFactory.getPrintWriter(socket);
-		bufferedReader = ioFactory.getBufferedReader(socket);
+		p2pNet = new P2PNet();
+		jsonReceive = jsonFactory.getServerThreadReceive();
+		printWriter = p2pNet.getPrintWriter(socket);
+		bufferedReader = p2pNet.getBufferedReader(socket);
 	}
 	
 	public void run() {
