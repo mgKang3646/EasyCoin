@@ -1,5 +1,8 @@
 package model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.json.JsonObject;
 
 public class BlockMaker {
@@ -36,6 +39,20 @@ public class BlockMaker {
 		block.setTimestamp(timestamp);
 		block.generateHash();
 		
+		return block;
+	}
+	
+	public Block makeDBBlock(ResultSet rs) {
+		block = new Block();
+		try {
+			block.setNum(Integer.valueOf(rs.getString("num")));
+			block.setPreviousBlockHash(rs.getString("previoushash"));
+			block.setNonce(Integer.valueOf(rs.getString("nonce")));
+			block.setTimestamp(rs.getString("timestamp"));
+			block.setHash(rs.getString("hash"));
+		} catch (NumberFormatException | SQLException e) {
+			e.printStackTrace();
+		}
 		return block;
 	}
 

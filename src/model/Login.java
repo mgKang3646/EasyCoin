@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.ArrayList;
 
 import database.Dao;
 import database.PeerDto;
@@ -29,6 +30,7 @@ public class Login {
 		setPemFilePath();
 		setPrivateKeyFromPem();
 		setMyPeer();
+		setBlockChain();
 	}
 	
 	public boolean isGetFile() {
@@ -66,6 +68,15 @@ public class Login {
 			Peer.myPeer.setUserName(peerDto.getUserName());
 			Peer.myPeer.setLocalhost(peerDto.getLocalhost());
 			Peer.myPeer.setPrivateKey(privateKey);
+		}
+	}
+	
+	private void setBlockChain() {
+		if(privateKey != null) {
+			ArrayList<Block> blocks = dao.getBlocks();
+			BlockMaker blockMaker = new BlockMaker();
+			if(blocks.size() != 0) BlockChain.getBlocklist().setBlocks(blocks);
+			else BlockChain.getBlocklist().applyBlock(blockMaker.makeGenesisBlock());
 		}
 	}
 }

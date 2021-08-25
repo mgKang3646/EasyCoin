@@ -1,23 +1,29 @@
 package model;
 
 import java.util.ArrayList;
+import database.Dao;
 
 public class BlockList {
 	
 	private ArrayList<Block> blocks;
+	private Dao dao;
 	
 	public BlockList() {
 		blocks = new ArrayList<Block>();
-		BlockMaker blockMaker = new BlockMaker();
-		addBlock(blockMaker.makeGenesisBlock());
+		dao = new Dao();
 	}
 	
 	public ArrayList<Block> getBlocks() { 
 		return blocks; 
 	}
 	
-	public void addBlock(Block block) {
+	public void setBlocks(ArrayList<Block> blocks) {
+		this.blocks = blocks;
+	}
+	
+	public void applyBlock(Block block) {
 		blocks.add(block);
+		dao.storeBlock(block);
 	}
 	
 	public int getBlockNum() {

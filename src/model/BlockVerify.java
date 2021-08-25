@@ -58,7 +58,7 @@ public class BlockVerify {
 				mc.verifyUI();
 				sleepThread(5000);
 				setTmpBlockGranted();
-				if(isTmpBlockGranted) BlockChain.getBlocklist().addBlock(tmpBlock);
+				if(isTmpBlockGranted) BlockChain.getBlocklist().applyBlock(tmpBlock);
 				setVerifying(false);
 				mc.basicUI();
 				viewResult();

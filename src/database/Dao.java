@@ -5,9 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 import model.Block;
+import model.BlockMaker;
 import model.OtherPeer;
 import model.Peer;
 
@@ -142,56 +145,30 @@ public class Dao {
 		}
 	}
 	
-	public LinkedList<Block> getBlocks() {
+	public ArrayList<Block> getBlocks() {
 		String SQL = "SELECT * FROM BLOCKTABLE WHERE username = ?";
-		LinkedList<Block> blocks = new LinkedList<Block>(); // 중간 삽입이 자주 일어날 것이므로 링크드리스트를 써준다.
+		ArrayList<Block> blocks = new ArrayList<Block>();
+		BlockMaker blockMaker = new BlockMaker();
 		Block block;
 		
 		try {
-			
 			ConnectionMaker connectionMaker = new ConnectionMaker();
 			Connection conn = connectionMaker.getConnection();
 			
 			PreparedStatement pstmt = conn.prepareStatement(SQL);
 			pstmt.setString(1, Peer.myPeer.getUserName());
-			
+			blocks.sort(null);
 			ResultSet rs = pstmt.executeQuery();
 			// 리스트 정렬하기 
 			while(rs.next()) {
-				block = new Block(rs.getString("previoushash"),rs.getString("nonce"),rs.getString("timestamp"),Integer.valueOf(rs.getString("num")));
-				if(blocks.size()==0) {
-					blocks.add(block);
-				}
-				
-				else {
-					for(int i = 0; i< blocks.size(); i++) {
-						if(block.getNum() < blocks.get(i).getNum()) {
-							blocks.add(i,block);
-							break;
-						}
-						if(i==(blocks.size()-1)) {
-							blocks.add(block);
-							break; // 왜 브레이크를 안하면 무한 루프를 도는가?
-						}
-					}
-				}
+				block = blockMaker.makeDBBlock(rs);
+				blocks.add(block);
 			}
-			
 			return blocks;
-			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			System.out.println("DB에서 블럭 가져오는 중 오류 발생!");
 			e.printStackTrace();
 		}
-		
-		return null; // db 오류 
-		
-		
+		return null;
 	}
-	
-	
-	
-	
-
 }
