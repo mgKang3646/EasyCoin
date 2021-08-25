@@ -6,7 +6,8 @@ public class OtherPeer {
 	private String userName;
 	private String localhost;
 	private PublicKey publicKey;
-	//¿¬°áµÈ PeerThread
+	private boolean isLeader;
+	private PeerThread peerThread;
 	
 	public String getUserName() {
 		return userName;
@@ -25,6 +26,18 @@ public class OtherPeer {
 	}
 	public void setPublicKey(PublicKey publicKey) {
 		this.publicKey = publicKey;
+	}
+	public boolean isLeader() {
+		return isLeader;
+	}
+	public void setLeader(boolean isLeader) {
+		this.isLeader = isLeader;
+	}
+	public PeerThread getPeerThread() {
+		return peerThread;
+	}
+	public void setPeerThread(PeerThread peerThread) {
+		this.peerThread = peerThread;
 	}
 	
 }

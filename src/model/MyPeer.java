@@ -9,6 +9,7 @@ public class MyPeer {
 	private PublicKey publicKey;
 	private String userName;
 	private String localhost;
+	private boolean isLeader;
 	
 	public String getUserName() {
 		return userName;
@@ -34,5 +35,10 @@ public class MyPeer {
 	public void setPrivateKey(PrivateKey privateKey) {
 		this.privateKey = privateKey;
 	}
-	
+	public boolean isLeader() {
+		return isLeader;
+	}
+	public void setLeader(boolean isLeader) {
+		this.isLeader = isLeader;
+	}
 }

@@ -7,16 +7,15 @@ import java.util.ResourceBundle;
 import database.Dao;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import model.NetWorking;
 import model.OtherPeer;
 import model.P2PNet;
 import model.Peer;
 import model.PeerThread;
-import model.ServerListener;
 import newview.NewView;
 import newview.ViewURL;
 
@@ -27,17 +26,15 @@ public class NetWorkingController implements Controller {
 	private @FXML Label percentLabel;
 	private @FXML Label titleLabel;
 	
-	private Dao dao;
+	private NetWorking netWorking;
 	private ArrayList<OtherPeer> otherPeers;
-	private P2PNet p2pNet;
 	private NewView newView;
 	private double progress;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		p2pNet = new P2PNet();
 		newView = new NewView();
-		dao = new Dao();
+		netWorking = new NetWorking();
 	}
 	@Override
 	public void throwObject(Object object) {}
@@ -51,46 +48,39 @@ public class NetWorkingController implements Controller {
 	public void startNetWorking() {
 		Thread progressThread = new Thread() {
 			public void run() {
-					doNetWorking();
+				if(serverListenerUI()) {
+					connectOtherPeersUI();
 					sleepMoment();
 					moveToMypage();
 					closeStage();
+				}else {
+					closeStage();
+					openErrorPopup();
+				}
 			}
 		};
 		progressThread.start();
 	}
 	
-	private void doNetWorking() {
-		if(p2pNet.runServerListener()) {
+	private boolean serverListenerUI() {
+		if(netWorking.runServerListener()) {
 			processUI("서버 생성 완료 : " + P2PNet.getServerListener().toString(), getProgress(0.1)); // 관심사 : UI 처리
-			connectOtherPeers(); // 2. PeerThread 생성하여 DB 저장된 Peer들과 소켓연결
-			processUI("P2P 네트워크망 연결완료",1); // 관심사 : UI 처리	
-		}else {
-			closeStage();
-			openErrorPopup();
+			return true;
 		}
+		else return false;
 	}
 	
-	private void connectOtherPeers() {
-		getOtherPeers();
+	private void connectOtherPeersUI() {
 		doConnect();
-	}
-	
-	private void getOtherPeers() {
-		otherPeers = dao.getPeers(Peer.myPeer.getUserName());
+		processUI("P2P 네트워크망 연결완료",1); // 관심사 : UI 처리	
 	}
 	
 	private void doConnect()  {
-			for(OtherPeer otherPeer : otherPeers) {
-				PeerThread peerThread = p2pNet.connectOtherPeer(otherPeer.getLocalhost());
-				if(peerThread != null) {
-					peerThread.start();
-					p2pNet.requestConnect(peerThread);
-					Peer.peerList.add(otherPeer);
-					processUI(getConnectionMsg(otherPeer,true), getProgress(getConnectionPercent(otherPeers.size())));
-				}
-				else processUI(getConnectionMsg(otherPeer,false), getProgress(getConnectionPercent(otherPeers.size())));
-			}	
+		otherPeers = netWorking.getOtherPeers();
+		for(OtherPeer otherPeer : otherPeers ) {
+			if(netWorking.doConnect(otherPeer)) processUI(getConnectionMsg(otherPeer,true), getProgress(getConnectionPercent(otherPeers.size())));
+			else processUI(getConnectionMsg(otherPeer,false), getProgress(getConnectionPercent(otherPeers.size())));
+		}	
 	}
 	
 	private void sleepMoment() {
