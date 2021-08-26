@@ -11,4 +11,5 @@ public class ViewURL {
 	public static final String mypageURL = "/view/mypage.fxml";
 	public static final String popupURL = "/view/popup.fxml";
 	public static final String connectionTableURL = "/view/connectionTable.fxml";
+	public static final String refreshURL = "/view/refresh.fxml";
 }

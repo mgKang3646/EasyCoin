@@ -11,7 +11,7 @@ import newview.FxmlStage;
 import newview.NewView;
 import newview.ViewURL;
 
-//+ Upgrade 기능 DB 블록저장 + 채굴 후 다시 채굴할 때 버튼을 두 번 클릭해야 함
+//refresh 진행 중... otherPeer 재구조화 PeerThread와 ServerThread serOtherPeer 리팩토링 해야됨
 public class Main extends Application {
 	
 	@Override

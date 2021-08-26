@@ -17,15 +17,14 @@ public class PeerList {
 		peerList.add(otherPeer);
 	}
 	
-	public void addNewPeer(String localhost, String userName) {
-		OtherPeer newPeer = new OtherPeer();
-		newPeer.setLocalhost(localhost);
-		newPeer.setUserName(userName);
-		add(newPeer);
-	}
-	
 	public int getSize() {
 		return peerList.size();
 	}
-
+	
+	public OtherPeer searchOtherPeer(String userName) {
+		for(OtherPeer otherPeer : getPeerList()) {
+			if(otherPeer.getUserName().equals(userName)) return otherPeer;
+		}
+		return null;
+	}
 }

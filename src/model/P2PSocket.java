@@ -10,9 +10,9 @@ import java.net.UnknownHostException;
 
 public class P2PSocket {
 	
-	private int portNum;
 	private InetAddress ip;
-	
+	private int portNum;
+
 	public ServerSocket getServerSocket(String localhost) {
 		try {
 			doSplit(localhost);
@@ -29,10 +29,10 @@ public class P2PSocket {
 			Socket newSocket = new Socket(ip,portNum);
 			return newSocket;
 		} catch (IOException e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
+	
 	
 	private void doSplit(String localhost) {
 		try {
@@ -41,27 +41,6 @@ public class P2PSocket {
 			portNum = Integer.valueOf(address[1]);
 		}catch (UnknownHostException e) {
 			e.printStackTrace();
-		}
-	}
-	
-	public Socket doConnect(String localhost) {
-		Socket socket = new Socket();
-		if(connectSocketAddress(getSocketAddress(localhost),socket)) return socket;
-		else return null;
-	}
-	
-	private SocketAddress getSocketAddress(String localhost)  {
-		doSplit(localhost);
-		InetSocketAddress socketAddress = new InetSocketAddress(ip,portNum);
-		return socketAddress;
-	}
-	
-	private boolean connectSocketAddress(SocketAddress socketAddress, Socket socket){
-		try {
-			socket.connect(socketAddress);
-			return true;
-		} catch (IOException e) {
-			return false;
 		}
 	}
 }

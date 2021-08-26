@@ -171,4 +171,21 @@ public class Dao {
 		}
 		return null;
 	}
+	
+	public void deleteAllBlock(String username) {
+		String SQL = "DELETE FROM BLOCKTABLE WHERE username = ?";
+		
+		try {
+			ConnectionMaker connectionMaker = new ConnectionMaker();
+			Connection conn = connectionMaker.getConnection();
+			
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, username);
+			int result = pstmt.executeUpdate();
+			System.out.println("DB에서 블럭 " + result+"개 삭제");
+			
+		} catch (SQLException e) {
+			System.out.println("블럭 삭제 과정 중 SQL 삽입 오류 발생");
+		}
+	}
 }

@@ -18,11 +18,11 @@
    <children>
       <AnchorPane maxHeight="605.0" prefHeight="605.0" prefWidth="262.0" style="-fx-background-color: #393351;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox layoutY="160.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="160.0">
+            <VBox layoutY="160.0" prefHeight="244.0" prefWidth="262.0" AnchorPane.bottomAnchor="201.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="160.0">
                <children>
                   <Button fx:id="blockchainButton" alignment="BASELINE_LEFT" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="262.0" styleClass="button1" stylesheets="@../css/fullpackstyling.css" text="블록체인" textFill="WHITE">
                      <padding>
-                        <Insets left="40.0" />
+                        <Insets bottom="10.0" left="40.0" top="10.0" />
                      </padding>
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
@@ -41,7 +41,7 @@
                         </ImageView>
                      </graphic>
                      <padding>
-                        <Insets left="40.0" />
+                        <Insets bottom="10.0" left="40.0" top="10.0" />
                      </padding>
                   </Button>
                   <Button fx:id="connectionTableButton" alignment="BASELINE_LEFT" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="262.0" styleClass="button1" stylesheets="@../css/fullpackstyling.css" text="연결상태" textFill="WHITE">
@@ -53,19 +53,22 @@
                         </ImageView>
                      </graphic>
                      <padding>
-                        <Insets left="40.0" />
+                        <Insets bottom="10.0" left="40.0" top="10.0" />
                      </padding>
                   </Button>
-                  <Button fx:id="upgradeButton" mnemonicParsing="false" style="-fx-background-color: #393351; -fx-background-radius: 180;">
+                  <Button fx:id="refreshButton" alignment="BASELINE_LEFT" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="262.0" styleClass="button1" stylesheets="@../css/fullpackstyling.css" text="최신화" textFill="WHITE">
                      <graphic>
-                        <ImageView fx:id="upgradeButtonImageView" fitHeight="190.0" fitWidth="192.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="31.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../image/main.png" />
+                              <Image url="@../image/refresh.png" />
                            </image>
                         </ImageView>
                      </graphic>
+                     <padding>
+                        <Insets bottom="10.0" left="40.0" top="10.0" />
+                     </padding>
                      <VBox.margin>
-                        <Insets left="26.0" top="100.0" />
+                        <Insets bottom="20.0" />
                      </VBox.margin>
                   </Button>
                </children>
@@ -89,18 +92,23 @@
             </TextField>
             <AnchorPane prefHeight="86.0" prefWidth="262.0" style="-fx-background-color: #2f2b43;">
                <children>
-                  <Label layoutX="29.0" layoutY="15.0" text="Easy" textFill="WHITE">
+                  <Label fx:id="easyLabel" layoutX="29.0" layoutY="15.0" text="Easy" textFill="WHITE">
                      <font>
                         <Font size="48.0" />
                      </font>
                   </Label>
-                  <Label layoutX="131.0" layoutY="15.0" text="Coin" textFill="#fff600">
+                  <Label fx:id="coinLabel" layoutX="131.0" layoutY="15.0" text="Coin" textFill="#fff600">
                      <font>
                         <Font size="48.0" />
                      </font>
                   </Label>
                </children>
             </AnchorPane>
+            <ImageView fx:id="upgradeButtonImageView" fitHeight="179.0" fitWidth="198.0" layoutX="40.0" layoutY="393.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../image/main.png" />
+               </image>
+            </ImageView>
          </children></AnchorPane>
       <ScrollPane layoutX="195.3043212890625" layoutY="-294.81817626953125" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="605.0" prefWidth="653.0" style="-fx-background-color: #2f2b43;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="262.0" AnchorPane.rightAnchor="-3.0" AnchorPane.topAnchor="0.0">
          <content>

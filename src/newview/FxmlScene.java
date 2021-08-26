@@ -14,6 +14,7 @@ public class FxmlScene extends ViewURL {
 	public static Scene mypageScene;
 	public static Scene popupScene;
 	public static Scene connectionScene;
+	public static Scene refreshScene;
 	
 	public static Scene getFXMLScene(String url) {
 		switch(url){
@@ -27,6 +28,7 @@ public class FxmlScene extends ViewURL {
 			case popupURL : return popupScene;
 			case blockURL : return blockScene;
 			case connectionTableURL : return connectionScene;
+			case refreshURL : return refreshScene;
 			default : return null;
 		}
 	}
@@ -42,6 +44,7 @@ public class FxmlScene extends ViewURL {
 		mypageScene = getScene(mypageURL);
 		popupScene = getScene(popupURL);
 		connectionScene = getScene(connectionTableURL);
+		refreshScene = getScene(refreshURL);
 	}
 	
 	private Scene getScene(String url) {

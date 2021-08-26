@@ -8,6 +8,7 @@ public class OtherPeer {
 	private PublicKey publicKey;
 	private boolean isLeader;
 	private PeerThread peerThread;
+	private int blockNum;
 	
 	public String getUserName() {
 		return userName;
@@ -39,5 +40,10 @@ public class OtherPeer {
 	public void setPeerThread(PeerThread peerThread) {
 		this.peerThread = peerThread;
 	}
-	
+	public int getBlockNum() {
+		return blockNum;
+	}
+	public void setBlockNum(int blockNum) {
+		this.blockNum = blockNum;
+	}
 }

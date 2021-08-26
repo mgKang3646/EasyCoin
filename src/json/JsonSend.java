@@ -3,12 +3,13 @@ package json;
 import model.Block;
 import model.PeerThread;
 import model.ServerListener;
+import model.ServerThread;
 
 public class JsonSend {
 	
 	private JsonMessage jsonMessage;
-	private PeerThread peerThread;
-	private ServerListener serverListener;
+	private PeerThread peerThread; // 유니캐스팅 
+	private ServerListener serverListener; // 브로드캐스팅
 	
 	public JsonSend(PeerThread peerThread) {
 		this.jsonMessage = new JsonMessage();
@@ -34,5 +35,24 @@ public class JsonSend {
 		String msg = jsonMessage.jsonVerifiedResultMessage(result);
 		serverListener.send(msg);
 	}
-
+	
+	public void sendRequestBlockNum() {
+		String msg = jsonMessage.jsonRequestBlockNumMessage();
+		serverListener.send(msg);
+	}
+	
+	public void sendResponseBlockNum() {
+		String msg = jsonMessage.jsonResPonseBlockNumMessage();
+		peerThread.send(msg);
+	}
+	
+	public void sendRequestLeaderBlocksMessage() {
+		String msg = jsonMessage.jsonRequestLeaderBlockMessage();
+		peerThread.send(msg);
+	}
+	
+	public void sendResponseLeaderBlockMessage(Block block) {
+		String msg = jsonMessage.jsonResponseLeaderBlockMessage(block);
+		peerThread.send(msg);
+	}
 }

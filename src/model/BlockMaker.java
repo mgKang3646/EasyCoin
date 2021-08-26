@@ -55,5 +55,16 @@ public class BlockMaker {
 		}
 		return block;
 	}
+	
+	public Block makeLeaderBlock(JsonObject jsonObject) {
+		block = new Block();
+		block.setNum(jsonObject.getInt("blockNum"));
+		block.setNonce(jsonObject.getInt("nonce"));
+		block.setTimestamp(jsonObject.getString("timestamp"));
+		block.setPreviousBlockHash(jsonObject.getString("previousHash")); // 본인이 갖고 있는 마지막블록의 이전해쉬여야함.
+		block.setHash(jsonObject.getString("hash"));
+		
+		return block;
+	}
 
 }

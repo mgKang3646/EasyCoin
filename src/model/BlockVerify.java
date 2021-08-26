@@ -1,7 +1,6 @@
 package model;
 
 import controller.MiningController;
-import factory.JsonFactory;
 import javafx.application.Platform;
 import json.JsonSend;
 import newview.FxmlLoader;
@@ -11,7 +10,6 @@ import newview.ViewURL;
 public class BlockVerify {
 	
 	private Block tmpBlock;
-	private JsonFactory jsonFactory;
 	private JsonSend jsonSend;
 	private NewView newView;
 	private int grantedNum;
@@ -22,7 +20,6 @@ public class BlockVerify {
 
 	
 	public BlockVerify() {
-		jsonFactory = new JsonFactory();
 		isFirst = true;
 		newView = new NewView();
 	}
@@ -119,12 +116,12 @@ public class BlockVerify {
 	}
 	
 	public void broadCastingMinedBlock() {
-		jsonSend = jsonFactory.getJsonSend(P2PNet.getServerListener());
+		jsonSend = new JsonSend(P2PNet.getServerListener());
 		jsonSend.sendBlockMinedMessage(tmpBlock);
 	}
 	
 	public void broadCastingVerifiedResult() {
-		jsonSend = jsonFactory.getJsonSend(P2PNet.getServerListener());
+		jsonSend = new JsonSend(P2PNet.getServerListener());
 		jsonSend.sendVerifiedResultMessage(tmpBlock.isValid());
 	}
 	

@@ -38,8 +38,8 @@ public class BlockList {
 		return getLastBlock().getHash();
 	}
 	
-	public ArrayList<Block> resetBlocks() {
+	public void resetBlocks() {
+		dao.deleteAllBlock(Peer.myPeer.getUserName());
 		blocks = new ArrayList<Block>();
-		return blocks;
 	}
 }

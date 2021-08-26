@@ -14,15 +14,20 @@ public class NetWorking {
 	}
 	
 	public boolean runServerListener() {
-		return p2pNet.runServerListener();
+		p2pNet.makeServerListener();
+		if(P2PNet.getServerListener() == null) return false;
+		else {
+			p2pNet.runServerListener();
+			return true;
+		}
 	}
 	
 	public boolean doConnect(OtherPeer otherPeer) {
-		PeerThread peerThread = p2pNet.connectOtherPeer(otherPeer.getLocalhost());
+		PeerThread peerThread = p2pNet.makePeerThread(otherPeer.getLocalhost());
 		if(peerThread != null) {
 			peerThread.start();
-			p2pNet.requestConnect(peerThread);
 			otherPeer.setPeerThread(peerThread);
+			p2pNet.requestConnect(peerThread);
 			Peer.peerList.add(otherPeer);
 			return true;
 		}

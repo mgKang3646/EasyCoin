@@ -16,6 +16,7 @@ public class FxmlLoader extends ViewURL{
 	private static FXMLLoader PopupLoader;
 	private static FXMLLoader BlockLoader;
 	private static FXMLLoader ConnectionTableLoader;
+	private static FXMLLoader RefreshLoader;
 	
 	public void generateFXMLLoader() {
 		IndexLoader = getLoader(indexURL);
@@ -28,6 +29,7 @@ public class FxmlLoader extends ViewURL{
 		BlockLoader = getLoader(blockURL);
 		NetWorkingLoader =  getLoader(networkingURL);
 		ConnectionTableLoader = getLoader(connectionTableURL);
+		RefreshLoader = getLoader(refreshURL);
 		
 	}
 	
@@ -43,6 +45,7 @@ public class FxmlLoader extends ViewURL{
 			case popupURL : return PopupLoader;
 			case blockURL : return BlockLoader;
 			case connectionTableURL : return ConnectionTableLoader;
+			case refreshURL : return RefreshLoader;
 			default : return null;
 		}
 	}
