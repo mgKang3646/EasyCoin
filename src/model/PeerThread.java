@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+
 import json.PeerThreadReceive;
+import util.P2PNet;
 
 public class PeerThread extends Thread {
 

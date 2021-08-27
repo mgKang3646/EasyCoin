@@ -7,8 +7,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
-import model.CircleRotate;
 import model.Refresh;
+import util.CircleRotate;
 
 public class RefreshController implements Controller {
 
@@ -73,7 +73,4 @@ public class RefreshController implements Controller {
 			e.printStackTrace();
 		}
 	}
-	
-	
-
 }

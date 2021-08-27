@@ -46,6 +46,7 @@ public class Block {
 	public boolean isValid() {
 		return isValid;
 	}
+
 	public void generateHash() {
 		hash = DigestUtils.sha256Hex(nonce + timestamp + previousBlockHash);
 	}

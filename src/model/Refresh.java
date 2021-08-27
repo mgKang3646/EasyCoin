@@ -1,6 +1,7 @@
 package model;
 
 import json.JsonSend;
+import util.P2PNet;
 
 public class Refresh {
 	private OtherPeer leaderPeer;
@@ -12,8 +13,10 @@ public class Refresh {
 	
 	public void generateLeader() {
 		int max = BlockChain.blockList.getBlockNum();
+		System.out.println("³»²¨ : " + max);
 		for(OtherPeer otherPeer : Peer.peerList.getPeerList()) {
 			if( otherPeer.getBlockNum() > max) leaderPeer = otherPeer;
+			System.out.println(otherPeer.getUserName() + " : " + otherPeer.getBlockNum());
 		}
 		if(leaderPeer == null) Peer.myPeer.setLeader(true);
 		else leaderPeer.setLeader(true);

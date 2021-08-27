@@ -1,4 +1,4 @@
-package model;
+package util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,7 +6,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+
 import json.JsonSend;
+import model.Peer;
+import model.PeerThread;
+import model.ServerListener;
 
 public class P2PNet {
 	

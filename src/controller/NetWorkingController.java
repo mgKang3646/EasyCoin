@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import database.Dao;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -13,11 +12,9 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import model.NetWorking;
 import model.OtherPeer;
-import model.P2PNet;
-import model.Peer;
-import model.PeerThread;
 import newview.NewView;
 import newview.ViewURL;
+import util.P2PNet;
 
 public class NetWorkingController implements Controller {
 	

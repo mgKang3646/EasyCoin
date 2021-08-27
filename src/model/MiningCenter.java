@@ -49,6 +49,7 @@ public class MiningCenter {
 			if(isStop) break;
 			if(mining.isMined()) {
 				miningController.verifyUI();
+				mining.getMinedBlock().setValid(true);
 				miningVerify.doVerify(mining.getMinedBlock());
 				break;
 			}

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="508.0" maxWidth="390.0" minHeight="508.0" minWidth="390.0" prefHeight="508.0" prefWidth="390.0" style="-fx-background-color: #030307; -fx-border-color: black; -fx-border-width: 0.5;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.WireController">
+   <children>
+      <VBox layoutX="26.0" layoutY="102.0" prefHeight="374.0" prefWidth="335.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="34.0" prefWidth="160.0" text="내 계좌   :" textFill="WHITE">
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="myPublicKeyText" editable="false" prefHeight="22.0" prefWidth="146.0">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="myPublicButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="74.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="찾기" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="34.0" prefWidth="160.0" text="상대 계좌 :" textFill="WHITE">
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="otherPublicKeyText" editable="false" prefHeight="22.0" prefWidth="146.0">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="otherPublicButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="74.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="찾기" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="입금액 : " textFill="WHITE">
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="valueTextField" editable="true" prefHeight="22.0" prefWidth="162.0" />
+                  <Label text="ETC" textFill="#fff600">
+                     <font>
+                        <Font name="System Bold" size="21.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="33.0" prefWidth="338.0">
+               <children>
+                  <Label fx:id="validLabel" text="잘못된 입금액입니다.  다시 입력해주세요." textFill="RED">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="wireButton" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="330.0" styleClass="button2" stylesheets="@../css/fullpackstyling.css" text="송            금" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <HBox alignment="CENTER" layoutX="95.0" layoutY="22.0" prefHeight="70.0" prefWidth="200.0" style="-fx-border-color: #fff600; -fx-border-radius: 20; -fx-border-width: 3;">
+         <children>
+            <Label alignment="CENTER" prefHeight="58.0" prefWidth="86.0" text="송금" textFill="#fff600">
+               <font>
+                  <Font size="42.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" prefHeight="58.0" prefWidth="87.0" text="하기" textFill="WHITE">
+               <font>
+                  <Font size="42.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

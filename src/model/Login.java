@@ -9,19 +9,19 @@ import java.util.ArrayList;
 import database.Dao;
 import database.PeerDto;
 import encrypt.KeyFromPem;
-import javafx.stage.FileChooser;
 import newview.FxmlStage;
+import util.PemFileChooser;
 
 public class Login {
 	
 	private Dao dao;
-	private FileChooser fileChooser;
+	private PemFileChooser pemFileChooser;
 	private KeyFromPem keyFromPem;
 	private PrivateKey privateKey;
 	private File file;
 	
 	public Login() {
-		fileChooser = new FileChooser();
+		pemFileChooser = new PemFileChooser();
 		keyFromPem = new KeyFromPem();
 		dao = new Dao();
 	}
@@ -44,10 +44,8 @@ public class Login {
 	}
 	
 	private void setPemFilePath() {
-		String message = "로그인 할 개인키 PEM 파일을 선택하세요.";
-		fileChooser.setTitle(message);
-		fileChooser.setInitialDirectory(new File("./pem"));
-		file = fileChooser.showOpenDialog(FxmlStage.getPrimaryStage());
+		String title = "로그인 할 개인키 PEM 파일을 선택하세요.";
+		file = pemFileChooser.getFileFromFileChooeser(FxmlStage.getPrimaryStage(),title);
 	}
 	
 	private void setPrivateKeyFromPem() {

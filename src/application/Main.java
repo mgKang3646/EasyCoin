@@ -11,7 +11,7 @@ import newview.FxmlStage;
 import newview.NewView;
 import newview.ViewURL;
 
-//refresh 진행 중... otherPeer 재구조화 PeerThread와 ServerThread serOtherPeer 리팩토링 해야됨
+//WireController 구현 중... Wire 구현중 리팩토링 하면서 코드 작성하기 ( KeyFromPem 리팩토링 필요 PemFileChooser 위치 생각해보기)
 public class Main extends Application {
 	
 	@Override

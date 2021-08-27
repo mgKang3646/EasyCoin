@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import database.Dao;
+import util.P2PNet;
 
 public class NetWorking {
 	

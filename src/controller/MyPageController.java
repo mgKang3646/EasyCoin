@@ -38,9 +38,9 @@ public class MyPageController implements Controller  {
 	
 	private void setButton() {
 		setButtonAction(blockchainButton,"blockchain");
-		setButtonAction(wireButton,"wire");
 		setButtonAction(connectionTableButton,"connectionTable");
 		setButtonAction(miningButton,"mining");
+		setWireButtonAction();
 	}
 	
 	public void goIndexPage(){
@@ -55,6 +55,12 @@ public class MyPageController implements Controller  {
 		button.setOnAction(ActionEvent->{
 			contentPage = name;
 			goIndexPage();
+		});
+	}
+	
+	private void setWireButtonAction() {
+		wireButton.setOnAction(ActionEvent ->{
+			newView.getNewWindow(ViewURL.wireURL);
 		});
 	}
 }

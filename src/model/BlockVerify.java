@@ -6,6 +6,7 @@ import json.JsonSend;
 import newview.FxmlLoader;
 import newview.NewView;
 import newview.ViewURL;
+import util.P2PNet;
 
 public class BlockVerify {
 	
@@ -55,7 +56,7 @@ public class BlockVerify {
 				mc.verifyUI();
 				sleepThread(5000);
 				setTmpBlockGranted();
-				if(isTmpBlockGranted) BlockChain.getBlocklist().applyBlock(tmpBlock);
+				if(isTmpBlockGranted&&tmpBlock.isValid()) BlockChain.getBlocklist().applyBlock(tmpBlock);
 				setVerifying(false);
 				mc.basicUI();
 				viewResult();
@@ -83,7 +84,7 @@ public class BlockVerify {
 	
 	private void viewResult() { 
 		Platform.runLater(()->{
-			if(isTmpBlockGranted) {
+			if(isTmpBlockGranted&&tmpBlock.isValid()) {
 				if(isMinedBlock) newView.getNewWindow(ViewURL.miningResultURL,MiningState.MININGGRANTED);
 				else newView.getNewWindow(ViewURL.miningResultURL,MiningState.OTHERMININGGRANTED);
 			}else {

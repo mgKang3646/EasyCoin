@@ -9,10 +9,9 @@ import model.Block;
 import model.BlockChain;
 import model.BlockMaker;
 import model.OtherPeer;
-import model.P2PNet;
 import model.Peer;
 import model.PeerThread;
-import model.ServerThread;
+import util.P2PNet;
 
 public class ServerThreadReceive{
 	private JsonObject jsonObject;
@@ -82,7 +81,10 @@ public class ServerThreadReceive{
 	}
 	
 	private void getLeaderBlock() {
-		if(jsonObject.getInt("blockNum") == 0) BlockChain.blockList.resetBlocks();
+		if(jsonObject.getInt("blockNum") == 0) {
+			BlockChain.blockList.resetBlocks();
+			BlockChain.getBlocklist().applyBlock(blockMaker.makeLeaderBlock(jsonObject));
+		}
 		else BlockChain.getBlocklist().applyBlock(blockMaker.makeLeaderBlock(jsonObject));
 	}
 	

@@ -1,4 +1,4 @@
-package model;
+package util;
 
 import javafx.animation.RotateTransition;
 import javafx.scene.image.Image;

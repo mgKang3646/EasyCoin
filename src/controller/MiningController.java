@@ -2,13 +2,14 @@ package controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import model.CircleRotate;
 import model.MiningCenter;
+import util.CircleRotate;
 
 
 public class MiningController implements Controller{

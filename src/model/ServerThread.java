@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import json.ServerThreadReceive;
+import util.P2PNet;
 
 
 public class ServerThread extends Thread {

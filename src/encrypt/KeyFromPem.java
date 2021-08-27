@@ -22,9 +22,9 @@ public class KeyFromPem {
 		return this.userName;
 	}
 
-	public PrivateKey readPrivateKeyFromPemFile(String privateKeyName) throws IOException, NoSuchAlgorithmException  {
+	public PrivateKey readPrivateKeyFromPemFile(String privateKeyPath) throws IOException, NoSuchAlgorithmException  {
 		try { 
-			String tmpPem = makeStringFromPem(privateKeyName); //  Pem파일 String 객체로 만들기
+			String tmpPem = makeStringFromPem(privateKeyPath); //  Pem파일 String 객체로 만들기
 			String userName = findUserName(tmpPem); // userName 확보하기
 			String pem = eliminateDeadCode(tmpPem, userName); // 불필요한 부분 제거하기
 			
@@ -41,9 +41,9 @@ public class KeyFromPem {
 		}
 	}
 	
-	public PublicKey readPublicKeyFromPemFile(String publicKeyName) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public PublicKey readPublicKeyFromPemFile(String publicKeyPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		try {
-			String tmpPem = makeStringFromPem(publicKeyName); //  Pem파일 String 객체로 만들기
+			String tmpPem = makeStringFromPem(publicKeyPath); //  Pem파일 String 객체로 만들기
 			String userName = findUserName(tmpPem); // userName 확보하기
 			String pem = eliminateDeadCode(tmpPem, userName); // 불필요한 부분 제거하기
 			
