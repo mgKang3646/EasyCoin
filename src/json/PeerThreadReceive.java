@@ -21,13 +21,11 @@ public class PeerThreadReceive{
 	private JsonObject jsonObject;
 	private Block tmpBlock;
 	private BlockMaker blockMaker;
-	private BlockVerify blockVerify;
 	private JsonSend jsonSend;
 	private PeerThread peerThread;
 	private int blockNum;
 
 	public PeerThreadReceive() {
-		blockVerify = BlockChain.getBlockverify();
 		blockMaker = new BlockMaker();
 	}
 	
@@ -62,17 +60,12 @@ public class PeerThreadReceive{
 	private void verifyBlock() {
 		tmpBlock = blockMaker.makeTmpBlock(jsonObject);
 		tmpBlock.verifyBlock(jsonObject.getString("hash"));
-		blockVerify.setTmpBlock(tmpBlock);
-		blockVerify.setIsMinedBlock(false);
-		blockVerify.doPoll(true); // 채굴자
-		blockVerify.doPoll(tmpBlock.isValid()); // 검증자
-		blockVerify.waitOtherPeerPoll();
-		blockVerify.broadCastingVerifiedResult();
+		BlockChain.getBlockVerify().verifyOtherMinedBlock(tmpBlock);
+		BlockChain.getBlockChainSend().broadCastingVerifiedResult(tmpBlock);
 	}
 	
 	private void handleVerifyResult() {
-		blockVerify.doPoll(jsonObject.getBoolean("verifyResult"));
-		blockVerify.waitOtherPeerPoll();
+		BlockChain.getBlockVerify().handleVerifyResult(jsonObject.getBoolean("verifyResult"));
 	}
 	
 	private void responseBlockNum() {

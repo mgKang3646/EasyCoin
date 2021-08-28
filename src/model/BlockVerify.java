@@ -1,135 +1,102 @@
 package model;
 
-import controller.MiningController;
-import javafx.application.Platform;
-import json.JsonSend;
-import newview.FxmlLoader;
-import newview.NewView;
-import newview.ViewURL;
-import util.P2PNet;
+import util.ThreadUtil;
 
 public class BlockVerify {
 	
 	private Block tmpBlock;
-	private JsonSend jsonSend;
-	private NewView newView;
 	private int grantedNum;
-	private boolean isVerifying;
-	private boolean isFirst;
-	private boolean isTmpBlockGranted;
-	private boolean isMinedBlock;
+	private BlockVerifyState blockVerifyState;
+	private MiningState verifyResult;
 
 	
 	public BlockVerify() {
-		isFirst = true;
-		newView = new NewView();
+		blockVerifyState = new BlockVerifyState();
 	}
 	
-	public void setTmpBlock(Block tmpBlock) {
+	public BlockVerifyState getBlockVerifyState() {
+		return blockVerifyState;
+	}
+	
+	public void verifyOtherMinedBlock(Block tmpBlock) {
+		setTmpBlock(tmpBlock);
+		blockVerifyState.setMinedBlock(false);
+		doPoll(true); // 채굴자
+		doPoll(tmpBlock.isValid()); // 검증자
+		waitOtherPeerPoll();
+	}
+	
+	public void verifyMyMinedBlock(Block tmpBlock) {
+		setTmpBlock(tmpBlock);
+		blockVerifyState.setMinedBlock(true);
+		BlockChain.getBlockChainSend().broadCastingMinedBlock(tmpBlock);
+		doPoll(true);
+		waitOtherPeerPoll();
+	}
+	
+	public void handleVerifyResult(boolean verifyResult) {
+		doPoll(verifyResult);
+		waitOtherPeerPoll();
+	}
+	
+	private void setTmpBlock(Block tmpBlock) {
 		this.tmpBlock = tmpBlock;
 	}
 	
-	public void doPoll(boolean result) {
+	private void doPoll(boolean result) {
 		if(result) grantedNum++;
 	}
 	
-	public void waitOtherPeerPoll() {
-		if(isFirst) {
-			isFirst = false;
-			setVerifying(true);
+	private void waitOtherPeerPoll() {
+		if(blockVerifyState.isFirst()) {
+			blockVerifyState.setFirst(false);
+			blockVerifyState.setVerifying(true);
 			startPoll();
 		}
-	}
-	
-	public void initialize() {
-		tmpBlock = null;
-		grantedNum = 0;
-		isTmpBlockGranted = false;
-		isVerifying = false;
-		isFirst = true;
 	}
 	
 	private void startPoll()  {
 		Thread thread = new Thread() {
 			public void run() {
-				MiningController mc = FxmlLoader.getFXMLLoader(ViewURL.miningURL).getController();
-				mc.verifyUI();
-				sleepThread(5000);
+				BlockChain.getBlockChainView().startVerify();
+				ThreadUtil.sleepThread(5000);
 				setTmpBlockGranted();
-				if(isTmpBlockGranted&&tmpBlock.isValid()) BlockChain.getBlocklist().applyBlock(tmpBlock);
-				setVerifying(false);
-				mc.basicUI();
-				viewResult();
+				setResult();
+				applyBlock();
+				blockVerifyState.setVerifying(false);
+				BlockChain.getBlockChainView().endVerify();
+				BlockChain.getBlockChainView().showResult(verifyResult);
+				BlockChain.resetBLockVerify();
 			}
 		};
 		thread.start();
 	}
 
-	private void sleepThread(int time) {
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private void setTmpBlockGranted() {
 		printTmpBlockGrantedRate();
-		if( grantedNum / getTotal() >= 0.51 ) {
-			isTmpBlockGranted = true;
-		}else {
-			isTmpBlockGranted = false;
-		}
+		if( grantedNum / getTotal() >= 0.51 ) blockVerifyState.setTmpBlockGranted(true); 
+		else blockVerifyState.setTmpBlockGranted(false);
 	}
 	
-	private void viewResult() { 
-		Platform.runLater(()->{
-			if(isTmpBlockGranted&&tmpBlock.isValid()) {
-				if(isMinedBlock) newView.getNewWindow(ViewURL.miningResultURL,MiningState.MININGGRANTED);
-				else newView.getNewWindow(ViewURL.miningResultURL,MiningState.OTHERMININGGRANTED);
-			}else {
-				String msg = "블럭검증에 실패했습니다";
-				newView.getNewWindow(ViewURL.popupURL,msg);
-			}
-			initialize(); // 관심사 분리 요망
-		});
+	private void setResult() {
+		if(blockVerifyState.isTmpBlockGranted()&&tmpBlock.isValid()) {
+			if(blockVerifyState.isMinedBlock()) verifyResult = MiningState.MININGGRANTED;
+			else verifyResult = MiningState.OTHERMININGGRANTED;
+		}else verifyResult = MiningState.FAILEDGRANTED;
 	}
 	
+	private void applyBlock() {
+		if(blockVerifyState.isTmpBlockGranted()&&tmpBlock.isValid()) BlockChain.getBlocklist().applyBlock(tmpBlock);
+	}
+	
+	public MiningState getResult() {
+		return verifyResult;
+	}
 	
 	public Block getTmpBlock() {
 		return tmpBlock;
 	}
-	
-	public boolean isTmpBlockGranted() {
-		return isTmpBlockGranted;
-	}
-	
-	public boolean isFirst() {
-		return isFirst();
-	}
-	
-	public boolean isVerifying() {
-		return isVerifying;
-	}
-	
-	public void setIsMinedBlock(boolean value) {
-		isMinedBlock = value;
-	}
-	
-	public void broadCastingMinedBlock() {
-		jsonSend = new JsonSend(P2PNet.getServerListener());
-		jsonSend.sendBlockMinedMessage(tmpBlock);
-	}
-	
-	public void broadCastingVerifiedResult() {
-		jsonSend = new JsonSend(P2PNet.getServerListener());
-		jsonSend.sendVerifiedResultMessage(tmpBlock.isValid());
-	}
-	
-	private void setVerifying(boolean value) {
-		isVerifying = value;
-	}
-	
+
 	private double getTotal() {
 		return Peer.peerList.getSize()+1;
 	}

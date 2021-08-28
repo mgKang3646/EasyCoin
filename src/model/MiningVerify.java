@@ -2,23 +2,13 @@ package model;
 
 public class MiningVerify {
 
-	private BlockVerify blockVerify;
-	public MiningVerify() {
-		blockVerify = BlockChain.getBlockverify();
-	}
 	
 	public void doVerify(Block tmpBlock) {
-		if(!blockVerify.isVerifying()) {
-			blockVerify.setTmpBlock(tmpBlock);
-			blockVerify.setIsMinedBlock(true);
-			blockVerify.broadCastingMinedBlock();
-			blockVerify.doPoll(true);
-			blockVerify.waitOtherPeerPoll();
-		}
+		if(!BlockChain.getBlockVerify().getBlockVerifyState().isVerifying()) BlockChain.getBlockVerify().verifyMyMinedBlock(tmpBlock);
 	}
 	
 	public void waitVerifying() {
-		while(blockVerify.isVerifying()) {
+		while(BlockChain.getBlockVerify().getBlockVerifyState().isVerifying()) {
 			try {
 				System.out.println("검증 결과 대기");
 				Thread.sleep(1000);

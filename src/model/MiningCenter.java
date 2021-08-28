@@ -9,7 +9,6 @@ public class MiningCenter {
 	private Mining mining;
 	private MiningVerify miningVerify;
 	private MiningController miningController;
-	private BlockVerify blockVerify;
 	private boolean isStop;
 	
 	public MiningCenter() {
@@ -36,7 +35,6 @@ public class MiningCenter {
 	}
 	
 	private void startRoutine() {
-		blockVerify = BlockChain.getBlockverify();
 		miningController = FxmlLoader.getFXMLLoader(ViewURL.miningURL).getController();
 		miningController.startUI();
 		mining.startMining();
@@ -44,7 +42,7 @@ public class MiningCenter {
 	}
 	
 	private void miningRoutine() {
-		while(!blockVerify.isVerifying()) {
+		while(!BlockChain.getBlockVerify().getBlockVerifyState().isVerifying()) {
 			Thread.onSpinWait();
 			if(isStop) break;
 			if(mining.isMined()) {

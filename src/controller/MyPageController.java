@@ -2,12 +2,14 @@ package controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import model.Peer;
+import model.Wallet;
 import newview.NewView;
 import newview.ViewURL;
 
@@ -24,10 +26,12 @@ public class MyPageController implements Controller  {
 	
 	private String contentPage;
 	private NewView newView;
+	private Wallet wallet;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		newView = new NewView();
+		wallet = new Wallet();
 	}
 	@Override
 	public void throwObject(Object object) {}
@@ -35,6 +39,29 @@ public class MyPageController implements Controller  {
 	public void execute() {
 		setUserName();
 		setButton();
+		resetBalance();
+	}
+	
+	public void resetBalance() {
+		Thread thread = new Thread() {
+			public void run() {
+				while(true) {
+					Platform.runLater(()->{
+							balanceTextField.setText(wallet.getBalance()+"");
+					});
+					sleepThread(3000);
+				}
+			}
+		};
+		thread.start();
+	}
+	
+	private void sleepThread(int time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void setButton() {
@@ -69,7 +96,6 @@ public class MyPageController implements Controller  {
 	private void setEnrollButtonAction() {
 		enrollButton.setOnAction(ActionEvent->{
 			newView.getNewWindow(ViewURL.enrollPkURL);
-
 		});
 	}
 }

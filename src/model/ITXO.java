@@ -12,6 +12,12 @@ public class ITXO {
 		itxoList.add(itxo);
 	}
 	
+	public void addUtxoToItxoList() {
+		for(TransactionOutput utxo : Wallet.utxo.searchUTXO(Peer.myPeer.getPublicKey())) {
+			itxoList.add(makeITXO(utxo));
+		}
+	}
+	
 	public TransactionInput makeITXO(TransactionOutput utxo) {
 		TransactionInput itxo = new TransactionInput();
 		itxo.setMiner(utxo.getMiner());

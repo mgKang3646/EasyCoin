@@ -3,12 +3,15 @@ package controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import model.EnrollPublicKey;
 import model.Peer;
+import model.TransactionOutput;
+import model.Wallet;
 
 public class EnrollPublicKeyController implements Controller {
 	@FXML private Button enrollButton;
@@ -16,10 +19,12 @@ public class EnrollPublicKeyController implements Controller {
 	@FXML private Label enrollLabel;
 	
 	private EnrollPublicKey enrollPublicKey;
+	private Wallet wallet;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		enrollPublicKey = new EnrollPublicKey();
+		wallet = new Wallet();
 	}
 
 	@Override
@@ -62,7 +67,7 @@ public class EnrollPublicKeyController implements Controller {
 		validLabel.setVisible(false);
 		enrollLabel.setText("계좌 등록 완료");
 		Peer.myPeer.setPublicKey(enrollPublicKey.getPublicKey());
-		// 잔액 정산 프로세스 실행
+		wallet.requestITXO();
 	}
 	
 	private Stage getStage() {

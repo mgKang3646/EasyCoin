@@ -9,6 +9,7 @@ public class Wallet {
 	private JsonSend jsonSend;
 	
 	public float getBalance() {
+		itxo.addUtxoToItxoList();
 		return itxo.getBalance();
 	}
 	
