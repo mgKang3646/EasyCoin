@@ -11,6 +11,8 @@ import model.BlockMaker;
 import model.OtherPeer;
 import model.Peer;
 import model.PeerThread;
+import model.TransactionInput;
+import model.Wallet;
 import util.P2PNet;
 
 public class ServerThreadReceive{
@@ -41,6 +43,7 @@ public class ServerThreadReceive{
 				case "responseBlockNum" : aggregateBlockNum(); break;
 				case "requestLeaderBlock" : reponseLeaderBlocks(); break;
 				case "responseLeaderBlock" : getLeaderBlock(); break;
+				case "responseITXO" : handleITXO(); break;
 				default : break;
 			}
 		} catch (Exception e) {
@@ -86,6 +89,13 @@ public class ServerThreadReceive{
 			BlockChain.getBlocklist().applyBlock(blockMaker.makeLeaderBlock(jsonObject));
 		}
 		else BlockChain.getBlocklist().applyBlock(blockMaker.makeLeaderBlock(jsonObject));
+	}
+	
+	private void handleITXO() {
+		if(Wallet.itxo.verifyITXO(jsonObject)) {
+			TransactionInput itxo = Wallet.itxo.makeITXO(jsonObject);
+			Wallet.itxo.addITXO(itxo);
+		}
 	}
 	
 	private void sleepThread(int time) {

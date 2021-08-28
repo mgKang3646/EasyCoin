@@ -33,50 +33,40 @@ public class WireController implements Controller {
 	public void execute() {
 		wire = new Wire();
 		initializeUI();
+		setMyPublicText();
 		setMyPublicButtonAction();
 		setOtherPublicButtonAction();
 		setWireButtonAction();
 	}
 	
+	private void setMyPublicText() {
+		if(Peer.myPeer.getPublicKey() != null) {
+			myPublicKeyText.setText(Peer.myPeer.getUserName());
+		}
+	}
+	
 	private void setMyPublicButtonAction() {
 		myPublicButton.setOnAction(ActionEvent->{
-			wire.settingPublicKey(getStage());
-			if(isValidPublicKey() == 1) {
-				if(wire.isUserNameEqual(Peer.myPeer.getUserName())) {
-					setMyPublicKey();
-					validLabel.setVisible(false);
-				}
-				else {
-					myPublicKeyText.setText("");
-					showValidLabel("본인 계좌가 아닙니다.");
-				}
-			}
-			else if(isValidPublicKey() == 0) {
-				myPublicKeyText.setText("");
-				showValidLabel("잘못된 파일 형식입니다.");
+			switch(wire.searchPublicKey(getStage())) {
+				case NONEFILE : break;
+				case NONEKEY : doNoneKeyMyPublic(); break;
+				case NOTEQUALUSERNAME : doNotEqualUserNameMyPublic(); break;
+				case EQUALUSERNAME : doEqualUserNameMyPublic(); break;
+				default : break;
 			}
 		});
 	}
-	
+
 	private void setOtherPublicButtonAction() {
 		otherPublicButton.setOnAction(ActionEvent->{
-			wire.settingPublicKey(getStage());
-			if(isValidPublicKey() == 1) {
-				if(wire.isUserNameEqual(Peer.myPeer.getUserName())) {
-					myPublicKeyText.setText("");
-					showValidLabel("본인 계좌입니다.");
-				}
-				else {
-					setOtherPublicKey();
-					validLabel.setVisible(false);
-				}
-			}
-			else if(isValidPublicKey() == 0) {
-				otherPublicKeyText.setText("");
-				showValidLabel("잘못된 파일 형식입니다.");
+				switch(wire.searchPublicKey(getStage())) {
+				case NONEFILE : break;
+				case NONEKEY : doNoneKeyOtherPublic(); break;
+				case NOTEQUALUSERNAME : doNotEqualUserNameOtherPublic(); break;
+				case EQUALUSERNAME : doEqualUserNameOtherPublic(); break;
+				default : break;
 			}
 		});
-		
 	}
 	
 	private void setWireButtonAction() {
@@ -87,22 +77,42 @@ public class WireController implements Controller {
 		});
 	}
 	
-	private void setMyPublicKey() {
+	private void doNoneKeyMyPublic() {
+		myPublicKeyText.setText("");
+		showValidLabel("잘못된 파일 형식입니다.");
+	}
+	
+	private void doNotEqualUserNameMyPublic() {
+		myPublicKeyText.setText("");
+		showValidLabel("본인 계좌가 아닙니다.");
+	}
+	
+	private void doEqualUserNameMyPublic() {
 		Peer.myPeer.setPublicKey(wire.getPublicKey());
+		System.out.println("내 계좌 이름 : " + wire.getUserName());
 		myPublicKeyText.setText(wire.getUserName());
+		validLabel.setVisible(false);
 	}
 	
-	private void setOtherPublicKey() {
+	private void doNoneKeyOtherPublic() {
+		otherPublicKeyText.setText("");
+		showValidLabel("잘못된 파일 형식입니다.");
+	}
+	
+	private void doNotEqualUserNameOtherPublic() {
+		validLabel.setVisible(false);
+		System.out.println("상대 계좌 이름 : " + wire.getUserName());
 		otherPublicKeyText.setText(wire.getUserName());
+		//recipient PublicKey 저장
+		
 	}
 	
-	private int isValidPublicKey() {
-		if(wire.isFile()) {
-			if(wire.isPublicKey()) return 1;
-			else return 0;
-		}
-		return -1;
+	private void doEqualUserNameOtherPublic() {
+		otherPublicKeyText.setText("");
+		showValidLabel("본인 계좌입니다.");
 	}
+	
+	
 	
 	private boolean wireValidCheck() {
 		if(myPublicKeyText.getText().equals("")) {

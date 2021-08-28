@@ -16,6 +16,7 @@ public class FxmlScene extends ViewURL {
 	public static Scene connectionScene;
 	public static Scene refreshScene;
 	public static Scene wireScene;
+	public static Scene EnrollPkScene;
 	
 	public static Scene getFXMLScene(String url) {
 		switch(url){
@@ -31,6 +32,7 @@ public class FxmlScene extends ViewURL {
 			case connectionTableURL : return connectionScene;
 			case refreshURL : return refreshScene;
 			case wireURL : return wireScene;
+			case enrollPkURL : return EnrollPkScene;
 			default : return null;
 		}
 	}
@@ -48,6 +50,7 @@ public class FxmlScene extends ViewURL {
 		connectionScene = getScene(connectionTableURL);
 		refreshScene = getScene(refreshURL);
 		wireScene = getScene(wireURL);
+		EnrollPkScene = getScene(enrollPkURL);
 	}
 	
 	private Scene getScene(String url) {

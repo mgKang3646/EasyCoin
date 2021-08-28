@@ -1,22 +1,39 @@
 package application;
 
-import java.io.IOException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 
-import javafx.fxml.FXMLLoader;
+import org.bouncycastle.util.encoders.Base64;
+
+import encrypt.GeneratingKey;
+import util.Encoding;
 
 public class Test {
 
 	public void doTest() {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
+		
+		GeneratingKey gk = new GeneratingKey();
+		gk.generateKeyPair();
+		
+		PublicKey publicKey = gk.getPublicKey();
+		System.out.println("인코딩 정 publicKey : " + publicKey.toString());
+		
 		try {
-			loader.load();
-		} catch (IOException e) {
+			String encodingPublicKey = Base64.toBase64String(publicKey.getEncoded());
+			byte[] byteSender = Base64.decode(encodingPublicKey);
+			X509EncodedKeySpec spec1 = new X509EncodedKeySpec(byteSender);
+			KeyFactory factory1 = KeyFactory.getInstance("ECDSA","BC");
+			PublicKey sender = factory1.generatePublic(spec1);
+			System.out.println("인코딩 후 publickey : " + sender.toString());
+
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println("parent1 : " + loader.getRoot().toString());
-		System.out.println("parent2 : " + loader.getRoot().toString());
-		System.out.println("loader1 : " + loader.getController().toString());
-		System.out.println("loader2 : " + loader.getController().toString());
+		
 	}
 }

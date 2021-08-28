@@ -6,76 +6,44 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
-import encrypt.KeyFromPem;
+import encrypt.Pem;
+import encrypt.PemState;
 import javafx.stage.Stage;
-import util.PemFileChooser;
+import newview.FxmlStage;
 
 public class Wire {
 	
-	private PemFileChooser pemFileChooser;
-	private KeyFromPem keyFromPem;
 	private PublicKey publicKey;
 	private String userName;
 	private File file;
+	private Pem pem;
 
-	
 	public Wire() {
-		pemFileChooser = new PemFileChooser();
-		keyFromPem = new KeyFromPem();
+		pem = new Pem();
 	}
 	
-	public void settingPublicKey(Stage stage) {
-		setPublicKeyPemFile(stage);
+	public PemState searchPublicKey(Stage stage) {
+		String title = "publicKey를 선택해주세요";
+		file = pem.getPemFileFromFileChooser(stage,title);
 		if(file != null) {
-			setPublicKey();
+			publicKey = pem.getPublicKey(file);
 			if(publicKey != null) {
-				setUserName();
-			}
-		}
+				userName = pem.getUserName(file);
+				if(userName.equals(Peer.myPeer.getUserName())) return PemState.EQUALUSERNAME;
+				else return PemState.NOTEQUALUSERNAME;
+			}else return PemState.NONEKEY;
+		}else return PemState.NONEFILE;
 	}
 	
-	private void setPublicKeyPemFile(Stage stage) {
-			String title = "publicKey를 선택해주세요";
-			file = pemFileChooser.getFileFromFileChooeser(stage,title);
-	}
-	
-	private void setPublicKey() {
-		try {
-			publicKey = keyFromPem.readPublicKeyFromPemFile(file.getPath());
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void setUserName() {
-		userName = keyFromPem.getUserName();
-	}
-
 	public PublicKey getPublicKey() {
 		return publicKey;
 	}
 
 	public String getUserName() {
-		return userName;
+		return pem.getUserName(file);
 	}
 
 	public File getFile() {
 		return file;
 	}
-	
-	public boolean isPublicKey() {
-		if(publicKey != null) return true;
-		else return false;
-	}
-	
-	public boolean isFile() {
-		if(file != null) return true;
-		else return false;
-	}
-	
-	public boolean isUserNameEqual(String myName) {
-		if(userName.equals(myName)) return true;
-		else return false;
-	}
-	
 }

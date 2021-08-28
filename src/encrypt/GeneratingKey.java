@@ -12,11 +12,6 @@ public class GeneratingKey {
 	private PrivateKey privateKey;
 	private PublicKey publicKey;
 	
-	
-	
-	public GeneratingKey() {
-		generateKeyPair();
-	}
 	public PrivateKey getPrivateKey() {
 		return privateKey;
 	}

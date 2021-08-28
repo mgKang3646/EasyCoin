@@ -1,4 +1,4 @@
-package util;
+package encrypt;
 
 import java.io.File;
 
@@ -13,11 +13,9 @@ public class PemFileChooser {
 		fileChooser = new FileChooser();
 	}
 	
-	public File getFileFromFileChooeser(Stage stage, String title) {
+	public File getFileFromFileChooser(Stage stage, String title) {
 		fileChooser.setTitle(title);
 		fileChooser.setInitialDirectory(new File("./pem"));
 		return fileChooser.showOpenDialog(stage);
 	}
-	
-	
 }

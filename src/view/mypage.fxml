@@ -27,6 +27,11 @@
                         <Image url="@../image/userIcon.png" />
                      </image>
                   </ImageView>
+                  <Button fx:id="enrollButton" layoutX="226.0" layoutY="16.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="145.0" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="계좌 등록" textFill="WHITE">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
            </children>
             </Pane>
             <AnchorPane layoutX="14.0" layoutY="60.0" prefHeight="531.0" prefWidth="907.0" style="-fx-background-color: #131022; -fx-background-radius: 10;" stylesheets="@../css/fullpackstyling.css">

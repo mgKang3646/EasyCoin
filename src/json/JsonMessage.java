@@ -1,6 +1,7 @@
 package json;
 
 import java.io.StringWriter;
+import java.security.PublicKey;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -9,6 +10,8 @@ import javax.json.JsonObjectBuilder;
 import model.Block;
 import model.BlockChain;
 import model.Peer;
+import model.TransactionInput;
+import util.Encoding;
 
 public class JsonMessage {
 	
@@ -70,12 +73,26 @@ public class JsonMessage {
 		return changeJsonToString(job.build());
 	}
 	
+	public String jsonRequestITXO(PublicKey recipient) {
+		JsonObjectBuilder job = Json.createObjectBuilder();
+		job.add("identifier", "requestITXO");
+		job.add("recipient",Encoding.encodeKey(recipient));
+		return changeJsonToString(job.build());
+	}
+	
+	public String jsonResponseITXO(TransactionInput itxo) {
+		JsonObjectBuilder job = Json.createObjectBuilder();
+		job.add("identifier", "responseITXO");
+		job.add("miner",itxo.getMiner());
+		job.add("utxoHash", itxo.getUtxoHash());
+		job.add("inputValue", itxo.getInputValue()+""); // 주의! float -> 문자열 변환
+		job.add("itxoHash", itxo.getItxoHash());
+		return changeJsonToString(job.build());
+	}
+	
 	private String changeJsonToString(JsonObject obj) {
 		StringWriter sw = new StringWriter();
 		Json.createWriter(sw).writeObject(obj);
 		return sw.toString();
 	}
-	
-	
-
 }

@@ -42,4 +42,11 @@ public class BlockList {
 		dao.deleteAllBlock(Peer.myPeer.getUserName());
 		blocks = new ArrayList<Block>();
 	}
+	
+	public void getBlocksFromDB() {
+		ArrayList<Block> blocks = dao.getBlocks();
+		BlockMaker blockMaker = new BlockMaker();
+		if(blocks.size() != 0) setBlocks(blocks);
+		else BlockChain.getBlocklist().applyBlock(blockMaker.makeGenesisBlock());
+	}
 }

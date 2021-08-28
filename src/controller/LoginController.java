@@ -7,7 +7,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import model.BlockChain;
 import model.Login;
+import model.Peer;
 import newview.NewView;
 import newview.ViewURL;
 
@@ -45,14 +47,24 @@ public class LoginController implements Controller  {
 	}
 	
 	private void loginButtonAction() {
-		login.doLogin();
-		if(login.isGetFile()) {
-			if(login.isGetPrivateKey()) newView.getNewWindow(ViewURL.networkingURL);
-			else {
-				String msg = "잘못된 개인키 형식입니다.";
-				newView.getNewWindow(ViewURL.popupURL,msg);
-			}
+		switch(login.doLogin()) {
+			case NONEFILE : break;
+			case NONEKEY : showErrorPopup(); break;
+			case KEYEXISTED : login(); break;
+			default : break;
 		}
+	}
+
+	private void login() {
+		Peer.myPeer.setMyPeerFromDB(login.getUserName());
+		Peer.myPeer.setPrivateKey(login.getPrivateKey());
+		BlockChain.blockList.getBlocksFromDB();
+		newView.getNewWindow(ViewURL.networkingURL);
+	}
+	
+	public void showErrorPopup() {
+		String msg = "잘못된 개인키 형식입니다.";
+		newView.getNewWindow(ViewURL.popupURL,msg);
 	}
 	
 	private void joinButtonAction() {

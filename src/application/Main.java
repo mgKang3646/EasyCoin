@@ -11,7 +11,9 @@ import newview.FxmlStage;
 import newview.NewView;
 import newview.ViewURL;
 
-//WireController 구현 중... Wire 구현중 리팩토링 하면서 코드 작성하기 ( KeyFromPem 리팩토링 필요 PemFileChooser 위치 생각해보기)
+// Pem 파일 리팩토링 완료 파일탐색기 리팩토링 추가후 Enroll과 Login과 Wire 리팩토링 실시
+// 잔액 확인 구현
+// 거래 구현
 public class Main extends Application {
 	
 	@Override

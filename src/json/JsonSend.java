@@ -1,9 +1,11 @@
 package json;
 
+import java.security.PublicKey;
+
 import model.Block;
 import model.PeerThread;
 import model.ServerListener;
-import model.ServerThread;
+import model.TransactionInput;
 
 public class JsonSend {
 	
@@ -53,6 +55,16 @@ public class JsonSend {
 	
 	public void sendResponseLeaderBlockMessage(Block block) {
 		String msg = jsonMessage.jsonResponseLeaderBlockMessage(block);
+		peerThread.send(msg);
+	}
+	
+	public void sendRequestITXOMessage(PublicKey recipient) {
+		String msg = jsonMessage.jsonRequestITXO(recipient);
+		serverListener.send(msg);
+	}
+	
+	public void sendResponseITXOMessage(TransactionInput itxo) {
+		String msg = jsonMessage.jsonResponseITXO(itxo);
 		peerThread.send(msg);
 	}
 }

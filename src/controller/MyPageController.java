@@ -15,6 +15,7 @@ public class MyPageController implements Controller  {
 	
 	@FXML private Button miningButton;
 	@FXML private Button blockchainButton;
+	@FXML private Button enrollButton;
 	@FXML private TextField idText;
 	@FXML private Button wireButton;
 	@FXML private Button connectionTableButton;
@@ -41,6 +42,7 @@ public class MyPageController implements Controller  {
 		setButtonAction(connectionTableButton,"connectionTable");
 		setButtonAction(miningButton,"mining");
 		setWireButtonAction();
+		setEnrollButtonAction();
 	}
 	
 	public void goIndexPage(){
@@ -61,6 +63,13 @@ public class MyPageController implements Controller  {
 	private void setWireButtonAction() {
 		wireButton.setOnAction(ActionEvent ->{
 			newView.getNewWindow(ViewURL.wireURL);
+		});
+	}
+	
+	private void setEnrollButtonAction() {
+		enrollButton.setOnAction(ActionEvent->{
+			newView.getNewWindow(ViewURL.enrollPkURL);
+
 		});
 	}
 }

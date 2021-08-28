@@ -3,6 +3,9 @@ package model;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
+import database.Dao;
+import database.PeerDto;
+
 public class MyPeer {
 	
 	private PrivateKey privateKey;
@@ -10,6 +13,11 @@ public class MyPeer {
 	private String userName;
 	private String localhost;
 	private boolean isLeader;
+	private Dao dao;
+	
+	public MyPeer() {
+		dao = new Dao();
+	}
 	
 	public String getUserName() {
 		return userName;
@@ -40,5 +48,11 @@ public class MyPeer {
 	}
 	public void setLeader(boolean isLeader) {
 		this.isLeader = isLeader;
+	}
+	
+	public void setMyPeerFromDB(String userName) {
+		PeerDto peerDto = dao.getPeer(userName);
+		setUserName(peerDto.getUserName());
+		setLocalhost(peerDto.getLocalhost());
 	}
 }

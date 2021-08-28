@@ -1,6 +1,6 @@
 package model;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import util.Encoding;
 
 public class Block {
 	private int num;
@@ -48,7 +48,7 @@ public class Block {
 	}
 
 	public void generateHash() {
-		hash = DigestUtils.sha256Hex(nonce + timestamp + previousBlockHash);
+		hash = Encoding.getSHA256HexHash(nonce + timestamp + previousBlockHash);
 	}
 	public void verifyBlock(String inputHash) {
 		if(inputHash.equals(getHash())) isValid = true;

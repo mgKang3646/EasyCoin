@@ -9,13 +9,11 @@ public class Join {
 	private Dao dao;
 	private Pem pem;
 	private String userName;
-	private GeneratingKey generatingKey;
 	private boolean joinResult;
 	
 	public Join() {
 		dao = new Dao();
 		pem = new Pem();
-		generatingKey = new GeneratingKey();
 	}
 	
 	public void setUserName(String userName) {
@@ -34,8 +32,9 @@ public class Join {
 	}
 	
 	private void makePemFile() {
-		pem.setUserName(userName); 
-		pem.makePrivateAndPublicPemFile(generatingKey.getPrivateKey(), generatingKey.getPublicKey());
+		pem.generateKey();
+		pem.writePemFile(pem.getPrivateKey(), userName);
+		pem.writePemFile(pem.getPublicKey(), userName);
 	}
 	
 	private void storeDB() {
