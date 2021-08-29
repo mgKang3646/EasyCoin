@@ -31,6 +31,7 @@ public class ServerThread extends Thread {
 				serverThreadReceive.read(bufferedReader);
 			}
 		}catch(Exception e) { 
+			System.out.println(Peer.myPeer.getUserName()+"ÀÇ ServerThread Á¾·á");
 				try {
 					e.printStackTrace();
 					closeIO();

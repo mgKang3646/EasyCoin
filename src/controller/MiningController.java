@@ -6,17 +6,20 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import model.MiningCenter;
+import model.Peer;
 import util.CircleRotate;
 
 
 public class MiningController implements Controller{
 	
-	
+	//리팩토링 필요
 	@FXML private Button miningButton;
 	@FXML private Pane blockContent;
+	@FXML private Label validLabel;
 	@FXML private Circle c1;
 	@FXML private Circle c2;
 	
@@ -24,6 +27,7 @@ public class MiningController implements Controller{
 	private CircleRotate cr1;
 	private CircleRotate cr2;
 	private boolean isMining;
+	private boolean isVerifying;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -38,7 +42,22 @@ public class MiningController implements Controller{
 
 	@Override
 	public void execute() {
+		setPossibleMining();
 		setButtonAction();
+	}
+	
+	private void setPossibleMining() {
+		if(Peer.myPeer.getPublicKey() == null) {
+			miningButton.setDisable(true);
+			validLabel.setVisible(true);
+		}else {
+			if(!isVerifying) {
+				miningButton.setDisable(false);
+				validLabel.setVisible(false);
+			}else {
+				validLabel.setVisible(false);
+			}
+		}
 	}
 	
 	private void setButtonAction() {
@@ -53,17 +72,13 @@ public class MiningController implements Controller{
 	}
 	
 	private void startMining() {
-		setIsMining(true);
+		setMining(true);
 		miningCenter.start();
 	}
 	
 	private void stopMining() {
-		setIsMining(false);
+		setMining(false);
 		miningCenter.stop();
-	}
-	
-	private void setIsMining(boolean result) {
-		isMining = result;
 	}
 	
 	public void startUI() {
@@ -76,8 +91,10 @@ public class MiningController implements Controller{
 	
 	public void stopUI() {
 		Platform.runLater(()->{
+			setVerifying(false);
 			miningButton.setText("채굴 시작");
-			miningButton.setDisable(false);
+			if(Peer.myPeer.getPublicKey() == null) miningButton.setDisable(true);
+			else miningButton.setDisable(false);
 			cr1.stop();
 			cr2.stop();
 		});
@@ -85,6 +102,7 @@ public class MiningController implements Controller{
 	
 	public void verifyUI() {
 		Platform.runLater(()->{
+			setVerifying(true);
 			miningButton.setText("검증 중...");
 			miningButton.setDisable(true);
 		});
@@ -92,8 +110,18 @@ public class MiningController implements Controller{
 	
 	public void basicUI() {
 		Platform.runLater(()->{
+			setVerifying(false);
 			miningButton.setText("채굴 시작");
-			miningButton.setDisable(false);
+			if(Peer.myPeer.getPublicKey() == null) miningButton.setDisable(true);
+			else miningButton.setDisable(false);
 		});
+	}
+	
+	private void setMining(boolean result) {
+		isMining = result;
+	}
+	
+	private void setVerifying(boolean result) {
+		isVerifying = result;
 	}
 }

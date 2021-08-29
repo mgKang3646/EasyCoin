@@ -1,20 +1,20 @@
 package model;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 
 import encrypt.Pem;
 import encrypt.PemState;
 import javafx.stage.Stage;
-import newview.FxmlStage;
+import json.JsonSend;
+import util.P2PNet;
 
 public class Wire {
 	
 	private PublicKey publicKey;
 	private String userName;
+	private JsonSend jsonSend;
 	private File file;
 	private Pem pem;
 
@@ -35,6 +35,28 @@ public class Wire {
 		}else return PemState.NONEFILE;
 	}
 	
+	public boolean isAfford(float value) {
+		if( value > Wallet.itxo.getBalance()) return false;
+		else return true;
+	}
+	
+	public Transaction makeTransaction(PublicKey recipient, float value) {
+		PublicKey sender = Peer.myPeer.getPublicKey();
+		PrivateKey pk = Peer.myPeer.getPrivateKey();
+		
+		Transaction newTransaction = new Transaction(sender,recipient,value);
+		newTransaction.generateHash();
+		newTransaction.generateSignature(pk);
+		newTransaction.setItxoList(Wallet.itxo.getItxoForTx(value));
+		
+		return newTransaction;
+	}
+	
+	public void broadcastingTX(Transaction tx) {
+		jsonSend = new JsonSend(P2PNet.getServerListener());
+		jsonSend.sendTransactionMessage(tx);
+	}
+		
 	public PublicKey getPublicKey() {
 		return publicKey;
 	}

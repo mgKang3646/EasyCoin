@@ -53,4 +53,11 @@ public class TransactionInput {
 	public void generateItxoHash() {
 		itxoHash = Encoding.getSHA256HexHash(miner + utxoHash + inputValue);
 	}
+
+	public void print() {
+		System.out.println("ITXO 정보 \n");
+		System.out.println("Minner : " +getMiner());
+		System.out.println("금액 : " + getInputValue());
+	}
+	
 }

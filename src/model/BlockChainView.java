@@ -14,6 +14,12 @@ public class BlockChainView {
 		newView = new NewView();
 	}
 	
+	public void showPopUp(String msg) {
+		Platform.runLater(()->{
+			newView.getNewWindow(ViewURL.popupURL,msg);
+		});
+	}
+	
 	public void startVerify() {
 		MiningController mc = FxmlLoader.getFXMLLoader(ViewURL.miningURL).getController();
 		mc.verifyUI();

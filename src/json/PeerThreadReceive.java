@@ -10,12 +10,13 @@ import javax.json.JsonObject;
 import model.Block;
 import model.BlockChain;
 import model.BlockMaker;
-import model.BlockVerify;
 import model.PeerThread;
+import model.Transaction;
 import model.TransactionInput;
 import model.TransactionOutput;
 import model.Wallet;
 import util.Encoding;
+import util.ThreadUtil;
 
 public class PeerThreadReceive{
 	private JsonObject jsonObject;
@@ -53,6 +54,7 @@ public class PeerThreadReceive{
 			case "verifyResult" : handleVerifyResult(); break;
 			case "requestBlockNum" : responseBlockNum(); break;
 			case "requestITXO" : sendUTXO(); break;
+			case "transaction" : handleTransaction(); break;
 			default : break;
 		}
 	}
@@ -81,16 +83,19 @@ public class PeerThreadReceive{
 				TransactionInput itxo = Wallet.itxo.makeITXO(utxo);
 				jsonSend = new JsonSend(peerThread);
 				jsonSend.sendResponseITXOMessage(itxo);
-				sleepThread(350);
+				ThreadUtil.sleepThread(350);
 			}
 		}
 	}
 	
-	private void sleepThread(int time) {
-		try {
-			Thread.sleep(time);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+	private void handleTransaction() {
+		System.out.println("트랜잭션 잘 받음!");
+		Transaction tx = Wallet.txList.makeTransaction(jsonObject);
+		if(Wallet.txList.verifyTransaction(tx)) {
+			Wallet.txList.addTxList(tx);
+			System.out.println("트랜잭션 검증 및 추가 성공");
 		}
+		else System.out.println("트랜잭션 검증 실패");
 	}
+
 }

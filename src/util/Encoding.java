@@ -17,6 +17,14 @@ public class Encoding {
 		return Base64.toBase64String(key.getEncoded());
 	}
 	
+	public static String encodeSignature(byte[] signature) {
+		return Base64.toBase64String(signature);
+	}
+	
+	public static byte[] decodeSinature(String signature) {
+		return Base64.decode(signature);
+	}
+	
 	public static String getSHA256HexHash(String data) {
 		return DigestUtils.sha256Hex(data);
 	}

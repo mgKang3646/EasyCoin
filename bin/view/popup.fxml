@@ -10,12 +10,12 @@
    <children>
       <Pane layoutX="12.0" layoutY="9.0" prefHeight="182.0" prefWidth="386.0" style="-fx-background-color: #000051; -fx-background-radius: 30; -fx-border-color: #1712AB; -fx-border-radius: 30;">
          <children>
-            <Label fx:id="popupLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="59.0" layoutY="37.0" prefHeight="62.0" prefWidth="269.0" text="회원 가입이 완료되었습니다." textAlignment="CENTER" textFill="WHITE">
+            <Label fx:id="popupLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="37.0" prefHeight="62.0" prefWidth="386.0" text="회원 가입이 완료되었습니다." textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
-            <Button fx:id="popupButton" layoutX="99.0" layoutY="111.0" mnemonicParsing="false"  prefHeight="33.0" prefWidth="188.0" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="확인" textFill="WHITE">
+            <Button fx:id="popupButton" layoutX="99.0" layoutY="111.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="188.0" styleClass="button4" stylesheets="@../css/fullpackstyling.css" text="확인" textFill="WHITE">
                <font>
                   <Font size="22.0" />
                </font></Button>

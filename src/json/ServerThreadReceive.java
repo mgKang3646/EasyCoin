@@ -14,6 +14,7 @@ import model.PeerThread;
 import model.TransactionInput;
 import model.Wallet;
 import util.P2PNet;
+import util.ThreadUtil;
 
 public class ServerThreadReceive{
 	private JsonObject jsonObject;
@@ -44,6 +45,7 @@ public class ServerThreadReceive{
 				case "requestLeaderBlock" : reponseLeaderBlocks(); break;
 				case "responseLeaderBlock" : getLeaderBlock(); break;
 				case "responseITXO" : handleITXO(); break;
+				case "deleteUTXO" : deleteUTXO(); break;
 				default : break;
 			}
 		} catch (Exception e) {
@@ -71,15 +73,13 @@ public class ServerThreadReceive{
 	}
 	
 	private void reponseLeaderBlocks() {
-		System.out.println("블럭 요청에 블럭 보내주기");
 		String userName = jsonObject.getString("userName");
-		System.out.println("블럭 요청자 : " + userName);
 		PeerThread peerThread = Peer.peerList.searchOtherPeer(userName).getPeerThread();
 		jsonSend = new JsonSend(peerThread);
 		for(Block block : BlockChain.blockList.getBlocks()) {
 			jsonSend.sendResponseLeaderBlockMessage(block);
 			System.out.println("블럭 송신");
-			sleepThread(300);
+			ThreadUtil.sleepThread(300);
 		}
 	}
 	
@@ -98,11 +98,9 @@ public class ServerThreadReceive{
 		}
 	}
 	
-	private void sleepThread(int time) {
-		try {
-			Thread.sleep(time);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	private void deleteUTXO() {
+		System.out.println("UTXO 제거");
+		String utxoHash = jsonObject.getString("utxoHash");
+		Wallet.utxo.deleteUTXO(utxoHash);
 	}
 }

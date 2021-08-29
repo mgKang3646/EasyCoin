@@ -12,6 +12,14 @@ public class ITXO {
 		itxoList.add(itxo);
 	}
 	
+	public void resetItxoList() {
+		if(Peer.myPeer.getPublicKey() != null) {
+			itxoList = new ArrayList<TransactionInput>();
+			Wallet.walletSend.requestITXO();
+			addUtxoToItxoList();
+		}
+	}
+	
 	public void addUtxoToItxoList() {
 		for(TransactionOutput utxo : Wallet.utxo.searchUTXO(Peer.myPeer.getPublicKey())) {
 			itxoList.add(makeITXO(utxo));
@@ -48,9 +56,25 @@ public class ITXO {
 		else return false;
 	}
 	
+	public ArrayList<TransactionInput> getItxoForTx(float value){
+		ArrayList<TransactionInput> itxos = new ArrayList<TransactionInput>();
+		float sum = 0;
+		System.out.println("Æ®·£Àè¼Ç »ý¼º¿ë itxoµé");
+		for( TransactionInput itxo : itxoList ) {
+			itxo.print();
+			if( sum < value) {
+				sum += itxo.getInputValue();
+				itxos.add(itxo);
+			}else break;
+		}
+		return itxos;
+	}
+	
 	public float getBalance() {
 		float sum = 0;
+		System.out.println("ÀÜ¾× itxo");
 		for(TransactionInput itxo : itxoList) {
+			itxo.print();
 			sum += itxo.getInputValue();
 		}
 		return sum;

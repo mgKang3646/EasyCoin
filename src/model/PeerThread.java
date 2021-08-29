@@ -31,6 +31,7 @@ public class PeerThread extends Thread {
 				peerThreadReceive.read(bufferedReader);
 			}
 		}catch(Exception e) {
+			System.out.println(Peer.myPeer.getUserName()+"ÀÇ PeerThread Á¾·á");
 			try {
 				e.printStackTrace();
 				closeIO();

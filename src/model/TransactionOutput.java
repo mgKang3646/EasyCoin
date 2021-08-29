@@ -14,12 +14,6 @@ public class TransactionOutput {
 	String transactionHash;
 	float value;
 
-	public TransactionOutput(PublicKey recipient, float value, String miner) {
-		this.recipient = recipient;
-		this.value = value;
-		this.miner = miner;
-	}
-	
 	public void generateUtxoHash() {
 		double nonce = Math.random();
 		String recipientEncoding = Encoding.encodeKey(recipient);
@@ -60,5 +54,12 @@ public class TransactionOutput {
 	
 	public void setTransactionHash(String transactionHash) {
 		this.transactionHash = transactionHash;
+	}
+	
+	public void print() {
+		System.out.println("UTXO 정보 \n");
+		System.out.println("UTXO 소유주 : " + getRecipient().getEncoded().toString());
+		System.out.println("Minner : " +getMiner());
+		System.out.println("금액 : " + getValue());
 	}
 }

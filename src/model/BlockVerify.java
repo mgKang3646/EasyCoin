@@ -63,10 +63,15 @@ public class BlockVerify {
 				setTmpBlockGranted();
 				setResult();
 				applyBlock();
-				blockVerifyState.setVerifying(false);
+				reward();
+				Wallet.txList.processTxList(verifyResult);
+				Wallet.txList.resetTxList();
+				ThreadUtil.sleepThread(2000);
+				Wallet.itxo.resetItxoList();
 				BlockChain.getBlockChainView().endVerify();
 				BlockChain.getBlockChainView().showResult(verifyResult);
 				BlockChain.resetBLockVerify();
+				blockVerifyState.setVerifying(false);
 			}
 		};
 		thread.start();
@@ -87,6 +92,14 @@ public class BlockVerify {
 	
 	private void applyBlock() {
 		if(blockVerifyState.isTmpBlockGranted()&&tmpBlock.isValid()) BlockChain.getBlocklist().applyBlock(tmpBlock);
+	}
+	
+	public void reward() {
+		if( verifyResult == MiningState.MININGGRANTED ) {
+			if(Peer.myPeer.getPublicKey() != null) {
+				Wallet.utxo.addRewardUTXO();
+			}
+		}
 	}
 	
 	public MiningState getResult() {

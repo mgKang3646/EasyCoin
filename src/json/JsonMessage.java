@@ -4,12 +4,16 @@ import java.io.StringWriter;
 import java.security.PublicKey;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+
+import org.bouncycastle.util.encoders.Base64;
 
 import model.Block;
 import model.BlockChain;
 import model.Peer;
+import model.Transaction;
 import model.TransactionInput;
 import util.Encoding;
 
@@ -87,6 +91,37 @@ public class JsonMessage {
 		job.add("utxoHash", itxo.getUtxoHash());
 		job.add("inputValue", itxo.getInputValue()+""); // 주의! float -> 문자열 변환
 		job.add("itxoHash", itxo.getItxoHash());
+		return changeJsonToString(job.build());
+	}
+	
+	public String jsonSendTransaction(Transaction tx) {
+		JsonArrayBuilder minerArr = Json.createArrayBuilder();
+		JsonArrayBuilder utxoHashArr = Json.createArrayBuilder();
+		JsonArrayBuilder inputValueArr = Json.createArrayBuilder();
+		
+		for(TransactionInput itxo : tx.getItxoList()) {
+			minerArr.add(itxo.getMiner());
+			utxoHashArr.add(itxo.getUtxoHash());
+			inputValueArr.add(itxo.getInputValue()+"");
+		}
+		
+		JsonObjectBuilder job = Json.createObjectBuilder();
+		job.add("identifier", "transaction");
+		job.add("sender", Encoding.encodeKey(tx.getSender()));
+		job.add("recipient", Encoding.encodeKey(tx.getRecipient()));
+		job.add("value",tx.getValue()+"");
+		job.add("signature",Encoding.encodeSignature(tx.getSignature()));
+		job.add("txHash", tx.getHash());
+		job.add("minerArr", minerArr);
+		job.add("inputValueArr", inputValueArr);
+		job.add("utxoHashArr", utxoHashArr);
+		return changeJsonToString(job.build());
+	}
+	
+	public String jsonDeleteUTXO(TransactionInput itxo) {
+		JsonObjectBuilder job = Json.createObjectBuilder();
+		job.add("identifier", "deleteUTXO");
+		job.add("utxoHash", itxo.getUtxoHash());
 		return changeJsonToString(job.build());
 	}
 	

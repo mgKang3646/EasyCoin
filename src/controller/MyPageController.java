@@ -12,6 +12,7 @@ import model.Peer;
 import model.Wallet;
 import newview.NewView;
 import newview.ViewURL;
+import util.ThreadUtil;
 
 public class MyPageController implements Controller  {
 	
@@ -43,25 +44,7 @@ public class MyPageController implements Controller  {
 	}
 	
 	public void resetBalance() {
-		Thread thread = new Thread() {
-			public void run() {
-				while(true) {
-					Platform.runLater(()->{
-							balanceTextField.setText(wallet.getBalance()+"");
-					});
-					sleepThread(3000);
-				}
-			}
-		};
-		thread.start();
-	}
-	
-	private void sleepThread(int time) {
-		try {
-			Thread.sleep(time);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		balanceTextField.setText(Wallet.itxo.getBalance()+"");	
 	}
 	
 	private void setButton() {

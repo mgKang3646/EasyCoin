@@ -1,6 +1,7 @@
 package controller;
 
 import java.net.URL;
+import java.security.PublicKey;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -9,6 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Peer;
+import model.Transaction;
+import model.Wallet;
 import model.Wire;
 import newview.NewView;
 import newview.ViewURL;
@@ -23,9 +26,12 @@ public class WireController implements Controller {
 	@FXML private Label validLabel;
 	
 	private Wire wire;	
+	private PublicKey recipient;
+	private NewView newView;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		newView = new NewView();
 	}
 	@Override
 	public void throwObject(Object object) {}
@@ -72,7 +78,11 @@ public class WireController implements Controller {
 	private void setWireButtonAction() {
 		wireButton.setOnAction(ActionEvent->{
 			if(wireValidCheck()) {
-				//송금
+				Transaction tx = wire.makeTransaction(recipient, getValue());
+				Wallet.txList.addTxList(tx);
+				wire.broadcastingTX(tx);
+				getStage().close();
+				newView.getNewWindow(ViewURL.popupURL,"송금이 완료되었습니다.");
 			}
 		});
 	}
@@ -103,7 +113,7 @@ public class WireController implements Controller {
 		validLabel.setVisible(false);
 		System.out.println("상대 계좌 이름 : " + wire.getUserName());
 		otherPublicKeyText.setText(wire.getUserName());
-		//recipient PublicKey 저장
+		recipient = wire.getPublicKey();
 		
 	}
 	
@@ -111,8 +121,6 @@ public class WireController implements Controller {
 		otherPublicKeyText.setText("");
 		showValidLabel("본인 계좌입니다.");
 	}
-	
-	
 	
 	private boolean wireValidCheck() {
 		if(myPublicKeyText.getText().equals("")) {
@@ -127,8 +135,12 @@ public class WireController implements Controller {
 			showValidLabel("입금액을 입력해주십시오."); 
 			return false;
 		}
-		if(Double.parseDouble(valueTextField.getText()) < 0.05) {
+		if(getValue() < 0.05) {
 			showValidLabel("0.05ETC 이상의 금액만 송금 가능합니다."); 
+			return false;
+		}
+		if(!wire.isAfford(getValue())){
+			showValidLabel("잔액이 부족합니다."); 
 			return false;
 		}
 		else {
@@ -151,6 +163,10 @@ public class WireController implements Controller {
 		otherPublicKeyText.setText("");
 		valueTextField.setText("");
 		validLabel.setVisible(false);
+	}
+	
+	private float getValue() {
+		return Float.parseFloat(valueTextField.getText());
 	}
 }
 

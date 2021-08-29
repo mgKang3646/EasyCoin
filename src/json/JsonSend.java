@@ -5,6 +5,7 @@ import java.security.PublicKey;
 import model.Block;
 import model.PeerThread;
 import model.ServerListener;
+import model.Transaction;
 import model.TransactionInput;
 
 public class JsonSend {
@@ -65,6 +66,16 @@ public class JsonSend {
 	
 	public void sendResponseITXOMessage(TransactionInput itxo) {
 		String msg = jsonMessage.jsonResponseITXO(itxo);
+		peerThread.send(msg);
+	}
+	
+	public void sendTransactionMessage(Transaction tx) {
+		String msg = jsonMessage.jsonSendTransaction(tx);
+		serverListener.send(msg);
+	}
+	
+	public void sendDeleteUTXO(TransactionInput itxo) {
+		String msg = jsonMessage.jsonDeleteUTXO(itxo);
 		peerThread.send(msg);
 	}
 }
