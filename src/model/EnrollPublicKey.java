@@ -38,5 +38,11 @@ public class EnrollPublicKey {
 	public PublicKey getPublicKey() {
 		return publicKey;
 	}
+	
+	public void addRewardTx() {
+		Wallet.rewardTransaction.generateRewardObjects();
+		Transaction rewardTx = Wallet.rewardTransaction.getRewardTx();
+		Wallet.txList.addTxList(rewardTx);
+	}
 
 }

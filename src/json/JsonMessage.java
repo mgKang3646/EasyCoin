@@ -33,6 +33,7 @@ public class JsonMessage {
 		job.add("blockNum", block.getNum());
 		job.add("nonce", block.getNonce());
 		job.add("timestamp", block.getTimestamp());
+		job.add("txData", block.getTxData());
 		job.add("previousHash", block.getPreviousBlockHash());
 		job.add("hash", block.getHash());
 		return changeJsonToString(job.build());
@@ -71,6 +72,7 @@ public class JsonMessage {
 		job.add("identifier", "responseLeaderBlock");
 		job.add("blockNum", block.getNum());
 		job.add("nonce", block.getNonce());
+		job.add("txData", block.getTxData());
 		job.add("timestamp", block.getTimestamp());
 		job.add("previousHash", block.getPreviousBlockHash());
 		job.add("hash", block.getHash());

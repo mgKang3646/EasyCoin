@@ -87,5 +87,13 @@ public class Transaction {
 	public void setSignature(byte[] signature) {
 		this.signature = signature;
 	}
+	
+	public String toString() {
+		if(getValue() != 0) {
+			return getSender().getEncoded().toString() + " -> " + getRecipient().getEncoded().toString() + " : " + getValue() + "ETC";
+		}else {
+			return getSender().getEncoded().toString() + " -> " + getRecipient().getEncoded().toString() + " : " +  +getItxoSum()+ "ETC";
+		}
+	}
 		
 }

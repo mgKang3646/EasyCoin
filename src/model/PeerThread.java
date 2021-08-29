@@ -32,6 +32,7 @@ public class PeerThread extends Thread {
 			}
 		}catch(Exception e) {
 			System.out.println(Peer.myPeer.getUserName()+"ÀÇ PeerThread Á¾·á");
+			Peer.peerList.delete(this);
 			try {
 				e.printStackTrace();
 				closeIO();

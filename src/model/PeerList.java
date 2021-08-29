@@ -17,6 +17,15 @@ public class PeerList {
 		peerList.add(otherPeer);
 	}
 	
+	public void delete(PeerThread peerThread) {
+		for(OtherPeer otherPeer : peerList) {
+			if(otherPeer.getPeerThread() == peerThread) {
+				peerList.remove(otherPeer);
+				break;
+			}
+		}
+	}
+	
 	public int getSize() {
 		return peerList.size();
 	}

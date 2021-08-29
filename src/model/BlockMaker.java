@@ -25,6 +25,7 @@ public class BlockMaker {
 		block.setNum(jsonObject.getInt("blockNum"));
 		block.setNonce(jsonObject.getInt("nonce"));
 		block.setTimestamp(jsonObject.getString("timestamp"));
+		block.setTxData(jsonObject.getString("txData"));
 		block.setPreviousBlockHash(BlockChain.getBlocklist().getPreviousHash()); // 본인이 갖고 있는 마지막블록의 이전해쉬여야함.
 		block.generateHash();
 		
@@ -36,18 +37,21 @@ public class BlockMaker {
 		block.setNum(BlockChain.getBlocklist().getBlockNum());
 		block.setPreviousBlockHash(BlockChain.getBlocklist().getPreviousHash());
 		block.setNonce(nonce);
+		block.setTxData(Wallet.txList.getTxData());
 		block.setTimestamp(timestamp);
 		block.generateHash();
 		
 		return block;
 	}
 	
+	//DB txData 추가는 나중에 하기
 	public Block makeDBBlock(ResultSet rs) {
 		block = new Block();
 		try {
 			block.setNum(Integer.valueOf(rs.getString("num")));
 			block.setPreviousBlockHash(rs.getString("previoushash"));
 			block.setNonce(Integer.valueOf(rs.getString("nonce")));
+			block.setTxData(rs.getString("transaction"));
 			block.setTimestamp(rs.getString("timestamp"));
 			block.setHash(rs.getString("hash"));
 		} catch (NumberFormatException | SQLException e) {
@@ -61,6 +65,7 @@ public class BlockMaker {
 		block.setNum(jsonObject.getInt("blockNum"));
 		block.setNonce(jsonObject.getInt("nonce"));
 		block.setTimestamp(jsonObject.getString("timestamp"));
+		block.setTxData(jsonObject.getString("txData"));
 		block.setPreviousBlockHash(jsonObject.getString("previousHash")); // 본인이 갖고 있는 마지막블록의 이전해쉬여야함.
 		block.setHash(jsonObject.getString("hash"));
 		

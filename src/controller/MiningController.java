@@ -100,6 +100,14 @@ public class MiningController implements Controller{
 		});
 	}
 	
+	public void processTxUI() {
+		Platform.runLater(()->{
+			setVerifying(true);
+			miningButton.setText("트랜잭션 처리 중..");
+			miningButton.setDisable(true);
+		});
+	}
+	
 	public void verifyUI() {
 		Platform.runLater(()->{
 			setVerifying(true);

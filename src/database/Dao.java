@@ -133,7 +133,7 @@ public class Dao {
 			pstmt.setString(1, block.getNum()+"");
 			pstmt.setString(2, block.getNonce()+"");
 			pstmt.setString(3, block.getTimestamp());
-			pstmt.setString(4, "거래정보");
+			pstmt.setString(4, block.getTxData());
 			pstmt.setString(5, block.getPreviousBlockHash());
 			pstmt.setString(6, block.getHash());
 			pstmt.setString(7, Peer.myPeer.getUserName());

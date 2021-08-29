@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import model.BlockChain;
 import model.MiningState;
@@ -42,12 +43,13 @@ public class MiningResultController implements Controller {
 	}
 	
 	private void doSuccessMining() {
-		verifiedLabel.setText("블록 채굴 성공");
+		verifiedLabel.setText("채굴");
+		verifiedLabel.setTextFill(Color.GREEN);
 		newView.addNewContent(content, ViewURL.blockURL, BlockChain.blockList.getLastBlock());
 	}	
 	
 	private void doSuccessVerify(){
-		verifiedLabel.setText("블록 검증 성공");
+		verifiedLabel.setText("검증");
 		newView.addNewContent(content, ViewURL.blockURL, BlockChain.blockList.getLastBlock());
 	}
 	

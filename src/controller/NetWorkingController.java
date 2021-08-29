@@ -15,6 +15,7 @@ import model.OtherPeer;
 import newview.NewView;
 import newview.ViewURL;
 import util.P2PNet;
+import util.ThreadUtil;
 
 public class NetWorkingController implements Controller {
 	
@@ -47,7 +48,7 @@ public class NetWorkingController implements Controller {
 			public void run() {
 				if(serverListenerUI()) {
 					connectOtherPeersUI();
-					sleepMoment();
+					ThreadUtil.sleepThread(700);
 					moveToMypage();
 					closeStage();
 				}else {
@@ -78,14 +79,6 @@ public class NetWorkingController implements Controller {
 			if(netWorking.doConnect(otherPeer)) processUI(getConnectionMsg(otherPeer,true), getProgress(getConnectionPercent(otherPeers.size())));
 			else processUI(getConnectionMsg(otherPeer,false), getProgress(getConnectionPercent(otherPeers.size())));
 		}	
-	}
-	
-	private void sleepMoment() {
-		try {
-			Thread.sleep(300);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private double getProgress(double value) {

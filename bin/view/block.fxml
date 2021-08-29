@@ -9,11 +9,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="481.0" prefWidth="404.0" style="-fx-background-color: #2f2b43;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.BlockController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="481.0" prefWidth="410.0" style="-fx-background-color: #2f2b43;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.BlockController">
    <children>
       <Pane layoutX="18.0" prefHeight="481.0" prefWidth="374.0" style="-fx-background-radius: 30;" styleClass="linear-grad" stylesheets="@../css/fullpackstyling.css">
          <children>
-            <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="380.0">
+            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="380.0">
                <children>
                   <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="121.0">
                      <children>
@@ -62,7 +62,7 @@
                   <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="267.0">
                      <children>
                         <TextField fx:id="nonceText" layoutX="4.0" layoutY="83.0" prefHeight="28.0" prefWidth="220.0" text="넌스" />
-                        <TextArea fx:id="dataText" layoutX="3.0" layoutY="175.0" prefHeight="172.0" prefWidth="220.0" text="거래정보" />
+                        <TextArea fx:id="dataText" layoutX="3.0" layoutY="175.0" prefHeight="172.0" prefWidth="220.0" />
                         <TextField fx:id="previousHashText" layoutX="3.0" layoutY="368.0" prefHeight="28.0" prefWidth="220.0" text="이전해쉬" />
                         <TextField fx:id="hashText" layoutX="3.0" layoutY="417.0" prefHeight="28.0" prefWidth="220.0" text="해쉬" />
                         <TextField fx:id="timestampText" layoutX="4.0" layoutY="127.0" prefHeight="28.0" prefWidth="220.0" text="타임스탬프" />

@@ -34,6 +34,8 @@ public class BlockController implements Controller {
 		previousHashText.setText(block.getPreviousBlockHash());
 		hashText.setText(block.getHash());
 		timestampText.setText(block.getTimestamp());
+		dataText.setText("");
+		dataText.appendText(block.getTxData());
 		
 		nonceText.setEditable(false);
 		dataText.setEditable(false);

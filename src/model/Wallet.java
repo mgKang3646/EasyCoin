@@ -5,5 +5,6 @@ public class Wallet {
 	public static ITXO itxo = new ITXO();
 	public static TxList txList = new TxList();
 	public static WalletSend walletSend = new WalletSend();
+	public static RewardTransaction rewardTransaction = new RewardTransaction();
 	
 }

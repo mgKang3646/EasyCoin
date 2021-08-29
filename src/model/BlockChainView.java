@@ -25,6 +25,11 @@ public class BlockChainView {
 		mc.verifyUI();
 	}
 	
+	public void processTx() {
+		MiningController mc = FxmlLoader.getFXMLLoader(ViewURL.miningURL).getController();
+		mc.processTxUI();
+	}
+	
 	public void endVerify() {
 		MiningController mc = FxmlLoader.getFXMLLoader(ViewURL.miningURL).getController();
 		mc.basicUI();

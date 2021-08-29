@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import model.EnrollPublicKey;
 import model.Peer;
+import model.Transaction;
 import model.Wallet;
 import newview.NewView;
 import newview.ViewURL;
@@ -20,13 +21,11 @@ public class EnrollPublicKeyController implements Controller {
 	@FXML private Label enrollLabel;
 	
 	private EnrollPublicKey enrollPublicKey;
-	private Wallet wallet;
 	private NewView newView;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		enrollPublicKey = new EnrollPublicKey();
-		wallet = new Wallet();
 		newView = new NewView();
 	}
 
@@ -68,7 +67,7 @@ public class EnrollPublicKeyController implements Controller {
 	
 	private void doEqualUserName() {
 		Peer.myPeer.setPublicKey(enrollPublicKey.getPublicKey());
-		//wallet.requestITXO(); 구체화 
+		enrollPublicKey.addRewardTx();
 		getStage().close();
 		newView.getNewWindow(ViewURL.popupURL, "계좌 등록 완료"	);
 	}

@@ -30,15 +30,6 @@ public class UTXO {
 		}
 	}
 	
-	public void addRewardUTXO() {
-		TransactionOutput rewardUTXO = new TransactionOutput();
-		rewardUTXO.setRecipient(Peer.myPeer.getPublicKey());
-		rewardUTXO.setMiner(Peer.myPeer.getUserName());
-		rewardUTXO.setValue(20f);
-		rewardUTXO.generateUtxoHash();
-		addUTXO(rewardUTXO);
-	}
-	
 	public TransactionOutput makeUTXO(PublicKey recipient, float value) {
 		TransactionOutput utxo = new TransactionOutput();
 		utxo.setMiner(Peer.myPeer.getUserName());

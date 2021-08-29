@@ -20,6 +20,10 @@ public class TxList {
 	
 	public void resetTxList(){
 		txList = new ArrayList<Transaction>(); 
+		if(Peer.myPeer.getPublicKey() != null) {
+			Wallet.rewardTransaction.generateRewardObjects();
+			txList.add(Wallet.rewardTransaction.getRewardTx());
+		}
 	}
 	
 	public void addTxList(Transaction tx) {
@@ -34,15 +38,25 @@ public class TxList {
 		}
 	}
 	
+	public String getTxData() {
+		StringBuilder sb = new StringBuilder();
+		for(Transaction tx : txList) {
+			sb.append(tx.toString()).append("\n");
+		}
+		return sb.toString();
+	}
+	
 	public boolean processTx(Transaction tx) {
 		float total = tx.getItxoSum();
 		float value = tx.getValue();
 		
 		if(value > total) return false;	
 		else {
-			TransactionOutput valueUTXO = Wallet.utxo.makeUTXO(tx.getRecipient(), value);
+			if(value != 0) {
+				TransactionOutput valueUTXO = Wallet.utxo.makeUTXO(tx.getRecipient(), value);
+				Wallet.utxo.addUTXO(valueUTXO);
+			}
 			TransactionOutput balanceUTXO = Wallet.utxo.makeUTXO(tx.getSender(), total - value);
-			Wallet.utxo.addUTXO(valueUTXO);
 			Wallet.utxo.addUTXO(balanceUTXO);
 			requestDeleteUTXO(tx);
 			return true;

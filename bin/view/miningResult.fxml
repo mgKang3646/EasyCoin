@@ -4,23 +4,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="571.0" maxWidth="380.0" minHeight="571.0" minWidth="380.0" prefHeight="571.0" prefWidth="380.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MiningResultController">
-   <top>
-      <StackPane prefHeight="57.0" prefWidth="380.0" style="-fx-background-color: #131022; -fx-border-color: green; -fx-border-radius: 5; -fx-border-width: 3;" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="verifiedLabel" prefHeight="41.0" prefWidth="254.0" text="블록 채굴 성공" textFill="WHITE">
-               <font>
-                  <Font size="39.0" />
-               </font>
-            </Label>
-         </children>
-      </StackPane>
-   </top>
+<BorderPane maxHeight="571.0" maxWidth="380.0" minHeight="571.0" minWidth="369.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MiningResultController">
    <center>
-      <HBox fx:id="content" alignment="CENTER" maxHeight="571.0" maxWidth="380.0" minHeight="470.0" minWidth="380.0" prefHeight="518.0" prefWidth="380.0" style="-fx-background-color: #2f2b43;;" BorderPane.alignment="CENTER">
+      <HBox fx:id="content" alignment="CENTER" maxHeight="571.0" maxWidth="390.0" minHeight="470.0" minWidth="361.0" prefHeight="501.0" prefWidth="390.0" style="-fx-background-color: #2f2b43;;" BorderPane.alignment="CENTER">
          <opaqueInsets>
             <Insets top="10.0" />
          </opaqueInsets>
@@ -31,4 +20,25 @@
             <Insets top="5.0" />
          </padding></HBox>
    </center>
+   <top>
+      <Pane prefHeight="70.0" prefWidth="369.0" style="-fx-background-color: black; -fx-border-color: green; -fx-border-width: 3;" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="29.0" layoutY="7.0" text="블록" textFill="WHITE">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+            <Label fx:id="verifiedLabel" layoutX="142.0" layoutY="7.0" text="채굴" textFill="WHITE">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+            <Label layoutX="252.0" layoutY="7.0" text="성공" textFill="WHITE">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </top>
 </BorderPane>
