@@ -5,7 +5,11 @@
 EasyCoin</h3>
 </div>
 
-[![Video Label](https://github.com/mgKang3646/EasyCoin/assets/80077569/50855db2-8b76-4589-88ab-8edccd93766c)](https://www.youtube.com/watch?v=X2WXb94fUTI)
+### Developers
+|<img src="https://avatars.githubusercontent.com/u/80077569?v=4" width=200>|<img src="https://avatars.githubusercontent.com/u/12035241?v=4" width=200>|
+|:--------:|:--------:|:--------:|:--------:|:--------:|
+|[강민구](https://github.com/mgKang3646)|[최재웅](https://github.com/jaeung-choi)|
+|**Developer**|**Developer**|
 
 
 ### 프로젝트 목적 
@@ -18,3 +22,5 @@ EasyCoin</h3>
 ### 기대효과
 본 프로젝트는 블록체인 기술의 대중화를 위한 블록체인 교육용 프로그램으로 사업을 추진할 계획이다. 프로그램은 일반 단말기에서도 운용될 수 있도록 블록채굴 난이도를 낮게 설정했다. 이로 인해, 실제 암호화폐 기능은 못 하지만 블록체인 기술의 전반을 시각화하여 교육 및 체험프로그램으로 사업화할 생각이다. 암호화폐는 현재 높은 변동성으로 인해 투기의 대상으로 전락하고 있다. 변동성이라는 그늘 아래 본질이 가려져 있는 것이다. 본 프로젝트를 통해 우리는 암호화폐의 가치가 변동성이 아닌 블록체인에 있음을 알리고 투기가 아닌 기술과 가치에 투자하는 사회에 이바지하기를 기대한다.
 
+### 시연영상 ( 이미지 클릭 )
+[![Video Label](https://github.com/mgKang3646/EasyCoin/assets/80077569/50855db2-8b76-4589-88ab-8edccd93766c)](https://www.youtube.com/watch?v=X2WXb94fUTI)
