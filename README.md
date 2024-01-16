@@ -1,8 +1,8 @@
 <div align="center">
-<h1>Mentoring-Service</h1>
-<h3> 블록체인 기술이 적용된 누구나 이해하기 쉬운 암호화폐 거래시스템 
-
-EasyCoin</h3>
+<h1>EasyCoin</h1>
+<h3> 블록체인 기술이 적용된 누구나 이해하기 쉬운 
+  
+암호화폐 거래시스템 </h3>
 </div>
 
 <br>
