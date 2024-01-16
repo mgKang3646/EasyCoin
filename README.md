@@ -7,7 +7,7 @@ EasyCoin</h3>
 
 ### Developers
 |<img src="https://avatars.githubusercontent.com/u/80077569?v=4" width=200>|<img src="https://avatars.githubusercontent.com/u/12035241?v=4" width=200>|
-|:--------:|:--------:|:--------:|:--------:|:--------:|
+|:--------:|:--------:|
 |[강민구](https://github.com/mgKang3646)|[최재웅](https://github.com/jaeung-choi)|
 |**Developer**|**Developer**|
 
