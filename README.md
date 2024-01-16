@@ -5,6 +5,7 @@
 EasyCoin</h3>
 </div>
 
+<iframe width="1066" height="600" src="https://www.youtube.com/watch?v=X2WXb94fUTI" title="Calvin Harris - Feels (Official Video) ft. Pharrell Williams, Katy Perry, Big Sean" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ### 프로젝트 목적 
 블록체인 기술은 보안성이 뛰어나 사실상 해킹이 불가능하다. 이렇듯 잠재성이 높은 기술이지만 암호화폐의 변동성에 가려져 단순히 투기의 대상으로 인식되고 있다. 그래서 우리는 본 프로젝트를 통해 블록의 채굴부터 암호화폐 거래까지 블록체인 기술의 전반을 시각화하여, 누구나 블록체인 기술을 피부로 느끼고 이해할 수 있는 프로그램 개발을 목적으로 한다.
